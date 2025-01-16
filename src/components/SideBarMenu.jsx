@@ -26,7 +26,7 @@ const menuItems = [
     // Menambahkan pengecekan role untuk menampilkan item ini hanya untuk admin
     restricted: true,
   },
-  { name: "Settings", path: "/settings", icon: FaCog },
+  { name: "Settings", path: "/setting", icon: FaCog },
 ];
 
 const SideBarMenu = ({ role }) => {

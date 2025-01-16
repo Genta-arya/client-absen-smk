@@ -6,9 +6,8 @@ import UseLogout from "../Lib/Hook/UseLogout";
 import { BeatLoader } from "react-spinners";
 
 const Headers = ({ role, user }) => {
-  const navigate = useNavigate();
   const { logout, loading } = UseLogout();
-
+  const navigate = useNavigate();
   return (
     <>
       <ContainerLayout>
@@ -17,18 +16,18 @@ const Headers = ({ role, user }) => {
           <div className="flex justify-between">
             <div className="flex gap-3 items-center">
               <img
-                src="https://static.vecteezy.com/system/resources/thumbnails/000/439/863/small/Basic_Ui__28186_29.jpg"
+                src={user?.avatar}
                 alt="profile"
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/profil")}
                 className="w-12 h-12 rounded-full hover:cursor-pointer"
               />
               <div>
                 <p className="lg:text-lg md:text-lg text-base">Welcome</p>
-                <p className="text-sm">Hi, {user?.name || "User"}</p>
-                <p className="text-xs">
-                  Email : {user?.email || "User@email.com"}
-                </p>
-                <p className="text-xs mt-2">Akses : {user?.role}</p>
+                <p className="text-sm">Hi, {user?.name || "-"}</p>
+                <p className="text-xs">Email : {user?.email || "-"}</p>
+                {user?.role !== "user" && (
+                  <p className="text-xs mt-2">Akses : {user?.role || role}</p>
+                )}
               </div>
             </div>
 

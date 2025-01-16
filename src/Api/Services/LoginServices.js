@@ -1,4 +1,4 @@
-import { Axios } from "../AxiosConfig/Axios";
+import { Axios, AxiosFormData } from "../AxiosConfig/Axios";
 import { handleError } from "../../Utils/Error";
 
 export const HandleLogin = async (data) => {
@@ -17,7 +17,7 @@ export const HandleRegister = async (data) => {
   try {
     const response = await Axios.post("/auth/register", {
       nim: data.nim,
-      name : data.name,
+      name: data.name,
       password: data.password,
       role: data.role,
     });
@@ -61,6 +61,43 @@ export const ForgotPassword = async (data) => {
 export const getDataUser = async (role) => {
   try {
     const response = await Axios.get("/auth/user/" + role);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updatePassowrd = async (data) => {
+  try {
+    const response = await Axios.post("/auth/update/user/password/" + data.id, {
+      password: data.password,
+      new_password: data.new_password,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateFotoProfile = async (data) => {
+  try {
+    const response = await AxiosFormData.post(
+      `/auth/update/profile/${data.id}`,
+      data.photo
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error uploading photo:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+export const getSingleUser = async (id) => {
+  try {
+    const response = await Axios.get(`/auth/detail/user/${id}`);
     return response.data;
   } catch (error) {
     handleError(error);

@@ -13,7 +13,7 @@ export const menuItems = [
   { name: "Permohonan PKL", path: "/permohonan/list", icon: FaNewspaper },
   { name: "Management User", path: "/user", icon: FaUser },
 
-  { name: "Setting", path: "/settings", icon: FaGear },
+  { name: "Setting", path: "/setting", icon: FaGear },
 ];
 
 export const modalTypes = {

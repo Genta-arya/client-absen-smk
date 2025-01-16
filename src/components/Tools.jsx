@@ -12,14 +12,11 @@ const Tools = ({ title, role }) => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
 
-  // Filter menuItems berdasarkan searchTerm dan role
   const filteredItems = menuItems.filter((item) => {
-    // Menyembunyikan item dengan path '/user' jika role bukan 'admin'
     if (user?.role !== "admin" && item.path === "/user") {
-      return false; // Sembunyikan item dengan path '/user'
+      return false;
     }
 
-    // Melanjutkan dengan filter berdasarkan searchTerm
     return item.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -40,7 +37,6 @@ const Tools = ({ title, role }) => {
     }
   };
 
-  // Menangani kombinasi tombol Ctrl + K
   const handleCtrlK = (e) => {
     if ((e.ctrlKey && e.key === "k") || e.key === "K") {
       e.preventDefault();
@@ -62,17 +58,26 @@ const Tools = ({ title, role }) => {
     <div className={` ${role === "user" && "hidden"} mb-8 -mt-8 border-b p-4 `}>
       {role !== "user" && (
         <>
-          <div
-            onClick={() => navigate("/")}
-            className="cursor-pointer hover:underline w-fit"
-          >
-            <div className="flex items-center gap-3">
-              <FaHome className="hover:underline" />
-              <div className="flex items-center gap-4">
-                <p>Home</p>
-                <FaChevronRight />
-                <p>{title}</p>
+          <div className="flex justify-between items-center">
+            <div
+              onClick={() => navigate("/")}
+              className="cursor-pointer hover:underline w-fit"
+            >
+              <div className="flex items-center gap-3">
+                <FaHome className="hover:underline" />
+                <div className="flex items-center gap-4">
+                  <p>Home</p>
+                  <FaChevronRight />
+                  <p>{title}</p>
+                </div>
               </div>
+            </div>
+            <div className="cursor-pointer" title="Profile" onClick={() => navigate("/profil")}>
+              <img
+                src={user?.avatar}
+                alt="profile"
+                className="w-10 h-10 rounded-full"
+              />
             </div>
           </div>
 

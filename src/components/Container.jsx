@@ -7,30 +7,12 @@ import Footer from "./Footer";
 import Tools from "./Tools";
 
 const Container = ({ children, role }) => {
-  const location = useLocation(); // Untuk mendapatkan path saat ini
+  const location = useLocation();
 
   const Title = "Dashboard";
-  const getTitle = () => {
-    switch (location.pathname) {
-      case "/":
-        return "Home - " + Title;
-      case "/blog":
-        return "Blog - " + Title;
-      case "/category":
-        return "Category - " + Title;
-      case "/tags":
-        return "Tags - " + Title;
-      default:
-        return Title; // Default title
-    }
-  };
 
   return (
     <>
-      <Helmet>
-        <title>{getTitle()}</title>
-      </Helmet>
-
       <Navbar role={role} />
 
       <div
