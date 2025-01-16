@@ -13,7 +13,9 @@ const Tools = ({ title, role }) => {
   const { user } = useAuthStore();
 
   const filteredItems = menuItems.filter((item) => {
-    if (user?.role !== "admin" && item.path === "/user") {
+    if (user?.role !== "admin" && item.path === "/user" ) {
+      return false;
+    } else if (user?.role === "admin" && item.path === "/absensi" ) {
       return false;
     }
 
