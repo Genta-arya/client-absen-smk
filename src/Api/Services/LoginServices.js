@@ -17,7 +17,9 @@ export const HandleRegister = async (data) => {
   try {
     const response = await Axios.post("/auth/register", {
       nim: data.nim,
+      name : data.name,
       password: data.password,
+      role: data.role,
     });
     return response.data;
   } catch (error) {

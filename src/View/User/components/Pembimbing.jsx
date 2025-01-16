@@ -15,23 +15,17 @@ import { ForgotPassword } from "../../../Api/Services/LoginServices";
 import useUser from "../../../Lib/Hook/useUser";
 import Loading from "../../../components/Loading";
 
-const Pembimbing = () => {
-  const [searchTerm, setSearchTerm] = React.useState("");
+const Pembimbing = ({
+  searchTerm,
+  SearchFilter,
+  dataSiswa,
+  loading,
+  updatePasswords,
+  fetchData,
+}) => {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [selectData, setSelectData] = React.useState(null);
-  const { data: dataSiswa, loading, updatePasswords, fetchData } = useUser();
-  const SearchFilter = (dataSiswa, searchTerm) => {
-    return dataSiswa.filter((siswa) => {
-      return (
-        siswa?.nim
-          ?.toString()
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        siswa?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    });
-  };
 
   const handleEdit = (data) => {
     setSelectData(data);
@@ -57,24 +51,11 @@ const Pembimbing = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between  gap-4">
-        <Button
-          icon={<FaPlus />}
-          title={"Tambah Data"}
-          type={"button"}
-          style={"bg-blue"}
-          onClick={() => {}}
-        />
-        <Search
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          placeholder={"Cari Pembimbing"}
-        />
-      </div>
       <Table>
         <Thead>
           <tr>
             <Th text={"No"} />
+            <Th text={"Foto"} />
             <Th text={"NIP"} />
             <Th text={"Nama"} />
             <Th text={"Aksi"} />
@@ -85,8 +66,16 @@ const Pembimbing = () => {
             <>
               <tr key={siswa.id}>
                 <Td text={index + 1} />
+                <td
+                  className="border p-1 cursor-pointer hover:opacity-80"
+                  onClick={() => window.open(siswa.avatar)}
+                >
+                  <div className="flex justify-center">
+                    <img src={siswa.avatar} className="w-10" alt=""></img>
+                  </div>
+                </td>
                 <Td text={siswa.nim} />
-                <Td text={siswa.nama || "-"} />
+                <Td text={siswa.name || "-"} />
 
                 <td className="border p-1">
                   <button
@@ -111,28 +100,27 @@ const Pembimbing = () => {
           setIsModalOpen={onClose}
           title={"Ganti Password"}
         >
-          <Input
-            type={"text"}
-            disabled={true}
-            value={selectData?.name || "-"}
-            label={"Nama"}
-          />
-          <Input
-            id={"password"}
-            label={"Password"}
-            onChange={(e) => setPassword(e.target.value)}
-            type={"password"}
-            value={password}
-            placeholder={"Ganti Password"}
-          />
-          <div className=" flex justify-end pr-1">
-            <button
-              onClick={handlePasswordChange}
-              className="bg-blue px-4 py-2 rounded-md text-white"
-            >
-              <p>Simpan</p>
-            </button>
-          </div>
+          <form onSubmit={() => handlePasswordChange()}>
+            <Input
+              type={"text"}
+              disabled={true}
+              value={selectData?.name || "-"}
+              label={"Nama"}
+            />
+            <Input
+              id={"password"}
+              onChange={(e) => setPassword(e.target.value)}
+              type={"password"}
+              value={password}
+              required={true}
+              placeholder={"Ganti Password"}
+            />
+            <div className=" flex justify-end pr-1">
+              <button className="bg-blue px-4 py-2 rounded-md text-white">
+                <p>Simpan</p>
+              </button>
+            </div>
+          </form>
         </ActModal>
       )}
     </div>

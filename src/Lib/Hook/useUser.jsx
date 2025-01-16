@@ -43,10 +43,7 @@ const useUser = () => {
     }
   };
 
-  // Mengambil data saat komponen di-mount
-  useEffect(() => {
-    fetchData();
-  }, []);
+  ;
 
   return (
     {

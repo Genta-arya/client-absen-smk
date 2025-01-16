@@ -1,10 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Siswa from "./Siswa";
 import Pembimbing from "./Pembimbing";
 import TabStore from "../../../Lib/Zustand/TabStore";
+import Action from "./Action";
+import useUser from "../../../Lib/Hook/useUser";
 
 const Tab = () => {
-  const {tab , setTab} = TabStore();
+  const { tab, setTab } = TabStore();
+  const { data: dataSiswa, loading, updatePasswords, fetchData } = useUser();
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, [tab]);
+
+  const SearchFilter = (dataSiswa, searchTerm) => {
+    return dataSiswa.filter((siswa) => {
+      return (
+        siswa?.nim
+          ?.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        siswa?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+  };
 
   const handleTabClick = (tab) => {
     setTab(tab);
@@ -35,7 +55,41 @@ const Tab = () => {
         </button>
       </div>
       <div className="p-4 ">
-        {tab === "siswa" ? <Siswa /> : <Pembimbing />}
+        {tab === "siswa" ? (
+          <>
+            <Action
+              refresh={fetchData}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              placeholder={"Cari Siswa"}
+            />
+            <Siswa
+              dataSiswa={dataSiswa}
+              loading={loading}
+              fetchData={fetchData}
+              updatePasswords={updatePasswords}
+              SearchFilter={SearchFilter}
+              searchTerm={searchTerm}
+            />
+          </>
+        ) : (
+          <>
+            <Action
+              refresh={fetchData}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              placeholder={"Cari Pembimbing"}
+            />
+            <Pembimbing
+              dataSiswa={dataSiswa}
+              loading={loading}
+              fetchData={fetchData}
+              updatePasswords={updatePasswords}
+              SearchFilter={SearchFilter}
+              searchTerm={searchTerm}
+            />
+          </>
+        )}
       </div>
     </div>
   );
