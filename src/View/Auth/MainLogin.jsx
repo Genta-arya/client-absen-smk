@@ -1,33 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { FaUser, FaLock, FaEye, FaEyeSlash, FaWhatsapp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Text } from "../../constants/Constants";
 import ActModal from "../../components/Modal/ActModal";
+import { HandleLogin } from "../../Api/Services/LoginServices";
+import { handleError } from "../../Utils/Error";
+import LoadingButton from "../../components/LoadingButton";
+import { ResponseHandler } from "../../Utils/ResponseHandler";
+import useAuthStore from "../../Lib/Zustand/AuthStore";
 
 const MainLogin = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [username, setUsername] = useState("");
+  const [nim, setNim] = useState("");
   const [password, setPassword] = useState("");
   const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { setUser } = useAuthStore();
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    try {
+      const parseNim = parseInt(nim);
+      const response = await HandleLogin({ nim: parseNim, password });
 
-    navigate("/");
+      localStorage.setItem("token", response.data.token);
+
+      setUser(response.data);
+      navigate("/");
+    } catch (error) {
+      ResponseHandler(error.response);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-dark-bg">
+    <div className="flex justify-center items-center min-h-screen bg-blue dark:bg-dark-bg">
       <Helmet>
-        <title>Login - Blog</title>
+        <title>Login - Lampias</title>
       </Helmet>
-      <div className="bg-white p-8  rounded-lg shadow-lg w-[90%] lg:w-[30%]">
+      <div className="bg-white p-8  rounded-lg shadow-lg w-[90%] lg:w-[30%] border-t-4 border-orange-500">
         <div className="flex flex-col items-center mb-6">
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfqgzc3z4pYYehdJbSmuMT8Gp7abIEiE-zw&s"
@@ -42,10 +60,9 @@ const MainLogin = () => {
           </p>
         </div>
         <form onSubmit={handleLogin}>
-          {/* Username input */}
           <div className="mb-4 relative">
             <label
-              htmlFor="username"
+              htmlFor="nim"
               className="block text-gray-700 font-medium text-sm lg:text-base md:text-base"
             >
               NISN / NIP
@@ -54,11 +71,18 @@ const MainLogin = () => {
               <FaUser className="ml-3 text-gray-400" size={20} />
               <input
                 type="text"
-                id="username"
-                name="username"
+                id="nim"
+                name="nim"
                 required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                maxLength={20}
+                value={nim}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Hanya perbolehkan angka
+                  if (/^\d*$/.test(value)) {
+                    setNim(value);
+                  }
+                }}
                 className={`w-full text-gray-500 p-2 pl-5  border-none rounded-lg focus:outline-none ${Text}`}
                 placeholder="Enter your  NISN / NIP"
               />
@@ -103,9 +127,10 @@ const MainLogin = () => {
           <button
             type="submit"
             title="Login"
-            className="w-full py-2 text-sm bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none "
+            disabled={loading}
+            className="w-full py-2 border-b-2 border-oren text-sm bg-blue-600 text-white bg-blue font-semibold rounded-lg hover:bg-blue-700 focus:outline-none "
           >
-            Login
+            <LoadingButton text="Login" loading={loading} />
           </button>
 
           <div>
@@ -125,19 +150,18 @@ const MainLogin = () => {
           title={"Lupa Password"}
         >
           <div>
-            <p>Hubungi Administrator untuk mereset password Anda</p>
+            <p className="text-sm text-gray-600 mt-2 ">Hubungi Administrator untuk mereset password Anda</p>
             <div className="flex justify-end">
-
-            <button
-              className="flex items-center gap-2 mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all"
-              onClick={() =>
-                window.open("https://wa.me/6289618601348", "_blank")
-              }
-            >
-              {/* WhatsApp Icon */}
-              <FaWhatsapp size={20} />
-              <p className="font-bold text-sm">WhatsApp Administrator</p>
-            </button>
+              <button
+                className="flex items-center gap-2 mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all"
+                onClick={() =>
+                  window.open("https://wa.me/6289618601348", "_blank")
+                }
+              >
+                {/* WhatsApp Icon */}
+                <FaWhatsapp size={20} />
+                <p className="font-bold text-sm">WhatsApp</p>
+              </button>
             </div>
           </div>
         </ActModal>

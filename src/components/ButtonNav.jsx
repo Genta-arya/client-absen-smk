@@ -10,7 +10,7 @@ const ButtonNav = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-100 dark:bg-gray-800 shadow-lg border-t">
+    <div className="fixed bottom-0 left-0 right-0 bg-blue dark:bg-gray-800 shadow-lg border-t">
       <ul className="flex justify-around items-center py-4">
         {navItems.map((item) => (
           <li key={item.path} className="flex-1 text-center">
@@ -19,13 +19,13 @@ const ButtonNav = () => {
               className={({ isActive }) =>
                 `flex flex-col items-center gap-1 transition-all ${
                   isActive
-                    ? "border-black dark:border-gray-500  rounded-sm font-bold "
-                    : "text-gray-500 dark:text-gray-300"
+                    ? "border-black text-white dark:border-gray-500  rounded-sm font-bold "
+                    : "text-gray-300 dark:text-gray-300"
                 }`
               }
             >
-              <item.icon size={20} className="dark:text-white" />
-              <span className="text-xs">{item.name}</span>
+              <item.icon size={20} className="dark:text-white text-white" />
+              <span className="text-xs ">{item.name}</span>
             </NavLink>
           </li>
         ))}

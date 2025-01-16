@@ -5,14 +5,18 @@ import ButtonNav from "../../ButtonNav";
 
 import ContentUser from "./components/ContentUser";
 
-const MainUsers = ({ role }) => {
+const MainUsers = ({ role, user, loading }) => {
   return (
     <div>
-      <Tools title={"Dashboard"} role={role} />
-      <Headers role={role} />
-      <ContentUser />
+      {!loading && (
+        <>
+          <Tools title={"Dashboard"} role={role} />
+          <Headers role={role} />
+          <ContentUser />
 
-      <ButtonNav />
+          <ButtonNav />
+        </>
+      )}
     </div>
   );
 };

@@ -38,7 +38,7 @@ const Navbar = ({ role }) => {
   };
 
   return (
-    <div className="bg-white p-2 border-b shadow-md dark:bg-dark-bg  text-black dark:text-white px-4 lg:px-8 ">
+    <div className="bg-blue border-oren dark:border-white text-white p-2 border-b-2 shadow-md dark:bg-dark-bg   dark:text-white px-4 lg:px-8 ">
       <div
         className={`fixed inset-0 bg-black transition-opacity duration-300 z-10 ${
           isMenuOpen ? "opacity-50" : "opacity-0 pointer-events-none"
@@ -55,42 +55,59 @@ const Navbar = ({ role }) => {
 
       <nav className="">
         <div className="flex items-center justify-between">
-          {role !== "user" ?(
-            <div className="flex items-center gap-4">
+          {role !== "user" ? (
+            <div className="flex  gap-4 flex-row-reverse justify-between w-full">
               <button onClick={toggleMenu} className="" title="Menu">
                 {isMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
               </button>
+              <div className="flex items-center gap-4">
+                <img
+                  src="https://storage.apiservices.my.id/uploads/Screenshot_2025-01-16_075511-removebg-preview-1736988960901.png"
+                  alt="Logo"
+                  className="w-10 h-10 bg-white p-1 rounded-full"
+                />
+
+                <div className="flex items-start gap-1 flex-col">
+                  <p className="text-xl font-extrabold uppercase text-oren">
+                    Lampias
+                  </p>
+                  <div>
+                    <p className="text-xs font-bold">
+                      Management Praktek Kerja Lapangan
+                    </p>
+                    <p className="text-xs">Versi 1.0</p>
+                  </div>
+                </div>
+              </div>
+
+
+              
             </div>
           ) : (
             <>
-            <div className="flex items-center gap-4">
-              <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfqgzc3z4pYYehdJbSmuMT8Gp7abIEiE-zw&s"
-                alt="Logo"
-                className="w-10 h-10 rounded-full"
-              />
+              <div className="flex items-center gap-4">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfqgzc3z4pYYehdJbSmuMT8Gp7abIEiE-zw&s"
+                  alt="Logo"
+                  className="w-10 h-10 rounded-full"
+                />
 
-            <div className="flex items-start gap-1 flex-col">
-              <p className="text-xl font-bold uppercase">
-                Lampias
-              </p>
-              <div>
-
-              <p className="text-xs font-bold">
-                Management Praktek Kerja Lapangan
-              </p>
-              <p className="text-xs">Versi 1.0</p>
+                <div className="flex items-start gap-1 flex-col">
+                  <p className="text-xl font-extrabold uppercase text-oren">
+                    Lampias
+                  </p>
+                  <div>
+                    <p className="text-xs font-bold">
+                      Management Praktek Kerja Lapangan
+                    </p>
+                    <p className="text-xs">Versi 1.0</p>
+                  </div>
+                </div>
               </div>
-             
-            </div>
-            </div>
-            
             </>
           )}
-         
-       
 
-          <div className="flex items-center space-x-4">
+          {/* <div className="flex items-center space-x-4">
             <button
               onClick={toggleDarkMode}
               title="Theme"
@@ -99,10 +116,10 @@ const Navbar = ({ role }) => {
               {isDarkMode ? (
                 <FaSun color="yellow" size={20} />
               ) : (
-                <FaMoon color="#1D4ED8" />
+                <FaMoon color="yellow" />
               )}
             </button>
-          </div>
+          </div> */}
         </div>
       </nav>
     </div>

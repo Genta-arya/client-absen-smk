@@ -3,16 +3,25 @@ import { FaHome, FaSearch } from "react-icons/fa";
 import { FaChevronRight } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { menuItems } from "../constants/Constants";
+import useAuthStore from "../Lib/Zustand/AuthStore";
 
 const Tools = ({ title, role }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
-  const filteredItems = menuItems.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter menuItems berdasarkan searchTerm dan role
+  const filteredItems = menuItems.filter((item) => {
+    // Menyembunyikan item dengan path '/user' jika role bukan 'admin'
+    if (user?.role !== "admin" && item.path === "/user") {
+      return false; // Sembunyikan item dengan path '/user'
+    }
+
+    // Melanjutkan dengan filter berdasarkan searchTerm
+    return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -50,7 +59,7 @@ const Tools = ({ title, role }) => {
   }, [selectedIndex, filteredItems]);
 
   return (
-    <div className={` ${ role === "user" && "hidden"} mb-8 -mt-8  border-b p-4 `}>
+    <div className={` ${role === "user" && "hidden"} mb-8 -mt-8 border-b p-4 `}>
       {role !== "user" && (
         <>
           <div
@@ -82,12 +91,12 @@ const Tools = ({ title, role }) => {
 
             {/* Suggestions */}
             {searchTerm && (
-              <ul className="absolute z-10 w-full bg-white border rounded-lg shadow-lg max-h-40 overflow-y-auto mt-2">
+              <ul className="absolute z-[5] w-full bg-white border rounded-lg shadow-lg max-h-40 overflow-y-auto mt-2">
                 {filteredItems.length > 0 ? (
                   filteredItems.map((item, index) => (
                     <li
                       key={item.id}
-                      className={`p-2 cursor-pointer hover:bg-blue-100 ${
+                      className={`p-2 hover:bg-gray-200 cursor-pointer ${
                         index === selectedIndex ? "bg-blue-200" : ""
                       }`}
                       onClick={() => {

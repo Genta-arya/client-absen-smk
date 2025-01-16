@@ -2,13 +2,17 @@ import React from "react";
 import ContainerLayout from "./ContainerLayout";
 import { useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
+import UseLogout from "../Lib/Hook/UseLogout";
+import { BeatLoader } from "react-spinners";
 
-const Headers = ({ role }) => {
+const Headers = ({ role, user }) => {
   const navigate = useNavigate();
+  const { logout, loading } = UseLogout();
+
   return (
     <>
       <ContainerLayout>
-        <div className="font-bold flex  flex-col justify-center px-4 gap-1 h-32 border border-gray-300 rounded-lg dark:bg-gray-600 bg-gray-100">
+        <div className="font-bold flex  flex-col z-10 justify-center px-4 gap-1 h-32 border border-gray-300 rounded-lg dark:bg-gray-600 bg-gray-100">
           {/* cdn dummy profile */}
           <div className="flex justify-between">
             <div className="flex gap-3 items-center">
@@ -20,16 +24,26 @@ const Headers = ({ role }) => {
               />
               <div>
                 <p className="lg:text-lg md:text-lg text-base">Welcome</p>
-                <p className="text-sm">Hi, M Gentha Arya</p>
-                <p className="text-xs">mgentaarya@gmail.com</p>
+                <p className="text-sm">Hi, {user?.name || "User"}</p>
+                <p className="text-xs">
+                  Email : {user?.email || "User@email.com"}
+                </p>
+                <p className="text-xs mt-2">Akses : {user?.role}</p>
               </div>
             </div>
 
-            <button className="hover:opacity-80" onClick={() => navigate("/login")}>
+            <button
+              disabled={loading}
+              className="hover:opacity-80"
+              onClick={() => logout()}
+            >
               <div className="flex items-center gap-2">
-
-              <FaSignOutAlt />
-              <p className="text-xs">Logout</p>
+                <FaSignOutAlt />
+                {loading ? (
+                  <BeatLoader size={10} color="#F97316" />
+                ) : (
+                  <p>Logout</p>
+                )}
               </div>
             </button>
           </div>

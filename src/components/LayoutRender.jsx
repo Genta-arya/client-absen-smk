@@ -4,11 +4,10 @@ import MainHome from "../View/Homes/MainHome";
 import MainUsers from "./RoleView/Users/MainUsers";
 import Container from "./Container";
 
-const LayoutRender = ({ role }) => {
+const LayoutRender = ({ role, user, loading }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirect pengguna berdasarkan role yang berubah
   useEffect(() => {
     switch (role) {
       case "admin":
@@ -26,17 +25,22 @@ const LayoutRender = ({ role }) => {
     }
   }, [role, navigate]);
 
-  // Render konten berdasarkan path dan role
   let content;
   switch (location.pathname) {
     case "/":
-      content = <MainHome />;
+      content = <MainHome role={role} user={user} loading={loading} />;
       break;
     case "/app":
-      content = role === "user" ? <MainUsers role={role} /> : null;
+      content =
+        role === "user" ? (
+          <MainUsers role={role} user={user} loading={loading} />
+        ) : null;
       break;
     case "/pembimbing/app":
-      content = role === "pembimbing" ? <MainHome /> : null;
+      content =
+        role === "pembimbing" ? (
+          <MainHome role={role} loading={loading} />
+        ) : null;
       break;
     default:
       content = <MainHome />;

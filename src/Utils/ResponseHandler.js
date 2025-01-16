@@ -1,0 +1,34 @@
+import { toast } from "sonner";
+
+export const ResponseHandler = (response, navigate = null) => {
+  switch (response.status) {
+    case 400:
+      toast.error(response.data.message);
+      throw response.data;
+
+    case 409:
+      toast.error(response.data.message, {
+        duration: 2000,
+        onAutoClose: () => (window.location.href = "/login"),
+      });
+      throw response.data;
+
+    case 401:
+      toast.warning(response.data.message);
+      throw response.data;
+
+    case 404:
+      toast.error(response.data.message);
+      throw response.data;
+
+    case 500:
+      toast.error("Internal Server Error: Terjadi kesalahan pada server.", {
+        onAutoClose: () => (window.location.href = "/login"),
+      });
+      throw response.data;
+
+    default:
+      toast.error("Unexpected Error: Terjadi kesalahan yang tidak terduga.");
+      throw response.data;
+  }
+};

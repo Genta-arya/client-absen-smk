@@ -4,16 +4,11 @@
 @tailwind utilities;
 
 body {
-  @apply bg-light-bg text-light-text;
+
   font-family: "Merriweather", serif;
 
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    @apply bg-dark-bg text-dark-text;
-  }
-}
 
 * {
   scrollbar-width: none;

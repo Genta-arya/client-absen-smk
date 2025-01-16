@@ -1,13 +1,15 @@
 import React from "react";
-import Container from "./components/Container";
 import LayoutRender from "./components/LayoutRender";
-
+import useAuthStore from "./Lib/Zustand/AuthStore";
 
 function App() {
-  const role = "user";
+  const { user, role, loading } = useAuthStore();
+
+ 
+
   return (
     <>
-      <LayoutRender role={role} />
+      {!loading && <LayoutRender role={role} user={user} loading={loading} />}
     </>
   );
 }

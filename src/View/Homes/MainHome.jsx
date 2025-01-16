@@ -3,12 +3,16 @@ import Headers from "../../components/Headers";
 import Tools from "../../components/Tools";
 import Charts from "./components/Charts";
 
-const MainHome = () => {
+const MainHome = ({ role, user, loading }) => {
   return (
     <div>
-      <Tools title={"Dashboard"} />
-      <Headers />
-      <Charts />
+      {!loading && (
+        <>
+          <Tools title={"Dashboard"} />
+          <Headers role={role} user={user} />
+          <Charts />
+        </>
+      )}
     </div>
   );
 };

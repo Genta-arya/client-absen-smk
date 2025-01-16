@@ -13,10 +13,10 @@ const AppMenu = () => {
           {/* Wrapper for both menu items */}
           <div className="flex flex-row gap-4 w-full">
             {/* Menu 1: Absensi */}
-            <div className="flex hover:opacity-80 cursor-pointer flex-col items-center w-[100%] justify-center bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-all border-b-orange-500 border-b-4">
+            <div className="flex hover:opacity-80  cursor-pointer flex-col items-center w-[100%] justify-center bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-all border-b-oren border-b-4">
               <FaClipboardList
                 size={40}
-                className="text-blue-500 dark:text-blue-400 mb-4"
+                className="text-blue dark:text-white mb-4"
               />
               <p className="text-center text-sm font-semibold text-gray-800 dark:text-white">
                 Absensi
@@ -24,10 +24,10 @@ const AppMenu = () => {
             </div>
 
             {/* Menu 2: Laporan Kegiatan */}
-            <div className="flex flex-col border-b-orange-500 border-b-4 hover:opacity-80 cursor-pointer  w-[100%] items-center justify-center bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+            <div className="flex flex-col border-b-oren border-b-4 hover:opacity-80 cursor-pointer  w-[100%] items-center justify-center bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
               <FaRegClipboard
                 size={40}
-                className="text-green-500 dark:text-green-400 mb-4"
+                className="text-blue dark:text-white mb-4"
               />
               <p className="text-center text-sm font-semibold text-gray-800 dark:text-white">
                 Laporan

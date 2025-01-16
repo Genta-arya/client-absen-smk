@@ -12,33 +12,40 @@ import MainLogin from "./View/Auth/MainLogin.jsx";
 
 import { Toaster } from "sonner";
 
+import MainUser from "./View/User/MainUser.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
 const route = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <ProtectedRoute redirectPath="/login" />,
     children: [
       {
-        path: "/blog",
+        path: "",
+        element: <App />,
       },
       {
-        path: "/category",
-      },
-      {
-        path: "/tags",
+        path: "/user",
+        element: <MainUser />,
       },
     ],
   },
 
   {
     path: "/app",
-    element: <App />,
+    element: <ProtectedRoute redirectPath="/login" />,
     children: [
       {
-        path: "/app/blog",
+        path: "",
+        element: <App />,
       },
-     
+      {
+        path: "/app/user",
+        element: <MainUser />,
+      },
     ],
   },
+
   {
     path: "/login",
     element: <MainLogin />,
@@ -52,12 +59,12 @@ const route = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <ThemeProvider>
+  <>
     <Toaster
       richColors
       position="bottom-center"
       toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
     />
     <RouterProvider router={route} />
-  </ThemeProvider>
+  </>
 );
