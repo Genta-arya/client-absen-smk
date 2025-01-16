@@ -20,11 +20,18 @@ const menuItems = [
     submenu: [{ name: "Permohonan PKL", path: "/permohonan/list" }],
   },
   {
+    name: "Management Absensi",
+    path: "/absensi",
+    icon: FaFolderOpen,
+    // Hanya tampilkan jika role bukan admin
+    restrictedTo: 'non-admin',
+  },
+  {
     name: "Management User",
     path: "/user",
     icon: FaUser,
-    // Menambahkan pengecekan role untuk menampilkan item ini hanya untuk admin
-    restricted: true,
+    // Hanya tampilkan jika role admin
+    restrictedTo: 'admin',
   },
   { name: "Settings", path: "/setting", icon: FaCog },
 ];
@@ -43,8 +50,11 @@ const {user} = useAuthStore();
 
   // Filter menuItems berdasarkan role
   const filteredMenuItems = menuItems.filter(item => {
-    if (item.restricted && user?.role !== 'admin') {
+    if (item.restrictedTo === 'admin' && user?.role !== 'admin') {
       return false; // Sembunyikan "Management User" jika bukan admin
+    }
+    if (item.restrictedTo === 'non-admin' && user?.role === 'admin') {
+      return false; // Sembunyikan "Management Absensi" jika admin
     }
     return true;
   });
