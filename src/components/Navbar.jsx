@@ -8,9 +8,10 @@ const Navbar = ({ role }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(true);
+    setIsMenuOpen((prev) => !prev);
   };
 
+  // Mengatur theme berdasarkan localStorage
   useEffect(() => {
     const savedMode = localStorage.getItem("theme");
     if (savedMode) {
@@ -30,6 +31,7 @@ const Navbar = ({ role }) => {
     }
   }, [isDarkMode]);
 
+  // Toggle dark mode
   const toggleDarkMode = () => {
     toast.info("Change Theme , Please wait...", {
       duration: 2000,
@@ -37,8 +39,24 @@ const Navbar = ({ role }) => {
     });
   };
 
+  // Event listener untuk kombinasi tombol Ctrl + M
+  useEffect(() => {
+    const handleCtrlM = (e) => {
+      if (e.ctrlKey && e.key === "m" || e.ctrlKey && e.key === "M") {
+        e.preventDefault();
+        setIsMenuOpen((prev) => !prev); // Toggle menu visibility
+      }
+    };
+
+    document.addEventListener("keydown", handleCtrlM);
+
+    return () => {
+      document.removeEventListener("keydown", handleCtrlM); // Menghapus listener saat unmount
+    };
+  }, []);
+
   return (
-    <div className="bg-blue border-oren dark:border-white text-white p-2 border-b-2 shadow-md dark:bg-dark-bg   dark:text-white px-4 lg:px-8 ">
+    <div className="bg-blue border-oren dark:border-white text-white p-2 border-b-2 shadow-md dark:bg-dark-bg dark:text-white px-4 lg:px-8">
       <div
         className={`fixed inset-0 bg-black transition-opacity duration-300 z-10 ${
           isMenuOpen ? "opacity-50" : "opacity-0 pointer-events-none"
@@ -56,8 +74,8 @@ const Navbar = ({ role }) => {
       <nav className="">
         <div className="flex items-center justify-between">
           {role !== "user" ? (
-            <div className="flex  gap-4 flex-row-reverse justify-between w-full">
-              <button onClick={toggleMenu} className="" title="Menu">
+            <div className="flex gap-4 flex-row-reverse justify-between w-full">
+              <button onClick={toggleMenu} className="" title="Menu ( CTRL + M )">
                 {isMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
               </button>
               <div className="flex items-center gap-4">
@@ -66,7 +84,6 @@ const Navbar = ({ role }) => {
                   alt="Logo"
                   className="w-10 h-10 bg-white p-1 rounded-full"
                 />
-
                 <div className="flex items-start gap-1 flex-col">
                   <p className="text-xl font-extrabold uppercase text-oren">
                     Lampias
@@ -79,9 +96,6 @@ const Navbar = ({ role }) => {
                   </div>
                 </div>
               </div>
-
-
-              
             </div>
           ) : (
             <>
@@ -91,7 +105,6 @@ const Navbar = ({ role }) => {
                   alt="Logo"
                   className="w-10 h-10 rounded-full"
                 />
-
                 <div className="flex items-start gap-1 flex-col">
                   <p className="text-xl font-extrabold uppercase text-oren">
                     Lampias
@@ -106,20 +119,6 @@ const Navbar = ({ role }) => {
               </div>
             </>
           )}
-
-          {/* <div className="flex items-center space-x-4">
-            <button
-              onClick={toggleDarkMode}
-              title="Theme"
-              className=" p-2 rounded-full border-gray-300 dark:border-gray-600"
-            >
-              {isDarkMode ? (
-                <FaSun color="yellow" size={20} />
-              ) : (
-                <FaMoon color="yellow" />
-              )}
-            </button>
-          </div> */}
         </div>
       </nav>
     </div>

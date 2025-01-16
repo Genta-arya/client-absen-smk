@@ -7,11 +7,9 @@ import Td from "../../../components/Table/Td";
 import Button from "../../../components/Button";
 import { FaLockOpen, FaPlus } from "react-icons/fa";
 import Search from "../../../components/Search";
-
 import ActModal from "../../../components/Modal/ActModal";
 import Input from "../../../components/Input";
 import { ResponseHandler } from "../../../Utils/ResponseHandler";
-import { ForgotPassword } from "../../../Api/Services/LoginServices";
 import useUser from "../../../Lib/Hook/useUser";
 import Loading from "../../../components/Loading";
 

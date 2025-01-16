@@ -95,7 +95,7 @@ const Tools = ({ title, role }) => {
                 {filteredItems.length > 0 ? (
                   filteredItems.map((item, index) => (
                     <li
-                      key={item.id}
+                      key={index}
                       className={`p-2 hover:bg-gray-200 cursor-pointer ${
                         index === selectedIndex ? "bg-blue-200" : ""
                       }`}
