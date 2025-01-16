@@ -60,7 +60,7 @@ const Pembimbing = () => {
       <div className="flex justify-between  gap-4">
         <Button
           icon={<FaPlus />}
-          title={"Tambah Siswa"}
+          title={"Tambah Data"}
           type={"button"}
           style={"bg-blue"}
           onClick={() => {}}
