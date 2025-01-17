@@ -22,6 +22,13 @@ const MainLogin = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -150,7 +157,9 @@ const MainLogin = () => {
           title={"Lupa Password"}
         >
           <div>
-            <p className="text-sm text-gray-600 mt-2 ">Hubungi Administrator untuk mereset password Anda</p>
+            <p className="text-sm text-gray-600 mt-2 ">
+              Hubungi Administrator untuk mereset password Anda
+            </p>
             <div className="flex justify-end">
               <button
                 className="flex items-center gap-2 mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all"

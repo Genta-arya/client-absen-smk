@@ -4,6 +4,7 @@ import Pembimbing from "./Pembimbing";
 import TabStore from "../../../Lib/Zustand/TabStore";
 import Action from "./Action";
 import useUser from "../../../Lib/Hook/useUser";
+import { Text } from "../../../constants/Constants";
 
 const Tab = () => {
   const { tab, setTab } = TabStore();
@@ -41,7 +42,7 @@ const Tab = () => {
               : "text-gray-500"
           }`}
         >
-          Siswa
+          <p className={Text}>Siswa</p>
         </button>
         <button
           onClick={() => handleTabClick("pembimbing")}
@@ -51,7 +52,7 @@ const Tab = () => {
               : "text-gray-500"
           }`}
         >
-          Pembimbing
+          <p className={Text}>Pembimbing</p>
         </button>
       </div>
       <div className="p-4 ">

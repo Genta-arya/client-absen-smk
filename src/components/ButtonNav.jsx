@@ -5,8 +5,8 @@ import { FaHome, FaClipboardList, FaCog } from "react-icons/fa";
 const ButtonNav = () => {
   const navItems = [
     { name: "Home", path: "/app", icon: FaHome },
-    { name: "Permohonan", path: "/permohonan", icon: FaClipboardList },
-    { name: "Settings", path: "/settings", icon: FaCog },
+    { name: "Permohonan", path: "/#", icon: FaClipboardList },
+    { name: "Settings", path: "/app/setting", icon: FaCog },
   ];
 
   return (

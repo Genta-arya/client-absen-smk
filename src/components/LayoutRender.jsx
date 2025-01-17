@@ -5,11 +5,12 @@ import MainUsers from "./RoleView/Users/MainUsers";
 import Container from "./Container";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 
-const LayoutRender = ({  loading }) => {
+const LayoutRender = () => {
+  const { user  } = useAuthStore();
+  const role = user?.role;
   const navigate = useNavigate();
   const location = useLocation();
-  const {user} = useAuthStore();
-  const role = user?.role
+
 
   useEffect(() => {
     switch (role) {
@@ -31,18 +32,18 @@ const LayoutRender = ({  loading }) => {
   let content;
   switch (location.pathname) {
     case "/":
-      content = <MainHome role={role} user={user} loading={loading} />;
+      content = <MainHome role={role} user={user}  />;
       break;
     case "/app":
       content =
         role === "user" ? (
-          <MainUsers role={role} user={user} loading={loading} />
+          <MainUsers role={role} user={user}  />
         ) : null;
       break;
     case "/pembimbing/app":
       content =
         role === "pembimbing" ? (
-          <MainHome role={role} loading={loading} />
+          <MainHome role={role}  />
         ) : null;
       break;
     default:
@@ -50,7 +51,7 @@ const LayoutRender = ({  loading }) => {
       break;
   }
 
-  return <Container role={role}>{content}</Container>;
+  return <>{user !== null && <Container role={role}>{content}</Container>}</>;
 };
 
 export default LayoutRender;

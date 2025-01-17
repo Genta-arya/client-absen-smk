@@ -4,19 +4,20 @@ import Headers from "../../Headers";
 import ButtonNav from "../../ButtonNav";
 
 import ContentUser from "./components/ContentUser";
+import useAuthStore from "../../../Lib/Zustand/AuthStore";
 
-const MainUsers = ({ role, user, loading }) => {
+const MainUsers = () => {
+  const { user } = useAuthStore();
+  const role = user?.role;
   return (
     <div>
-      {!loading && (
-        <>
-          <Tools title={"Dashboard"} role={role} />
-          <Headers role={role} />
-          <ContentUser />
+      <>
+        <Tools title={"Dashboard"} role={role} />
+        <Headers user={user} />
+        <ContentUser />
 
-          <ButtonNav />
-        </>
-      )}
+        <ButtonNav />
+      </>
     </div>
   );
 };

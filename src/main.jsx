@@ -14,6 +14,10 @@ import { Toaster } from "sonner";
 
 import MainUser from "./View/User/MainUser.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import MainSetting from "./View/Setting/MainSetting.jsx";
+import GantiPassword from "./View/Setting/components/GantiPassword.jsx";
+import MainProfile from "./View/Profile/MainProfile.jsx";
+import DetailProfile from "./View/Profile/DetailProfile.jsx";
 
 const route = createBrowserRouter([
   {
@@ -28,6 +32,22 @@ const route = createBrowserRouter([
         path: "/user",
         element: <MainUser />,
       },
+      {
+        path: "/setting",
+        element: <MainSetting />,
+      },
+      {
+        path: "/profil",
+        element: <MainProfile />,
+      },
+      {
+        path: "/ganti/password",
+        element: <GantiPassword />,
+      },
+      {
+        path: "/detail/profile/:id/:nama",
+        element: <DetailProfile />,
+      },
     ],
   },
 
@@ -39,9 +59,10 @@ const route = createBrowserRouter([
         path: "",
         element: <App />,
       },
+
       {
-        path: "/app/user",
-        element: <MainUser />,
+        path: "/app/setting",
+        element: <MainSetting />,
       },
     ],
   },

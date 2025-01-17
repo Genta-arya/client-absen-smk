@@ -5,13 +5,14 @@ import Tbody from "../../../components/Table/Tbody";
 import Th from "../../../components/Table/Th";
 import Td from "../../../components/Table/Td";
 
-import { FaLockOpen, FaPlus } from "react-icons/fa";
+import { FaArrowRight, FaLockOpen, FaPlus } from "react-icons/fa";
 
 import ActModal from "../../../components/Modal/ActModal";
 import Input from "../../../components/Input";
 import { ResponseHandler } from "../../../Utils/ResponseHandler";
 
 import Loading from "../../../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 const Siswa = ({
   SearchFilter,
@@ -24,7 +25,7 @@ const Siswa = ({
   const [modalOpen, setModalOpen] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [selectData, setSelectData] = React.useState(null);
-
+  const navigate = useNavigate();
   const handleEdit = (data) => {
     setSelectData(data);
     setModalOpen(true);
@@ -45,6 +46,16 @@ const Siswa = ({
     }
   };
 
+  const detail = (data) => {
+    let parseURIname;
+    if (data.name !== null) {
+      parseURIname = data.name.replace(/ /g, "-") || "-";
+    } else {
+      parseURIname = "-";
+    }
+    navigate(`/detail/profile/${data.id}/${parseURIname}`);
+  };
+
   if (loading) return <Loading />;
 
   return (
@@ -62,7 +73,10 @@ const Siswa = ({
         <Tbody>
           {SearchFilter(dataSiswa, searchTerm).map((siswa, index) => (
             <>
-              <tr key={siswa.id}>
+              <tr
+                key={siswa.id}
+                className="cursor-pointer hover:bg-gray-100 ease-in-out transition-all"
+              >
                 <Td text={index + 1} />
                 <td
                   className="border p-1 cursor-pointer hover:opacity-80"
@@ -76,16 +90,28 @@ const Siswa = ({
                 <Td text={siswa.name || "-"} />
 
                 <td className="border p-1">
-                  <button
-                    type="button"
-                    onClick={() => handleEdit(siswa)}
-                    className="bg-blue hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hover:opacity-85 transition-all  ease-in-out"
-                  >
-                    <div className="flex gap-2 items-center">
-                      <FaLockOpen />
-                      <p>Ganti Password</p>
-                    </div>
-                  </button>
+                  <div className="flex flex-col lg:flex-row md:flex-row gap-2 items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={() => handleEdit(siswa)}
+                      className="bg-blue hover:bg-blue-700 w-32 text-white font-bold py-2 px-4 rounded hover:opacity-85 transition-all  ease-in-out"
+                    >
+                      <div className="flex gap-2 items-center justify-center">
+                        <FaLockOpen />
+                        <p className="text-xs">Password</p>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => detail(siswa)}
+                      className="bg-blue hover:bg-blue-700 text-white w-32 font-bold py-2 px-4 rounded hover:opacity-85 transition-all  ease-in-out"
+                    >
+                      <div className="flex gap-2 items-center justify-center">
+                        <p className="text-xs">Detail</p>
+                        <FaArrowRight />
+                      </div>
+                    </button>
+                  </div>
                 </td>
               </tr>
             </>
