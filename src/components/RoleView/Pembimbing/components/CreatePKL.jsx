@@ -2,19 +2,24 @@ import React, { useEffect } from "react";
 import ContainerGlobal from "../../../ContainerGlobal";
 import { FaWarehouse } from "react-icons/fa";
 import Input from "../../../Input";
-import Select from "react-select"; 
+import Select from "react-select";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 import { getDataUser } from "../../../../Api/Services/LoginServices";
 import Loading from "../../../Loading";
 import { createPKL } from "../../../../Api/Services/PKLServices";
+import useAuthStore from "../../../../Lib/Zustand/AuthStore";
+import { BeatLoader } from "react-spinners";
+import { toast } from "sonner";
 
 const CreatePKL = () => {
+  const { user } = useAuthStore();
   const [data, setData] = React.useState({
     name: "",
     address: "",
     user_id: [],
     start_date: "",
     end_date: "",
+    creatorId: user?.id,
   });
 
   const [userOptions, setUserOptions] = React.useState([]);
@@ -25,8 +30,12 @@ const CreatePKL = () => {
       const response = await getDataUser("user");
 
       const users = response.data;
+      // ambil user yang belum ada PKL
+      const filteredUsers = users.filter((user) => {
+        return user.Pkl.length === 0;
+      });
 
-      const options = users.map((user) => ({
+      const options = filteredUsers.map((user) => ({
         value: user.id,
         label: user.name,
       }));
@@ -46,20 +55,26 @@ const CreatePKL = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const formattedData = {
-            ...data,
-            start_date: new Date(data.start_date).toISOString(),
-            end_date: new Date(data.end_date).toISOString(),
-            user_id: data.user_id.map((user) => user.value),
-          };
-      
-       const response = await createPKL(formattedData);
-       console.log(response);
-    } catch (error) {
-        console.error(error);
-    }
+      const formattedData = {
+        ...data,
+        start_date: new Date(data.start_date).toISOString(),
+        end_date: new Date(data.end_date).toISOString(),
+        user_id: data.user_id.map((user) => user.value),
+      };
 
-  
+      await createPKL(formattedData);
+      toast.success("Berhasil membuat PKL.");
+      setData({
+        name: "",
+        address: "",
+        user_id: [],
+        start_date: "",
+        end_date: "",
+        creatorId: user?.id,
+      });
+    } catch (error) {
+      ResponseHandler(error.response);
+    }
   };
 
   return (
@@ -73,6 +88,7 @@ const CreatePKL = () => {
         <Input
           type="text"
           label="Nama Tempat PKL"
+          maxlength={50}
           required={true}
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
@@ -81,6 +97,7 @@ const CreatePKL = () => {
         <Input
           type="text"
           label="Alamat Tempat PKL"
+          maxlength={150}
           required={true}
           value={data.address}
           onChange={(e) => setData({ ...data, address: e.target.value })}
@@ -102,18 +119,23 @@ const CreatePKL = () => {
           onChange={(e) => setData({ ...data, end_date: e.target.value })}
         />
 
-       
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Pilih Siswa</label>
+          <p className="text-xs text-gray-500 mb-1">
+            * Hanya menampilkan siswa yang belum memiliki PKL
+          </p>
           {loading ? (
-            <Loading />
+            <div className="flex items-center justify-center">
+              <BeatLoader size={10} color="#294A70" />
+            </div>
           ) : (
             <>
               <Select
-                options={userOptions} 
-                isMulti 
-                placeholder="Cari dan pilih pengguna"
+                options={userOptions}
+                isMulti
+                placeholder="Cari Siswa..."
                 required
+                noOptionsMessage={() => "Tidak ada siswa"}
                 onChange={(selectedOptions) =>
                   setData({ ...data, user_id: selectedOptions })
                 }

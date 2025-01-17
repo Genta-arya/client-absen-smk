@@ -17,6 +17,7 @@ import DetailProfile from "./View/Profile/DetailProfile.jsx";
 
 import MainPKL from "./components/RoleView/Pembimbing/MainPKL.jsx";
 import CreatePKL from "./components/RoleView/Pembimbing/components/CreatePKL.jsx";
+import DetailPkl from "./components/RoleView/Pembimbing/components/DetailPkl.jsx";
 
 const route = createBrowserRouter([
   {
@@ -54,6 +55,11 @@ const route = createBrowserRouter([
       {
         path: "/management/pkl/create",
         element: <CreatePKL />,
+
+      },
+      {
+        path: "/management/pkl/detail/:id",
+        element: <DetailPkl />,
 
       },
     ],

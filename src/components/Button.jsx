@@ -11,7 +11,7 @@ const Button = ({ style, onClick, icon, title, type , disable }) => {
     >
       <div className="flex items-center gap-3  md:w-36 lg:w-40 w-36 justify-center text-white">
         {icon}
-        <p className="font-bold leading-5 text-sm lg:text-base md:text-sm">
+        <p className="font-bold leading-5 text-xs lg:text-base md:text-sm">
           {title}
         </p>
       </div>

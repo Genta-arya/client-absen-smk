@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import Container from "../../Container";
 import Tools from "../../Tools";
 import { useNavigate } from "react-router-dom";
+import ListPKL from "./components/ListPKL";
 
 
 const MainPKL = () => {
@@ -16,6 +17,7 @@ const MainPKL = () => {
         <div>
           <Button icon={<FaPlus />} style="bg-blue" title="Tempat PKL" onClick={() => navigate("/management/pkl/create")} />
         </div>
+        <ListPKL />
       </div>
     </Container>
   );

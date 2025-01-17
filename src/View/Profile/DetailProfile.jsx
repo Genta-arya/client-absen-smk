@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ContainerGlobal from "../../components/ContainerGlobal";
 import { useParams } from "react-router-dom";
 import { getSingleUser } from "../../Api/Services/LoginServices";
@@ -72,9 +72,7 @@ const DetailProfile = () => {
       {data.Absensi && data.Absensi.length > 0 ? (
         <Calendar data={data} />
       ) : (
-        <div className="flex justify-center items-center text-xl font-bold text-gray-700 mt-4">
-          
-        </div>
+        <div className="flex justify-center items-center text-xl font-bold text-gray-700 mt-4"></div>
       )}
     </ContainerGlobal>
   );

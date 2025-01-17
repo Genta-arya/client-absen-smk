@@ -34,3 +34,14 @@ export const formatDate = (dateString) => {
 
 export const API_URL = "http://localhost:8080/api";
 export const API_URL_IMAGE = "http://localhost:8080/uploads/";
+
+export const formatTanggal = (dateString) => {
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const date = new Date(dateString);
+  const day = days[date.getDay()];
+
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+
+  const formattedDate = `${day}, ${date.getDate()} - ${month} - ${date.getFullYear()}`;
+  return formattedDate;
+};
