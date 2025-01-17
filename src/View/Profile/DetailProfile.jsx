@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ContainerGlobal from "../../components/ContainerGlobal";
 import { useParams } from "react-router-dom";
 import { getSingleUser } from "../../Api/Services/LoginServices";
 import Loading from "../../components/Loading";
 import { ResponseHandler } from "../../Utils/ResponseHandler";
 import Input from "../../components/Input";
+import Calendar from "../../components/Table/Calendar";
 
 const DetailProfile = () => {
   const { id } = useParams();
@@ -41,11 +42,8 @@ const DetailProfile = () => {
 
   return (
     <ContainerGlobal>
-      <div className=" w-full">
-        <div
-          className="flex justify-center mb-6 "
-   
-        >
+      <div className="w-full">
+        <div className="flex justify-center mb-6">
           <img
             src={data.avatar}
             alt="Profile Avatar"
@@ -71,6 +69,13 @@ const DetailProfile = () => {
           />
         </div>
       </div>
+      {data.Absensi && data.Absensi.length > 0 ? (
+        <Calendar data={data} />
+      ) : (
+        <div className="flex justify-center items-center text-xl font-bold text-gray-700 mt-4">
+          
+        </div>
+      )}
     </ContainerGlobal>
   );
 };

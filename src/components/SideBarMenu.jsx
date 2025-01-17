@@ -20,8 +20,8 @@ const menuItems = [
     submenu: [{ name: "Permohonan PKL", path: "/permohonan/list" }],
   },
   {
-    name: "Management Absensi",
-    path: "/absensi",
+    name: "Management PKL",
+    path: "/management/pkl",
     icon: FaFolderOpen,
     // Hanya tampilkan jika role bukan admin
     restrictedTo: 'non-admin',

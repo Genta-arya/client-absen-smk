@@ -1,13 +1,9 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import {
-  RouterProvider,
-  createBrowserRouter,
-  useNavigate,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import NotFound from "./components/NotFound.jsx";
-import { ThemeProvider } from "./components/Theme.jsx";
+
 import MainLogin from "./View/Auth/MainLogin.jsx";
 
 import { Toaster } from "sonner";
@@ -18,6 +14,9 @@ import MainSetting from "./View/Setting/MainSetting.jsx";
 import GantiPassword from "./View/Setting/components/GantiPassword.jsx";
 import MainProfile from "./View/Profile/MainProfile.jsx";
 import DetailProfile from "./View/Profile/DetailProfile.jsx";
+
+import MainPKL from "./components/RoleView/Pembimbing/MainPKL.jsx";
+import CreatePKL from "./components/RoleView/Pembimbing/components/CreatePKL.jsx";
 
 const route = createBrowserRouter([
   {
@@ -47,6 +46,15 @@ const route = createBrowserRouter([
       {
         path: "/detail/profile/:id/:nama",
         element: <DetailProfile />,
+      },
+      {
+        path: "/management/pkl",
+        element: <MainPKL />,
+      },
+      {
+        path: "/management/pkl/create",
+        element: <CreatePKL />,
+
       },
     ],
   },

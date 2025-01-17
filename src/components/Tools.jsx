@@ -15,7 +15,7 @@ const Tools = ({ title, role }) => {
   const filteredItems = menuItems.filter((item) => {
     if (user?.role !== "admin" && item.path === "/user" ) {
       return false;
-    } else if (user?.role === "admin" && item.path === "/absensi" ) {
+    } else if (user?.role === "admin" && item.path === "/management/pkl" ) {
       return false;
     }
 
@@ -57,7 +57,7 @@ const Tools = ({ title, role }) => {
   }, [selectedIndex, filteredItems]);
 
   return (
-    <div className={` ${role === "user" && "hidden"} mb-8 -mt-8 border-b p-4 `}>
+    <div className={` ${role === "user" && "hidden"} mb-8 -mt-8 border-b p-4 font-bold `}>
       {role !== "user" && (
         <>
           <div className="flex justify-between items-center">
@@ -119,7 +119,7 @@ const Tools = ({ title, role }) => {
                   ))
                 ) : (
                   <li className="p-2 text-gray-500 text-center">
-                    Menu Not found.
+                    Menu Tidak Ditemukan
                   </li>
                 )}
               </ul>

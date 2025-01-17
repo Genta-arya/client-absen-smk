@@ -13,6 +13,8 @@ const Input = ({
   maxlength,
   minlength,
   disabled,
+  min,
+  multiple
 }) => {
   const [inputType, setInputType] = useState(type); 
 
@@ -22,7 +24,7 @@ const Input = ({
 
   return (
     <div className="mb-4 w-full">
-      <label htmlFor={id} className="block text-lg font-medium mb-2">
+      <label htmlFor={id} className="block text-sm font-medium mb-2">
         {label}
       </label>
 
@@ -34,6 +36,8 @@ const Input = ({
         value={value}
         maxLength={maxlength}
         minLength={minlength}
+        multiple={false || multiple}
+        min={min || 0}
         required={required}
         disabled={false || disabled}
         className={`${style} w-full disabled:bg-white p-2 ${Text} dark:text-black border-b dark:border-gray-300  focus:outline-none`}

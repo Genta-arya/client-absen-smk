@@ -7,6 +7,7 @@ export const ResponseHandler = (response, navigate = null) => {
       throw response.data;
 
     case 409:
+      localStorage.removeItem("token");
       toast.error(response.data.message, {
         duration: 2000,
         onAutoClose: () => (window.location.href = "/login"),

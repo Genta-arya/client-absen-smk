@@ -12,7 +12,7 @@ export const menuItems = [
   { name: "Dashboard", path: "/", icon: FaHome },
   { name: "Permohonan PKL", path: "/permohonan/list", icon: FaNewspaper },
   { name: "Management User", path: "/user", icon: FaUser },
-  { name: "Management Absensi", path: "/absensi", icon: FaServicestack },
+  { name: "Management PKL", path: "/management/pkl", icon: FaServicestack },
   { name: "Setting", path: "/setting", icon: FaGear },
 ];
 
