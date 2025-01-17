@@ -3,10 +3,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import MainHome from "../View/Homes/MainHome";
 import MainUsers from "./RoleView/Users/MainUsers";
 import Container from "./Container";
+import useAuthStore from "../Lib/Zustand/AuthStore";
 
-const LayoutRender = ({ role, user, loading }) => {
+const LayoutRender = ({  loading }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const {user} = useAuthStore();
+  const role = user?.role
 
   useEffect(() => {
     switch (role) {
@@ -17,7 +20,7 @@ const LayoutRender = ({ role, user, loading }) => {
         navigate("/app");
         break;
       case "pembimbing":
-        navigate("/pembimbing/app");
+        navigate("/");
         break;
       default:
         navigate("/");
