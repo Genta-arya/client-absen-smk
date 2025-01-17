@@ -24,7 +24,7 @@ const Headers = ({ role, user }) => {
               <div>
                 <p className="lg:text-lg md:text-lg text-base">Welcome</p>
                 <p className="text-sm">Hi, {user?.name || "-"}</p>
-                <p className="text-xs">Email : {user?.email || "-"}</p>
+                <p className="text-xs">{user?.email || "Email: -"}</p>
                 {user?.role !== "user" && (
                   <p className="text-xs mt-2">Akses : {user?.role || role}</p>
                 )}

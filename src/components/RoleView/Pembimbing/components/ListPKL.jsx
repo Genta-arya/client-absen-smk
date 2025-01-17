@@ -6,12 +6,12 @@ import { formatTanggal } from "../../../../constants/Constants";
 import { FaCircle, FaTag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-
 const ListPKL = () => {
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
- const navigate = useNavigate();
+ 
+  const navigate = useNavigate();
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -33,7 +33,9 @@ const ListPKL = () => {
   return (
     <div className="mt-4">
       {data.length === 0 ? (
-        <p className="text-center text-gray-500">Tidak ada data tersedia.</p>
+        <p className="text-center text-gray-500 mt-12 ">
+          Belum memiliki tempat pkl.
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-6">
           {data.map((item) => (
@@ -80,7 +82,10 @@ const ListPKL = () => {
                     </div>
                   )}
                 </div>
-                <div onClick={() => navigate(`/management/pkl/detail/${item.id}`)} className="flex hover:opacity-85 cursor-pointer transition-all duration-300  items-center justify-center gap-2 bg-blue text-white px-4 py-2 rounded-md">
+                <div
+                  onClick={() => navigate(`/management/pkl/detail/${item.id}`)}
+                  className="flex hover:opacity-85 cursor-pointer transition-all duration-300  items-center justify-center gap-2 bg-blue text-white px-4 py-2 rounded-md"
+                >
                   <button className="">Detail </button>
                 </div>
               </div>

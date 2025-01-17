@@ -5,7 +5,7 @@ import Tbody from "../../../components/Table/Tbody";
 import Th from "../../../components/Table/Th";
 import Td from "../../../components/Table/Td";
 
-import { FaArrowRight, FaLockOpen, FaPlus } from "react-icons/fa";
+import { FaArrowRight, FaLockOpen, FaPlus, FaSave } from "react-icons/fa";
 
 import ActModal from "../../../components/Modal/ActModal";
 import Input from "../../../components/Input";
@@ -13,6 +13,9 @@ import { ResponseHandler } from "../../../Utils/ResponseHandler";
 
 import Loading from "../../../components/Loading";
 import { useNavigate } from "react-router-dom";
+import { updateDataUser } from "../../../Api/Services/LoginServices";
+import { toast } from "sonner";
+import LoadingButton from "../../../components/LoadingButton";
 
 const Siswa = ({
   SearchFilter,
@@ -25,7 +28,10 @@ const Siswa = ({
   const [modalOpen, setModalOpen] = React.useState(false);
   const [password, setPassword] = React.useState("");
   const [selectData, setSelectData] = React.useState(null);
+  const [editingField, setEditingField] = React.useState(null);
+  const [loading1, setLoading1] = React.useState(false);
   const navigate = useNavigate();
+
   const handleEdit = (data) => {
     setSelectData(data);
     setModalOpen(true);
@@ -34,6 +40,8 @@ const Siswa = ({
   const onClose = () => {
     setModalOpen(false);
     setPassword("");
+    setSelectData(null);
+    setEditingField(null);
   };
 
   const handlePasswordChange = async () => {
@@ -46,13 +54,30 @@ const Siswa = ({
     }
   };
 
-  const detail = (data) => {
-    let parseURIname;
-    if (data.name !== null) {
-      parseURIname = data.name.replace(/ /g, "-") || "-";
-    } else {
-      parseURIname = "-";
+  const updateData = async () => {
+    setLoading1(true);
+    try {
+      await updateDataUser({
+        id: selectData.id,
+        name: selectData.name,
+        nim: selectData.nim,
+        email: selectData.email,
+      });
+      toast.success("Data berhasil diperbarui");
+      setSelectData(null);
+      setEditingField(null);
+      fetchData();
+    } catch (error) {
+      setSelectData(null);
+      setEditingField(null);
+      ResponseHandler(error.response);
+    } finally {
+      setLoading1(false);
     }
+  };
+
+  const detail = (data) => {
+    let parseURIname = data.name ? data.name.replace(/ /g, "-") : "-";
     navigate(`/detail/profile/${data.id}/${parseURIname}`);
   };
 
@@ -72,52 +97,139 @@ const Siswa = ({
         </Thead>
         <Tbody>
           {SearchFilter(dataSiswa, searchTerm).map((siswa, index) => (
-            <>
-              <tr
-                key={siswa.id}
-                className="cursor-pointer hover:bg-gray-100 ease-in-out transition-all"
+            <tr
+              key={siswa.id}
+              className="cursor-pointer hover:bg-gray-100 ease-in-out transition-all"
+            >
+              <Td text={index + 1} />
+              <td
+                className="border p-1 cursor-pointer hover:opacity-80"
+                onClick={() => window.open(siswa.avatar)}
               >
-                <Td text={index + 1} />
-                <td
-                  className="border p-1 cursor-pointer hover:opacity-80"
-                  onClick={() => window.open(siswa.avatar)}
-                >
-                  <div className="flex justify-center">
-                    <img src={siswa.avatar} className="w-10" alt=""></img>
-                  </div>
-                </td>
-                <Td text={siswa.nim} />
-                <Td text={siswa.name || "-"} />
+                <div className="flex justify-center">
+                  <img src={siswa.avatar} className="w-10" alt="" />
+                </div>
+              </td>
 
-                <td className="border p-1">
-                  <div className="flex flex-col lg:flex-row md:flex-row gap-2 items-center justify-center">
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(siswa)}
-                      className="bg-blue hover:bg-blue-700 w-32 text-white font-bold py-2 px-4 rounded hover:opacity-85 transition-all  ease-in-out"
-                    >
-                      <div className="flex gap-2 items-center justify-center">
-                        <FaLockOpen />
-                        <p className="text-xs">Password</p>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => detail(siswa)}
-                      className="bg-blue hover:bg-blue-700 text-white w-32 font-bold py-2 px-4 rounded hover:opacity-85 transition-all  ease-in-out"
-                    >
-                      <div className="flex gap-2 items-center justify-center">
-                        <p className="text-xs">Detail</p>
-                        <FaArrowRight />
-                      </div>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </>
+              <td
+                title="Klik untuk edit"
+                className="border p-1 hover:underline"
+              >
+                {editingField === "nim" && selectData?.id === siswa.id ? (
+                  <>
+                    <Input
+                      value={selectData.nim}
+                      required={true}
+                      onChange={(e) => {
+                        setSelectData({ ...selectData, nim: e.target.value });
+                      }}
+                    />
+                    <div className="mb-1 flex md:flex-row lg:flex-row flex-col justify-center gap-2">
+                      <button
+                        disabled={loading1}
+                        className=" bg-blue px-4 text-white rounded-md text-center py-1"
+                        onClick={updateData}
+                      >
+                        <LoadingButton
+                          loading={loading1}
+                          text={"Simpan"}
+                          icon={<FaSave />}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        className=" bg-blue px-4 w-full text-white rounded-md text-center py-1"
+                        onClick={onClose}
+                      >
+                        Batal
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <p
+                    onClick={() => {
+                      setSelectData(siswa);
+                      setEditingField("nim");
+                    }}
+                  >
+                    {siswa.nim}
+                  </p>
+                )}
+              </td>
+              <td
+                title="Klik untuk edit"
+                className="border p-1 hover:underline"
+              >
+                {editingField === "name" && selectData?.id === siswa.id ? (
+                  <>
+                    <Input
+                      value={selectData.name}
+                      required={true}
+                      onChange={(e) => {
+                        setSelectData({ ...selectData, name: e.target.value });
+                      }}
+                    />
+                    <div className="mb-1 flex md:flex-row lg:flex-row flex-col justify-center gap-2">
+                      <button
+                        disabled={loading1}
+                        className=" bg-blue px-4 text-white rounded-md text-center py-1"
+                        onClick={updateData}
+                      >
+                        <LoadingButton
+                          loading={loading1}
+                          text={"Simpan"}
+                          icon={<FaSave />}
+                        />
+                      </button>
+                      <button
+                        className=" bg-blue px-4 text-white rounded-md text-center py-1"
+                        onClick={onClose}
+                      >
+                        Batal
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <p
+                    onClick={() => {
+                      setSelectData(siswa);
+                      setEditingField("name");
+                    }}
+                  >
+                    {siswa.name || "-"}
+                  </p>
+                )}
+              </td>
+
+              <td className="border p-1">
+                <div className="flex flex-col lg:flex-row md:flex-row gap-2 items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={() => handleEdit(siswa)}
+                    className="bg-blue hover:bg-blue-700 w-32 text-white font-bold py-2 px-4 rounded hover:opacity-85 transition-all ease-in-out"
+                  >
+                    <div className="flex gap-2 items-center justify-center">
+                      <FaLockOpen />
+                      <p className="text-xs">Password</p>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => detail(siswa)}
+                    className="bg-blue hover:bg-blue-700 text-white w-32 font-bold py-2 px-4 rounded hover:opacity-85 transition-all ease-in-out"
+                  >
+                    <div className="flex gap-2 items-center justify-center">
+                      <p className="text-xs">Detail</p>
+                      <FaArrowRight />
+                    </div>
+                  </button>
+                </div>
+              </td>
+            </tr>
           ))}
         </Tbody>
       </Table>
+
       {modalOpen && (
         <ActModal
           isModalOpen={modalOpen}
@@ -139,7 +251,7 @@ const Siswa = ({
               required={true}
               placeholder={"Ganti Password"}
             />
-            <div className=" flex justify-end pr-1">
+            <div className="flex justify-end pr-1">
               <button className="bg-blue px-4 py-2 rounded-md text-white">
                 <p>Simpan</p>
               </button>

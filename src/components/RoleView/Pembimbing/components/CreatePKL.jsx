@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import ContainerGlobal from "../../../ContainerGlobal";
-import { FaWarehouse } from "react-icons/fa";
+import { FaSave, FaWarehouse } from "react-icons/fa";
 import Input from "../../../Input";
 import Select from "react-select";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
@@ -10,6 +10,7 @@ import { createPKL } from "../../../../Api/Services/PKLServices";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import { BeatLoader } from "react-spinners";
 import { toast } from "sonner";
+import LoadingButton from "../../../LoadingButton";
 
 const CreatePKL = () => {
   const { user } = useAuthStore();
@@ -24,6 +25,7 @@ const CreatePKL = () => {
 
   const [userOptions, setUserOptions] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [loading1, setLoading1] = React.useState(false);
   const getDataUsers = async () => {
     setLoading(true);
     try {
@@ -32,6 +34,7 @@ const CreatePKL = () => {
       const users = response.data;
       // ambil user yang belum ada PKL
       const filteredUsers = users.filter((user) => {
+        // Pkl nya null
         return user.Pkl.length === 0;
       });
 
@@ -54,6 +57,8 @@ const CreatePKL = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading1(true);
     try {
       const formattedData = {
         ...data,
@@ -72,8 +77,11 @@ const CreatePKL = () => {
         end_date: "",
         creatorId: user?.id,
       });
+      getDataUsers();
     } catch (error) {
       ResponseHandler(error.response);
+    } finally {
+      setLoading1(false);
     }
   };
 
@@ -84,7 +92,7 @@ const CreatePKL = () => {
         <h1 className="text-lg font-extrabold">Tambah Tempat PKL</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-8 flex-col flex gap-4">
+      <form onSubmit={handleSubmit} className="mt-8 flex-col flex gap-4 pb-4">
         <Input
           type="text"
           label="Nama Tempat PKL"
@@ -103,6 +111,10 @@ const CreatePKL = () => {
           onChange={(e) => setData({ ...data, address: e.target.value })}
           placeholder={"Alamat Tempat PKL"}
         />
+        <h1 className="text-sm text-red-500 text-center border rounded-md mb-4 py-4">
+          " Pastikan Tanggal Mulai dan selesai sesuai dengan data yang
+          dibutuhkan , karena data tanggal tidak bisa diubah lagi "
+        </h1>
         <Input
           type="date"
           label="Tanggal Mulai PKL"
@@ -146,9 +158,10 @@ const CreatePKL = () => {
 
         <button
           type="submit"
-          className="bg-blue text-sm hover:opacity-90 text-white py-2 px-4 rounded-lg"
+          disabled={loading1}
+          className="bg-blue  text-sm hover:opacity-90 text-white py-2 px-4 rounded-lg"
         >
-          Simpan
+          <LoadingButton icon={<FaSave />} text="Simpan" loading={loading1} />
         </button>
       </form>
     </ContainerGlobal>

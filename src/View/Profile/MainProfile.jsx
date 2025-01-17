@@ -114,6 +114,12 @@ const MainProfile = () => {
           placeholder={"Belum ada nama"}
           disabled
         />
+          <Input
+          value={user?.email}
+          label={"Email"}
+          placeholder={"Belum ada email"}
+          disabled
+        />
       </div>
 
       {modal && (

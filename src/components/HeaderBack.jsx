@@ -46,7 +46,7 @@ const HeaderBack = ({ children }) => {
       <div className="border-b py-2  px-6 w-full flex justify-between items-center">
         <button className="flex items-center gap-3" onClick={handleBack}>
           <FaArrowLeft />
-          <p>Kembali</p>
+       
         </button>
 
         <div className={Text}>{dateTime}</div>

@@ -103,3 +103,16 @@ export const getSingleUser = async (id) => {
     handleError(error);
   }
 };
+
+export const updateDataUser = async (data) => {
+  try {
+    const response = await Axios.post(`/auth/update/user/${data.id}`, {
+      name: data.name,
+      nim: data.nim,
+      email : data.email
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
