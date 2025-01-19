@@ -1,28 +1,36 @@
 import React, { useEffect } from "react";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { Outlet, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import UseCheckLogin from "../Lib/Hook/UseCheckLogin";
 import Loading from "./Loading";
+import { toast } from "sonner";
 
 const ProtectedRoute = ({ redirectPath = "/login" }) => {
   const { user, loading } = UseCheckLogin();
   const isAuthenticated = user?.status_login;
-
-  const path = useLocation().pathname;
-
-  if (loading) return <Loading />;
-  if (path.includes("/app")) {
-    if (!isAuthenticated || user?.role !== "user") {
-      return <Navigate to={"/"} replace />;
-    }
-  }
-
+  const location = useLocation().pathname;
+  const navigate = useNavigate();
   if (loading) {
-    if (!isAuthenticated) {
-      return <Navigate to={redirectPath} replace />;
-    }
+    return <Loading />;
   }
-  return <Outlet />;
+
+  if (!isAuthenticated) {
+    navigate("/login");
+  }
+
+  if (location.includes("/admin") && user?.role === "user") {
+   navigate("/app");
+    return null;
+  }
+
+  if (location.includes("/app") && user?.role !== "user") {
+    navigate("/admin");
+    return null;
+  }
+
+  if (isAuthenticated) {
+    return <Outlet />;
+  }
 };
 
 export default ProtectedRoute;

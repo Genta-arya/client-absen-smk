@@ -74,7 +74,7 @@ const MainUsers = () => {
 
       window.location.reload();
     } catch (error) {
-      ResponseHandler(error);
+      ResponseHandler(error.response);
     } finally {
       setLoading(false);
     }

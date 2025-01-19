@@ -10,15 +10,11 @@ const UseCheckLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-if (token === null ) {
-    navigate("/login");
-  }
 
   const fetch = async () => {
     setLoading(true);
 
     try {
-     
       const response = await CheckSession(token);
       setUser(response.data);
     } catch (error) {

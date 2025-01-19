@@ -1,5 +1,7 @@
 import { Axios, AxiosFormData } from "../AxiosConfig/Axios";
 import { handleError } from "../../Utils/Error";
+import { UPLOAD_URL } from "../../constants/Constants";
+import axios from "axios";
 
 export const HandleLogin = async (data) => {
   try {
@@ -69,7 +71,7 @@ export const getDataUser = async (role) => {
 
 export const updatePassowrd = async (data) => {
   try {
-    const response = await Axios.post("/auth/update/user/password/" + data.id, {
+    const response = await axios.post("/auth/update/user/password/" + data.id, {
       password: data.password,
       new_password: data.new_password,
     });
@@ -79,12 +81,27 @@ export const updatePassowrd = async (data) => {
   }
 };
 
+// export const updateFotoProfile = async (data) => {
+//   try {
+//     const response = await AxiosFormData.post(
+//       `/auth/update/profile/${data.id}`,
+//       data.photo
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error(
+//       "Error uploading photo:",
+//       error.response?.data || error.message
+//     );
+//     throw error;
+//   }
+// };
+
 export const updateFotoProfile = async (data) => {
   try {
-    const response = await AxiosFormData.post(
-      `/auth/update/profile/${data.id}`,
-      data.photo
-    );
+    const response = await Axios.post(`/auth/update/profile/${data.id}`, {
+      image_url: data.image_url,
+    });
     return response.data;
   } catch (error) {
     console.error(
@@ -104,12 +121,26 @@ export const getSingleUser = async (id) => {
   }
 };
 
+export const uploadProfile = async (data) => {
+  try {
+    const response = await axios.post(UPLOAD_URL, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        genta: "Genta@456",
+      },
+    });
+    return response;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 export const updateDataUser = async (data) => {
   try {
     const response = await Axios.post(`/auth/update/user/${data.id}`, {
       name: data.name,
       nim: data.nim,
-      email : data.email
+      email: data.email,
     });
     return response.data;
   } catch (error) {

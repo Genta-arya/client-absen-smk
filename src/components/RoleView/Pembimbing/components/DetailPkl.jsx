@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { DeletePkl, getSinglePkl } from "../../../../Api/Services/PKLServices";
+import {
+  addSiswaToPkl,
+  DeletePkl,
+  getSinglePkl,
+  updateStatusPkl,
+} from "../../../../Api/Services/PKLServices";
 import Loading from "../../../Loading";
 import ContainerGlobal from "../../../ContainerGlobal";
-import { FaTag, FaTrash } from "react-icons/fa";
+import { FaPlus, FaTag, FaTrash } from "react-icons/fa";
 import Input from "../../../Input";
 import { useNavigate } from "react-router-dom";
 import EditPkl from "./EditPkl";
 import ActModal from "../../../Modal/ActModal";
 import { toast } from "sonner";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
-
+import Button from "../../../Button";
+import Select from "react-select";
+import useUser from "../../../../Lib/Hook/useUser";
+import { BeatLoader } from "react-spinners";
 const DetailPkl = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -18,6 +26,27 @@ const DetailPkl = () => {
   const [newUser, setNewUser] = useState("");
   const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [modalSiswa, setModalSiswa] = useState(false);
+  const [selectUser, setSelectUser] = useState([]);
+  const { loading: loadingUser, userOptions, getDataUsers } = useUser();
+  const [status, setStatus] = useState(null);
+
+  const toggleStatus = async () => {
+    setLoading(true);
+    try {
+      await updateStatusPkl({
+        id: data?.id,
+      });
+
+      fetchData();
+      setStatus(data?.status);
+      toast.success("Status PKL Berubah");
+    } catch (error) {
+      ResponseHandler(error.response);
+    } finally {
+      setLoading(false);
+    }
+  };
   const navigate = useNavigate();
   const fetchData = async () => {
     setLoading(true);
@@ -45,17 +74,32 @@ const DetailPkl = () => {
     }
   };
 
-  const handleAddUser = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
+      await addSiswaToPkl({
+        pkl_id: data?.id,
+        user_id: selectUser.map((user) => user.value),
+      });
       fetchData();
-      setNewUser("");
+      setModalSiswa(false);
+      toast.success("Siswa berhasil ditambahkan");
     } catch (error) {
+      toast.error("Gagal menambahkan siswa");
       console.error(error);
     }
   };
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    setStatus(data?.status);
+  }, [data]);
+
+  useEffect(() => {
+    getDataUsers();
   }, []);
 
   if (loading) return <Loading />;
@@ -66,7 +110,7 @@ const DetailPkl = () => {
         <EditPkl refresh={fetchData} datas={data} setStatusEdit={setIsEdit} />
       ) : (
         <ContainerGlobal>
-          <div className="">
+          <div className="pb-8">
             <div className="mb-8">
               <div className="space-y-4">
                 <p className="text-gray-700">
@@ -79,25 +123,54 @@ const DetailPkl = () => {
                 </p>
                 <Input disabled={true} value={data?.alamat} label={"Alamat"} />
 
-                <p className="text-gray-700">
-                  <strong>Status:</strong>{" "}
-                  <span
-                    className={`px-2 py-1 rounded ${
-                      data?.status
-                        ? "bg-green-200 text-green-800"
-                        : "bg-red-200 text-red-800"
-                    }`}
-                  >
-                    {data?.status ? "Aktif" : "Tidak Aktif"}
-                  </span>
-                </p>
+                <>
+                  <div className="flex justify-between items-center">
+                    <p className="text-gray-700">
+                      <strong>Status:</strong>{" "}
+                      <span
+                        className={`px-2 text-xs py-1 rounded ${
+                          status
+                            ? "bg-green-200 text-green-800"
+                            : "bg-red-200 text-red-800"
+                        }`}
+                      >
+                        {status ? "Aktif" : "Tidak Aktif"}
+                      </span>
+                    </p>
+
+                    <div
+                      className={`flex items-center space-x-4  cursor-pointer`}
+                      onClick={toggleStatus}
+                    >
+                      <div
+                        className={`w-[50px] h-4 flex items-center p-1 rounded-full ${
+                          status ? "bg-green-400" : "bg-gray-300"
+                        }`}
+                      >
+                        <div
+                          className={`w-6 h-6 bg-yellow-500 rounded-full shadow-md transform transition-all duration-300 ${
+                            status ? "translate-x-[30px]" : ""
+                          }`}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </>
               </div>
             </div>
 
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b border-dashed">
-                Daftar Siswa PKL
-              </h2>
+              <div className="flex justify-between items-center pb-4  border-b border-dashed">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Daftar Siswa PKL
+                </h2>
+                <Button
+                  style={"bg-blue"}
+                  icon={<FaPlus />}
+                  title="Tambah Siswa"
+                  onClick={() => setModalSiswa(true)}
+                />
+              </div>
               <ul className="space-y-4">
                 {data?.users.map((user) => (
                   <li
@@ -121,7 +194,7 @@ const DetailPkl = () => {
                     </div>
                     <div
                       onClick={() =>
-                        navigate(`/detail/profile/${user.id}/${user.name}`)
+                        navigate(`/admin/detail/profile/${user.id}/${user.name}`)
                       }
                       className="text-xs cursor-pointer hover:underline"
                     >
@@ -135,13 +208,13 @@ const DetailPkl = () => {
             <div className="flex justify-center gap-2 items-center w-full text-center">
               <button
                 onClick={() => setIsEdit(!isEdit)}
-                className="bg-blue rounded-md text-white py-2 text-center w-40 hover:opacity-80 transition"
+                className="bg-blue rounded-md text-xs text-white py-2 text-center w-40 hover:opacity-80 transition"
               >
                 Edit PKL
               </button>
               <button
                 onClick={() => setModal(!modal)}
-                className="bg-red-500 text-white py-2 rounded-md w-40 text-center  hover:opacity-80 transition"
+                className="bg-red-500 text-xs text-white py-2 rounded-md w-40 text-center  hover:opacity-80 transition"
               >
                 Hapus PKL
               </button>
@@ -164,7 +237,7 @@ const DetailPkl = () => {
 
                 <div className="flex justify-end gap-2 items-center w-full text-center mt-4">
                   <button
-                    onClick={ () => handleDelete(data?.id)}
+                    onClick={() => handleDelete(data?.id)}
                     className="bg-red-500 text-white py-2 rounded-md w-40 text-center  hover:opacity-80 transition"
                   >
                     <div className="flex items-center gap-2 justify-center">
@@ -172,6 +245,52 @@ const DetailPkl = () => {
                       <p>Lanjutkan</p>
                     </div>
                   </button>
+                </div>
+              </div>
+            </ActModal>
+          )}
+          {modalSiswa && (
+            <ActModal
+              isModalOpen={modalSiswa}
+              setIsModalOpen={setModalSiswa}
+              title={"Tambah Siswa PKL"}
+            >
+              <div>
+                <h1 className="text-center text-xs font-bold text-blue mb-1">
+                  "Hanya siswa yang belum memiliki PKL yang akan ditampilkan"
+                </h1>
+                <div className="text-xs">
+                  {loadingUser ? (
+                    <div className="flex items-center justify-center">
+                      <BeatLoader size={10} color="#294A70" />
+                    </div>
+                  ) : (
+                    <>
+                      <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-2"
+                      >
+                        <Select
+                          options={userOptions}
+                          isMulti
+                          placeholder="Cari Siswa..."
+                          required
+                          noOptionsMessage={() => "Tidak ada siswa"}
+                          onChange={(selectedOptions) =>
+                            setSelectUser(selectedOptions)
+                          }
+                        />
+                        <button type="submit" className="flex justify-end">
+                          <div className="bg-blue text-white py-2 rounded-md w-40 text-center  hover:opacity-80 transition">
+                            <div className="flex items-center gap-2 justify-center">
+                              <FaPlus />
+                              <p>Tambahkan</p>
+                            </div>
+                          </div>
+                        </button>
+                      </form>
+                    </>
+                  )}
                 </div>
               </div>
             </ActModal>

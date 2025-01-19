@@ -79,7 +79,7 @@ const Pembimbing = ({
 
   const detail = (data) => {
     let parseURIname = data.name ? data.name.replace(/ /g, "-") : "-";
-    navigate(`/detail/profile/${data.id}/${parseURIname}`);
+    navigate(`/admin/detail/profile/${data.id}/${parseURIname}`);
   };
 
   if (loading) return <Loading />;

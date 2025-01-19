@@ -7,10 +7,6 @@ import Footer from "./Footer";
 import Tools from "./Tools";
 
 const Container = ({ children, role }) => {
-  const location = useLocation();
-
-  const Title = "Dashboard";
-
   return (
     <>
       <Navbar role={role} />

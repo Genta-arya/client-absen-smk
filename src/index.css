@@ -4,14 +4,10 @@
 @tailwind utilities;
 
 body {
-
-  font-family: "Merriweather", serif;
-
+  font-family: "Helvetica Neue", Arial, sans-serif;
 }
-
 
 * {
   scrollbar-width: none;
-
   scrollbar-color: #feb47b #f3f3f3;
 }

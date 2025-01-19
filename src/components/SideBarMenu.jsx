@@ -12,28 +12,28 @@ import { FaCircleRight } from "react-icons/fa6";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 
 const menuItems = [
-  { name: "Dashboard", path: "/", icon: FaHome },
+  { name: "Dashboard", path: "/admin", icon: FaHome },
   {
     name: "Daftar Permohonan",
     path: "#",
     icon: FaClipboardList,
-    submenu: [{ name: "Permohonan PKL", path: "/permohonan/list" }],
+    submenu: [{ name: "Permohonan PKL", path: "/admin/permohonan/list" }],
   },
   {
     name: "Management PKL",
-    path: "/management/pkl",
+    path: "/admin/management/pkl",
     icon: FaFolderOpen,
     // Hanya tampilkan jika role bukan admin
     restrictedTo: 'non-admin',
   },
   {
     name: "Management User",
-    path: "/user",
+    path: "/admin/user",
     icon: FaUser,
     // Hanya tampilkan jika role admin
     restrictedTo: 'admin',
   },
-  { name: "Settings", path: "/setting", icon: FaCog },
+  { name: "Settings", path: "/admin/setting", icon: FaCog },
 ];
 
 const SideBarMenu = ({ role }) => {

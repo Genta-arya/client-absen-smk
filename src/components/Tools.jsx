@@ -74,7 +74,7 @@ const Tools = ({ title, role }) => {
                 </div>
               </div>
             </div>
-            <div className="cursor-pointer" title="Profile" onClick={() => navigate("/profil")}>
+            <div className="cursor-pointer" title="Profile" onClick={() => navigate("/admin/profil")}>
               <img
                 src={user?.avatar}
                 alt="profile"

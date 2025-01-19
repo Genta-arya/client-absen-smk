@@ -9,7 +9,7 @@ const useUser = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const { tab, setTab } = TabStore();
-
+  const [userOptions, setUserOptions] = React.useState([]);
   // Menentukan role berdasarkan tab
   const role = tab === "siswa" ? "user" : tab === "pembimbing" ? "pembimbing" : null;
 
@@ -43,13 +43,42 @@ const useUser = () => {
     }
   };
 
-  ;
+
+  
+    const getDataUsers = async () => {
+      setLoading(true);
+      try {
+        const response = await getDataUser("user");
+  
+        const users = response.data;
+        // ambil user yang belum ada PKL
+        const filteredUsers = users.filter((user) => {
+          // Pkl nya null
+          return user.Pkl.length === 0;
+        });
+  
+        const options = filteredUsers.map((user) => ({
+          value: user.id,
+          label: user.name,
+        }));
+  
+        setUserOptions(options);
+      } catch (error) {
+        ResponseHandler(error.response);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  
 
   return (
     {
       loading,
       data,
+      userOptions,
       fetchData,
+      getDataUsers,
       updatePasswords,
    
     }

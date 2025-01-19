@@ -1,5 +1,6 @@
 import React from "react";
 import { FaClipboardList, FaRegClipboard } from "react-icons/fa"; // Ikon Absensi dan Laporan Kegiatan
+import { Link } from "react-router-dom";
 
 const AppMenu = () => {
   return (
@@ -13,7 +14,7 @@ const AppMenu = () => {
           {/* Wrapper for both menu items */}
           <div className="flex flex-row gap-4 w-full">
             {/* Menu 1: Absensi */}
-            <div className="flex hover:opacity-80  cursor-pointer flex-col items-center w-[100%] justify-center bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-all border-b-oren border-b-4">
+            <Link to={"/app/daftar/absensi"} className="flex hover:opacity-80  cursor-pointer flex-col items-center w-[100%] justify-center bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-all border-b-oren border-b-4">
               <FaClipboardList
                 size={40}
                 className="text-blue dark:text-white mb-4"
@@ -21,7 +22,7 @@ const AppMenu = () => {
               <p className="text-center text-sm font-semibold text-gray-800 dark:text-white">
                 Absensi
               </p>
-            </div>
+            </Link>
 
             {/* Menu 2: Laporan Kegiatan */}
             <div className="flex flex-col border-b-oren border-b-4 hover:opacity-80 cursor-pointer  w-[100%] items-center justify-center bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-all">

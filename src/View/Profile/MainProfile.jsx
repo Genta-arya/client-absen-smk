@@ -7,7 +7,10 @@ import { FaWhatsapp } from "react-icons/fa"; // Import WhatsApp icon
 import ActModal from "../../components/Modal/ActModal";
 import { ResponseHandler } from "../../Utils/ResponseHandler";
 import { toast } from "sonner";
-import { updateFotoProfile } from "../../Api/Services/LoginServices";
+import {
+  updateFotoProfile,
+  uploadProfile,
+} from "../../Api/Services/LoginServices";
 import LoadingButton from "../../components/LoadingButton";
 
 const MainProfile = () => {
@@ -21,7 +24,7 @@ const MainProfile = () => {
   useEffect(() => {
     const path = window.location.pathname;
 
-    if (path === "/profil" && user?.role === "user") {
+    if (path === "/app/profil" || user?.role === "pembimbing") {
       if (!toastCalled.current) {
         toast.info(
           "Hubungi administrator sekolah jika NISN atau Nama tidak sesuai.",
@@ -74,16 +77,25 @@ const MainProfile = () => {
       if (selectedImage) {
         setLoading(true);
         const formData = new FormData();
-        formData.append("image", selectedImage);
-        const response = await updateFotoProfile({
-          id: user?.id,
-          photo: formData,
-        });
-        toast.success("Foto profil berhasil diperbarui.");
-        setModal(false);
-        setUser({ ...user, avatar: response.data });
+        formData.append("file", selectedImage);
+        const response = await uploadProfile(formData);
+        console.log(response);
+
+        if (response.status === 200) {
+          console.log(response.file_url);
+          await updateFotoProfile({
+            id: user?.id,
+            image_url: response.data.file_url,
+          });
+          toast.success("Foto profil berhasil diperbarui.");
+          setModal(false);
+          setUser({ ...user, avatar: response.data.file_url });
+        } else {
+          toast.error("Foto profil gagal diperbarui.");
+        }
       }
     } catch (error) {
+      console.error(error);
       ResponseHandler(error.response);
     } finally {
       setLoading(false);
@@ -114,7 +126,7 @@ const MainProfile = () => {
           placeholder={"Belum ada nama"}
           disabled
         />
-          <Input
+        <Input
           value={user?.email}
           label={"Email"}
           placeholder={"Belum ada email"}

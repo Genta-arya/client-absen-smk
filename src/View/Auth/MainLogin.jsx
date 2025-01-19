@@ -17,7 +17,7 @@ const MainLogin = () => {
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useAuthStore();
+  const { setUser, user } = useAuthStore();
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -25,7 +25,11 @@ const MainLogin = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/");
+      if (user?.role === "user") {
+        navigate("/app");
+      } else {
+        navigate("/admin");
+      }
     }
   }, []);
 
@@ -39,7 +43,11 @@ const MainLogin = () => {
       localStorage.setItem("token", response.data.token);
 
       setUser(response.data);
-      navigate("/");
+      if (response.data.role === "user") {
+        navigate("/app");
+      } else {
+        navigate("/admin");
+      }
     } catch (error) {
       ResponseHandler(error.response);
     } finally {

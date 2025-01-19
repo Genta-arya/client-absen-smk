@@ -10,6 +10,15 @@ export const createPKL = async (data) => {
   }
 };
 
+export const addSiswaToPkl = async (data) => {
+  try {
+    const response = await Axios.put("/pkl/add/siswa", data);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 export const getPKLCreator = async (id) => {
   try {
     const response = await Axios.get("/pkl/creator/" + id);
@@ -43,6 +52,15 @@ export const updatePkl = async (data) => {
 export const DeletePkl = async (id) => {
   try {
     const response = await Axios.put("/pkl/delete/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateStatusPkl = async (data) => {
+  try {
+    const response = await Axios.put("/pkl/status/" + data.id);
     return response.data;
   } catch (error) {
     handleError(error);

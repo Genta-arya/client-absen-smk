@@ -6,46 +6,41 @@ import Container from "./Container";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 
 const LayoutRender = () => {
-  const { user  } = useAuthStore();
+  const { user } = useAuthStore();
   const role = user?.role;
   const navigate = useNavigate();
   const location = useLocation();
 
-
   useEffect(() => {
     switch (role) {
       case "admin":
-        navigate("/");
+        navigate("/admin");
         break;
       case "user":
         navigate("/app");
         break;
       case "pembimbing":
-        navigate("/");
+        navigate("/admin");
         break;
+
       default:
-        navigate("/");
         break;
+    }
+
+    if (location.pathname === "/") {
+      navigate("/404");
     }
   }, [role, navigate]);
 
   let content;
   switch (location.pathname) {
-    case "/":
-      content = <MainHome role={role} user={user}  />;
+    case "/admin":
+      content = <MainHome role={role} user={user} />;
       break;
     case "/app":
-      content =
-        role === "user" ? (
-          <MainUsers role={role} user={user}  />
-        ) : null;
+      content = role === "user" ? <MainUsers role={role} user={user} /> : null;
       break;
-    case "/pembimbing/app":
-      content =
-        role === "pembimbing" ? (
-          <MainHome role={role}  />
-        ) : null;
-      break;
+
     default:
       content = <MainHome />;
       break;

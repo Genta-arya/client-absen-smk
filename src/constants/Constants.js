@@ -9,11 +9,11 @@ import {
 import { FaGear } from "react-icons/fa6";
 
 export const menuItems = [
-  { name: "Dashboard", path: "/", icon: FaHome },
-  { name: "Permohonan PKL", path: "/permohonan/list", icon: FaNewspaper },
-  { name: "Management User", path: "/user", icon: FaUser },
-  { name: "Management PKL", path: "/management/pkl", icon: FaServicestack },
-  { name: "Setting", path: "/setting", icon: FaGear },
+  { name: "Dashboard", path: "/admin", icon: FaHome },
+  { name: "Permohonan PKL", path: "/admin/permohonan/list", icon: FaNewspaper },
+  { name: "Management User", path: "/admin/user", icon: FaUser },
+  { name: "Management PKL", path: "/admin/management/pkl", icon: FaServicestack },
+  { name: "Setting", path: "/admin/setting", icon: FaGear },
 ];
 
 export const modalTypes = {
@@ -34,7 +34,7 @@ export const formatDate = (dateString) => {
 
 export const API_URL = "http://localhost:8080/api";
 export const API_URL_IMAGE = "http://localhost:8080/uploads/";
-
+export const UPLOAD_URL = "https://uploads.mgentaarya.my.id/uploads.php";
 export const formatTanggal = (dateString) => {
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const date = new Date(dateString);

@@ -19,7 +19,7 @@ const MenuSetting = () => {
   return (
     <div className=" bg-white  rounded-lg p-0 md:p-0 lg:p-4">
       <ul className="space-y-1">
-        <Link to={"/profil"} className="">
+        <Link to={user?.role !== "user" ? "/admin/profil" : "/app/profil"} className="">
           <div className="flex items-center border-b border-gray-300 hover:bg-gray-100 px-2">
             <FaUserAlt />
 
@@ -29,7 +29,7 @@ const MenuSetting = () => {
           </div>
         </Link>
         <Link
-          to={"/ganti/password"}
+          to={ user?.role !== "user" ? "/admin/ganti/password" : "/app/ganti/password"}
           className="border-b border-black"
           onClick={() => {}}
         >

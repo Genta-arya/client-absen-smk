@@ -4,13 +4,12 @@ import { FaSave, FaWarehouse } from "react-icons/fa";
 import Input from "../../../Input";
 import Select from "react-select";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
-import { getDataUser } from "../../../../Api/Services/LoginServices";
-import Loading from "../../../Loading";
 import { createPKL } from "../../../../Api/Services/PKLServices";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import { BeatLoader } from "react-spinners";
 import { toast } from "sonner";
 import LoadingButton from "../../../LoadingButton";
+import useUser from "../../../../Lib/Hook/useUser";
 
 const CreatePKL = () => {
   const { user } = useAuthStore();
@@ -22,34 +21,9 @@ const CreatePKL = () => {
     end_date: "",
     creatorId: user?.id,
   });
+  const { userOptions, loading, getDataUsers } = useUser();
 
-  const [userOptions, setUserOptions] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
   const [loading1, setLoading1] = React.useState(false);
-  const getDataUsers = async () => {
-    setLoading(true);
-    try {
-      const response = await getDataUser("user");
-
-      const users = response.data;
-      // ambil user yang belum ada PKL
-      const filteredUsers = users.filter((user) => {
-        // Pkl nya null
-        return user.Pkl.length === 0;
-      });
-
-      const options = filteredUsers.map((user) => ({
-        value: user.id,
-        label: user.name,
-      }));
-
-      setUserOptions(options);
-    } catch (error) {
-      ResponseHandler(error.response);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     getDataUsers();
@@ -128,6 +102,7 @@ const CreatePKL = () => {
           label="Tanggal Selesai PKL"
           required={true}
           value={data.end_date}
+          min={data.start_date}
           onChange={(e) => setData({ ...data, end_date: e.target.value })}
         />
 

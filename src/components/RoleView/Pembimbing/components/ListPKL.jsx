@@ -6,7 +6,7 @@ import { formatTanggal } from "../../../../constants/Constants";
 import { FaCircle, FaTag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const ListPKL = () => {
+const ListPKL = ({searchTerm}) => {
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -28,17 +28,21 @@ const ListPKL = () => {
     fetchData();
   }, []);
 
+  const filterDataName = (data, searchTerm) => {
+    return data.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  };
+
   if (loading) return <Loading />;
 
   return (
     <div className="mt-4">
-      {data.length === 0 ? (
+      {filterDataName(data, searchTerm).length === 0 ? (
         <p className="text-center text-gray-500 mt-12 ">
           Belum memiliki tempat pkl.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-6">
-          {data.map((item) => (
+          {filterDataName(data, searchTerm).map((item) => (
             <div key={item.id} className="bg-white p-4 border border-dashed">
               <div className="flex items-center gap-2">
                 <FaTag className="text-blue" />
@@ -50,9 +54,15 @@ const ListPKL = () => {
                 {item.alamat}
               </p>
               <div className="text-xs border-b p-1">
-                <h1 className="text-center py-1 font-bold text-base">
+                <div className="py-1">
+
+                <h1 className="text-center font-bold text-base">
                   Periode
                 </h1>
+                <h1 className="text-center font-bold text-sm">
+                  Praktek Kerja Lapangan
+                </h1>
+                </div>
                 <div className="flex gap-2 items-center justify-center">
                   <p className="text-gray-700 text-xs">
                     <strong></strong> {formatTanggal(item.tanggal_mulai)}
@@ -83,7 +93,7 @@ const ListPKL = () => {
                   )}
                 </div>
                 <div
-                  onClick={() => navigate(`/management/pkl/detail/${item.id}`)}
+                  onClick={() => navigate(`/admin/management/pkl/detail/${item.id}`)}
                   className="flex hover:opacity-85 cursor-pointer transition-all duration-300  items-center justify-center gap-2 bg-blue text-white px-4 py-2 rounded-md"
                 >
                   <button className="">Detail </button>

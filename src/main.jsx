@@ -18,10 +18,13 @@ import DetailProfile from "./View/Profile/DetailProfile.jsx";
 import MainPKL from "./components/RoleView/Pembimbing/MainPKL.jsx";
 import CreatePKL from "./components/RoleView/Pembimbing/components/CreatePKL.jsx";
 import DetailPkl from "./components/RoleView/Pembimbing/components/DetailPkl.jsx";
+import MainAbsensi from "./components/RoleView/Users/Absensi/MainAbsensi.jsx";
+
 
 const route = createBrowserRouter([
+
   {
-    path: "/",
+    path: "/admin",
     element: <ProtectedRoute redirectPath="/login" />,
     children: [
       {
@@ -29,38 +32,36 @@ const route = createBrowserRouter([
         element: <App />,
       },
       {
-        path: "/user",
+        path: "/admin/user",
         element: <MainUser />,
       },
       {
-        path: "/setting",
+        path: "/admin/setting",
         element: <MainSetting />,
       },
       {
-        path: "/profil",
+        path: "/admin/profil",
         element: <MainProfile />,
       },
       {
-        path: "/ganti/password",
+        path: "/admin/ganti/password",
         element: <GantiPassword />,
       },
       {
-        path: "/detail/profile/:id/:nama",
+        path: "/admin/detail/profile/:id/:nama",
         element: <DetailProfile />,
       },
       {
-        path: "/management/pkl",
+        path: "/admin/management/pkl",
         element: <MainPKL />,
       },
       {
-        path: "/management/pkl/create",
+        path: "/admin/management/pkl/create",
         element: <CreatePKL />,
-
       },
       {
-        path: "/management/pkl/detail/:id",
+        path: "/admin/management/pkl/detail/:id",
         element: <DetailPkl />,
-
       },
     ],
   },
@@ -77,6 +78,14 @@ const route = createBrowserRouter([
       {
         path: "/app/setting",
         element: <MainSetting />,
+      },
+      {
+        path: "/app/profil",
+        element: <MainSetting />,
+      },
+      {
+        path: "/app/daftar/absensi",
+        element: <MainAbsensi />,
       },
     ],
   },
