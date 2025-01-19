@@ -68,7 +68,7 @@ const DetailPkl = () => {
       const response = await DeletePkl(id);
       setModal(false);
       toast.success("Data PKL Berhasil dihapus");
-      navigate("/management/pkl");
+      navigate("/admin/management/pkl");
     } catch (error) {
       console.error(error);
     }
