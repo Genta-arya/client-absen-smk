@@ -3,18 +3,14 @@ import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import ContainerGlobal from "../../../ContainerGlobal";
 import ButtonNav from "../../../ButtonNav";
 import { formatDate, formatTanggal } from "../../../../constants/Constants";
-import { FaCircle, FaTag } from "react-icons/fa";
+import { FaArrowRight, FaCircle, FaTag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const MainAbsensi = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  
-  // Filtering the Pkl items where isDelete is false
   const mapData = user?.Pkl?.map((item) => item);
   const filterData = mapData?.filter((item) => item.isDelete === false);
-
-  console.log(filterData);
 
   return (
     <>
@@ -23,12 +19,17 @@ const MainAbsensi = () => {
           {/* Check if there is no PKL data */}
           {filterData?.length === 0 ? (
             <div className="text-center py-6">
-              <h2 className="text-xl font-semibold text-gray-600">Belum ada tempat magang</h2>
+              <h2 className="text-xl font-semibold text-gray-600">
+                Belum ada tempat magang
+              </h2>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-6">
               {filterData.map((item) => (
-                <div key={item.id} className="bg-white p-4 border border-dashed">
+                <div
+                  key={item.id}
+                  className="bg-white p-4 border border-dashed"
+                >
                   <div className="flex items-center gap-2">
                     <FaTag className="text-blue-500" />
                     <h2 className="lg:text-xl md:text-xl text-base font-semibold text-blue-500">
@@ -40,8 +41,12 @@ const MainAbsensi = () => {
                   </p>
                   <div className="text-xs border-b p-1">
                     <div className="py-1">
-                      <h1 className="text-center font-bold text-base">Periode</h1>
-                      <h1 className="text-center font-bold text-sm">Praktek Kerja Lapangan</h1>
+                      <h1 className="text-center font-bold text-base">
+                        Periode
+                      </h1>
+                      <h1 className="text-center font-bold text-sm">
+                        Praktek Kerja Lapangan
+                      </h1>
                     </div>
                     <div className="flex gap-2 items-center justify-center">
                       <p className="text-gray-700 text-xs">
@@ -54,11 +59,28 @@ const MainAbsensi = () => {
                     </div>
                   </div>
 
-                  <p className="text-xs text-gray-500 mt-2">
-                    Dibuat: {formatTanggal(item.createdAt)}
-                  </p>
+                  <div>
+                    <h1 className="mt-2 text-sm font-bold">Pembimbing</h1>
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={item.creator?.avatar}
+                        alt=""
+                        onClick={() => window.open(item.creator?.avatar)}
+                        className="w-10 rounded-sm cursor-pointer hover:opacity-80"
+                      />
+                      <div className="flex flex-col">
+                        <h1 className="font-bold text-sm">
+                          {item.creator?.name}
+                        </h1>
+                        <h1 className="text-xs">{item.creator?.nim}</h1>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Dibuat: {formatTanggal(item.createdAt)}
+                    </p>
+                  </div>
 
-                  <div className="mt-4 flex justify-between items-center">
+                  <div className="mt-4 text-xs flex justify-between items-center">
                     <div>
                       {item.status === true ? (
                         <div className="flex items-center gap-1">
@@ -73,10 +95,12 @@ const MainAbsensi = () => {
                       )}
                     </div>
                     <div
-                      onClick={() => navigate(`/admin/management/pkl/detail/${item.id}`)}
+                      onClick={() => navigate(`/app/detail/absensi`)}
                       className="flex hover:opacity-85 cursor-pointer transition-all duration-300 items-center justify-center gap-2 bg-blue text-white px-4 py-2 rounded-md"
                     >
-                      <button className="">Detail </button>
+                      <button className="">
+                        <FaArrowRight />
+                      </button>
                     </div>
                   </div>
                 </div>

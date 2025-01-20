@@ -19,6 +19,7 @@ import MainPKL from "./components/RoleView/Pembimbing/MainPKL.jsx";
 import CreatePKL from "./components/RoleView/Pembimbing/components/CreatePKL.jsx";
 import DetailPkl from "./components/RoleView/Pembimbing/components/DetailPkl.jsx";
 import MainAbsensi from "./components/RoleView/Users/Absensi/MainAbsensi.jsx";
+import DetailAbsensi from "./components/RoleView/Users/Absensi/DetailAbsensi.jsx";
 
 
 const route = createBrowserRouter([
@@ -81,11 +82,15 @@ const route = createBrowserRouter([
       },
       {
         path: "/app/profil",
-        element: <MainSetting />,
+        element: <MainProfile />,
       },
       {
         path: "/app/daftar/absensi",
         element: <MainAbsensi />,
+      },
+      {
+        path: "/app/detail/absensi",
+        element: <DetailAbsensi />,
       },
     ],
   },

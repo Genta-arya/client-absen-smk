@@ -23,7 +23,7 @@ const DetailPkl = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
-  const [newUser, setNewUser] = useState("");
+
   const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [modalSiswa, setModalSiswa] = useState(false);
@@ -194,7 +194,9 @@ const DetailPkl = () => {
                     </div>
                     <div
                       onClick={() =>
-                        navigate(`/admin/detail/profile/${user.id}/${user.name}`)
+                        navigate(
+                          `/admin/detail/profile/${user.id}/${user.name}`
+                        )
                       }
                       className="text-xs cursor-pointer hover:underline"
                     >
