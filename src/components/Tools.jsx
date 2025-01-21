@@ -40,7 +40,7 @@ const Tools = ({ title, role }) => {
   };
 
   const handleCtrlK = (e) => {
-    if ((e.ctrlKey && e.key === "k") || e.key === "K") {
+    if ((e.ctrlKey && e.key === "k") || (e.ctrlKey && e.key === "K" )) {
       e.preventDefault();
       inputRef.current.focus();
     }

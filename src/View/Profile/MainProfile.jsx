@@ -125,8 +125,14 @@ const MainProfile = () => {
         <Input value={user?.nim} label={"NIP / NISN"} disabled />
         <Input
           value={user?.name}
-          label={"Name"}
+          label={"Nama"}
           placeholder={"Belum ada nama"}
+          disabled
+        />
+        <Input
+          value={user?.Kelas[0]?.nama}
+          label={"Kelas / Jurusan"}
+          placeholder={"Belum ada kelas"}
           disabled
         />
         <Input

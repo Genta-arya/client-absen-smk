@@ -141,7 +141,48 @@ export const updateDataUser = async (data) => {
       name: data.name,
       nim: data.nim,
       email: data.email,
+      kelas : data.kelas
     });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getKelas = async () => {
+  try {
+    const response = await Axios.get("/auth/kelas");
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const CreateKelas = async (data) => {
+  try {
+    const response = await Axios.post("/auth/create/kelas", {
+      nama: data.nama,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const EditKelas = async (data) => {
+  try {
+    const response = await Axios.put("/auth/kelas/" + data.id, {
+      nama: data.nama,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const DeleteKelas = async (id) => {
+  try {
+    const response = await Axios.delete("/auth/kelas/" + id);
     return response.data;
   } catch (error) {
     handleError(error);

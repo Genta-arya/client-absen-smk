@@ -15,7 +15,7 @@ const ProtectedRoute = ({ redirectPath = "/login" }) => {
   }
 
   if (!isAuthenticated) {
-    navigate("/login");
+    navigate("/");
   }
 
   if (location.includes("/admin") && user?.role === "user") {

@@ -58,7 +58,7 @@ const MainLogin = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-blue dark:bg-dark-bg">
       <Helmet>
-        <title>Login - Lampias</title>
+        <title>Login - SIPKL</title>
       </Helmet>
       <div className="bg-white p-8  rounded-lg shadow-lg w-[90%] lg:w-[30%] border-t-4 border-orange-500">
         <div className="flex flex-col items-center mb-6">
@@ -68,7 +68,7 @@ const MainLogin = () => {
             className="w-28 h-28 rounded-full"
           />
           <h2 className="text-2xl mt-2 font-semibold text-center text-gray-800 ">
-            LAMPIAS
+            SIPKL
           </h2>
           <p>
             <span className="text-gray-600">v1.0.0</span>
