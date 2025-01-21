@@ -29,10 +29,10 @@ const Calendar = ({ data }) => {
     .map((absen) => {
       let timeFormattedDatang = "";
       let timeFormattedPulang = "";
-      let bgColorDatang = ""; // Variabel untuk menyimpan background color datang
-      let textColorDatang = ""; // Variabel untuk menyimpan text color datang
-      let bgColorPulang = "gray"; // Variabel untuk menyimpan background color pulang
-      let textColorPulang = ""; // Variabel untuk menyimpan text color pulang
+      let bgColorDatang = ""; 
+      let textColorDatang = ""; 
+      let bgColorPulang = "gray"; 
+      let textColorPulang = ""; 
 
       // Cek waktu datang
       if (absen.hadir === "hadir" && absen.datang) {

@@ -12,6 +12,7 @@ import {
   uploadProfile,
 } from "../../Api/Services/LoginServices";
 import LoadingButton from "../../components/LoadingButton";
+import Calendar from "../../components/Table/Calendar";
 
 const MainProfile = () => {
   const { user, setUser } = useAuthStore();
@@ -20,6 +21,8 @@ const MainProfile = () => {
   const [preview, setPreview] = useState(user?.avatar);
   const [loading, setLoading] = useState(false);
 
+  const data = user;
+  console.log(data);
   const toastCalled = useRef(false);
   useEffect(() => {
     const path = window.location.pathname;
@@ -168,12 +171,21 @@ const MainProfile = () => {
           </div>
         </ActModal>
       )}
+      {user?.role === "user" && (
+        <>
+          {data?.Pkl[0]?.absensi && data?.Pkl[0]?.absensi.length > 0 ? (
+            <Calendar data={data?.Pkl[0]?.absensi} />
+          ) : (
+            <div className="flex justify-center items-center text-xl font-bold text-gray-700 mt-4"></div>
+          )}
+        </>
+      )}
 
       <a
         href="https://wa.me/6281234567890"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 focus:outline-none flex items-center gap-2"
+        className="fixed bottom-6 right-6 z-10 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 focus:outline-none flex items-center gap-2"
       >
         <FaWhatsapp size={30} />
         <span className="text-white text-sm">Administrator</span>

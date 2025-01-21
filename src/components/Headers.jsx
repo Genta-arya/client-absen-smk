@@ -18,7 +18,7 @@ const Headers = ({ role, user }) => {
               <img
                 src={user?.avatar}
                 alt="profile"
-                onClick={() => navigate("/admin/profil")}
+                onClick={() => navigate(`${user?.role !== "user" ? "/admin/profil" : "/app/profil"}`)}
                 className="w-12 h-12 rounded-full hover:cursor-pointer"
               />
               <div>

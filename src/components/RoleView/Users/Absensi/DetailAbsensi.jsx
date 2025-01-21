@@ -100,9 +100,9 @@ const DetailAbsensi = () => {
 
     // Rentang waktu: 15:30 - 00:00
     const isWithinCheckoutTime =
-    (serverHours === 12 && serverMinutes >= 30) || 
-    (serverHours > 12 && serverHours < 18) || 
-    (serverHours === 18 && serverMinutes === 0); 
+      (serverHours === 12 && serverMinutes >= 30) ||
+      (serverHours > 12 && serverHours < 18) ||
+      (serverHours === 18 && serverMinutes === 0);
 
     if (!isWithinCheckoutTime) {
       return true; // Tombol dinonaktifkan jika tidak dalam rentang waktu
@@ -196,64 +196,69 @@ const DetailAbsensi = () => {
         </p>
       </div>
 
-      {/* Menampilkan data berdasarkan bulan setelah difilter */}
-      {Object.keys(groupedByMonth).map((month, index) => (
-        <div key={index} className="space-y-4">
-          <h2 className="text-lg font-bold text-center mt-4 underline text-red-500">
-            Bulan {month}
-          </h2>
-          {groupedByMonth[month].map((absensi, absensiIndex) => (
-            <div
-              key={absensiIndex}
-              className="p-4 border border-gray-300 rounded-lg shadow-sm"
-            >
-              <div className="mb-4 text-blue flex items-center gap-4">
-                <FaClock size={30} />
-                <div className="flex flex-col">
-                  <p className="text-sm text-blue font-bold">
-                    {formatTanggal(absensi.tanggal)}
-                  </p>
+      {Object.keys(groupedByMonth).length === 0 ? (
+        <div className="text-center text-gray-500 mt-8">
+          <p>Absensi tidak tersedia untuk tanggal yang dipilih.</p>
+        </div>
+      ) : (
+        Object.keys(groupedByMonth).map((month, index) => (
+          <div key={index} className="space-y-4">
+            <h2 className="text-lg font-bold text-center mt-4 underline text-red-500">
+              Bulan {month}
+            </h2>
+            {groupedByMonth[month].map((absensi, absensiIndex) => (
+              <div
+                key={absensiIndex}
+                className="p-4 border border-gray-300 rounded-lg shadow-sm"
+              >
+                <div className="mb-4 text-blue flex items-center gap-4">
+                  <FaClock size={30} />
+                  <div className="flex flex-col">
+                    <p className="text-sm text-blue font-bold">
+                      {formatTanggal(absensi.tanggal)}
+                    </p>
+                  </div>
+                </div>
+                <p
+                  className={`text-xs py-1.5 text-white rounded-md text-center ${getStatusClass(
+                    absensi.hadir
+                  )}`}
+                >
+                  {getStatusText(absensi.hadir, absensi.datang)}
+                </p>
+                <div className="mt-1">
+                  <button
+                    onClick={() => {
+                      handleCheckIn(absensi.id);
+                    }}
+                    className="w-full flex items-center disabled:cursor-not-allowed disabled:bg-gray-500 justify-center cursor-pointer text-sm font-bold hover:opacity-85 transition-all duration-300 ease-in-out bg-green-500 text-white rounded-md py-1"
+                    disabled={
+                      isDateDisabled(absensi.tanggal) ||
+                      absensi.hadir === "hadir"
+                    }
+                  >
+                    <div className="flex items-center gap-2 ">
+                      <FaCalendarCheck size={18} />
+                      <p>Absen Masuk</p>
+                    </div>
+                  </button>
+                </div>
+                <div className="mt-1">
+                  <button
+                    className="w-full flex items-center disabled:cursor-not-allowed disabled:bg-gray-500 justify-center cursor-pointer text-sm font-bold hover:opacity-85 transition-all duration-300 ease-in-out bg-orange-500 text-white rounded-md py-1"
+                    disabled={isCheckoutDisabled(absensi.tanggal)}
+                  >
+                    <div className="flex items-center gap-2 ">
+                      <FaCalendarMinus size={18} />
+                      <p>Absen Pulang</p>
+                    </div>
+                  </button>
                 </div>
               </div>
-              <p
-                className={`text-xs py-1.5 text-white rounded-md text-center ${getStatusClass(
-                  absensi.hadir
-                )}`}
-              >
-                {getStatusText(absensi.hadir, absensi.datang)}
-              </p>
-              <div className="mt-1">
-                <button
-                  onClick={() => {
-                    handleCheckIn(absensi.id);
-                  }}
-                  className="w-full flex items-center disabled:cursor-not-allowed disabled:bg-gray-500 justify-center cursor-pointer text-sm font-bold hover:opacity-85 transition-all duration-300 ease-in-out bg-green-500 text-white rounded-md py-1"
-                  disabled={
-                    isDateDisabled(absensi.tanggal) || absensi.hadir === "hadir"
-                  }
-                >
-                  <div className="flex items-center gap-2 ">
-                    <FaCalendarCheck size={18} />
-                    <p>Absen Masuk</p>
-                  </div>
-                </button>
-              </div>
-              <div className="mt-1">
-                <button
-                  className="w-full flex items-center disabled:cursor-not-allowed disabled:bg-gray-500 justify-center cursor-pointer text-sm font-bold hover:opacity-85 transition-all duration-300 ease-in-out bg-orange-500 text-white rounded-md py-1"
-                  disabled={isCheckoutDisabled(absensi.tanggal)}
-                >
-                  <div className="flex items-center gap-2 ">
-                    <FaCalendarMinus size={18} />
-                    <p>Absen Pulang</p>
-                  </div>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      ))}
-
+            ))}
+          </div>
+        ))
+      )}
       {/* Tombol Scroll to Top */}
       {isScrolled && (
         <button
