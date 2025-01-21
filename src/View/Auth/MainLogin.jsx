@@ -9,6 +9,7 @@ import { handleError } from "../../Utils/Error";
 import LoadingButton from "../../components/LoadingButton";
 import { ResponseHandler } from "../../Utils/ResponseHandler";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const MainLogin = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -18,6 +19,8 @@ const MainLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setUser, user } = useAuthStore();
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -35,6 +38,12 @@ const MainLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!recaptchaToken) {
+      alert("Please complete the CAPTCHA");
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const parseNim = parseInt(nim);
@@ -53,6 +62,10 @@ const MainLogin = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaToken(value);
   };
 
   return (
@@ -138,6 +151,16 @@ const MainLogin = () => {
             </div>
           </div>
 
+          {/* reCAPTCHA v2 widget */}
+          <div className="mb-6 text-xs flex justify-center">
+            <ReCAPTCHA
+              type="image"
+              size="normal"
+              sitekey="6Lcv3L4qAAAAAJoWWTTOuo9SubeanyIoNZ2wPKj5"
+              onChange={handleRecaptchaChange}
+            />
+          </div>
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -175,7 +198,6 @@ const MainLogin = () => {
                   window.open("https://wa.me/6289618601348", "_blank")
                 }
               >
-                {/* WhatsApp Icon */}
                 <FaWhatsapp size={20} />
                 <p className="font-bold text-sm">WhatsApp</p>
               </button>

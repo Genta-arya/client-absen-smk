@@ -13,6 +13,7 @@ import { updateDataUser, getKelas } from "../../../Api/Services/LoginServices";
 import { ResponseHandler } from "../../../Utils/ResponseHandler";
 import { toast } from "sonner";
 import { io } from "socket.io-client";
+import { SOCKET } from "../../../constants/Constants";
 
 const MainUsers = () => {
   const { user } = useAuthStore();
@@ -49,7 +50,7 @@ const MainUsers = () => {
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:8080", {
+    const socket = io(SOCKET, {
       withCredentials: true,
     });
 
