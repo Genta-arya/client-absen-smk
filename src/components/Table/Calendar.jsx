@@ -1,9 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import { FaArrowLeft, FaArrowRight, FaCalendar, FaCircle } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaCalendar,
+  FaCircle,
+} from "react-icons/fa";
+import useAuthStore from "../../Lib/Zustand/AuthStore";
 
 const Calendar = ({ data }) => {
+  const { user } = useAuthStore();
+  const tanggal = user.DateIndonesia;
+
   const calendarRef = useRef(null);
   const [monthName, setMonthName] = useState("");
   const absensiFormatted = data.map((absen) => ({
@@ -16,15 +25,89 @@ const Calendar = ({ data }) => {
     absensiFormatted.length > 0
       ? Math.min(...absensiFormatted.map((absen) => absen.dateObj))
       : new Date();
+  const events = absensiFormatted
+    .map((absen) => {
+      let timeFormattedDatang = "";
+      let timeFormattedPulang = "";
+      let bgColorDatang = ""; // Variabel untuk menyimpan background color datang
+      let textColorDatang = ""; // Variabel untuk menyimpan text color datang
+      let bgColorPulang = "gray"; // Variabel untuk menyimpan background color pulang
+      let textColorPulang = ""; // Variabel untuk menyimpan text color pulang
 
-  const events = absensiFormatted.map((absen) => ({
-    title:
-      absen.hadir === "hadir" ? "..." : absen.hadir === null ? "..." : "...",
-    date: absen.tanggal,
-    groupId: absen.id,
-    backgroundColor:
-      absen.hadir === "hadir" ? "green" : absen.hadir === null ? "gray" : "red",
-  }));
+      // Cek waktu datang
+      if (absen.hadir === "hadir" && absen.datang) {
+        const datangDate = new Date(absen.datang); // Mengonversi string datang menjadi objek Date
+        const hoursDatang = datangDate.getHours(); // Ambil jam datang
+        const minutesDatang = datangDate.getMinutes(); // Ambil menit datang
+        timeFormattedDatang = `${hoursDatang
+          .toString()
+          .padStart(2, "0")}:${minutesDatang.toString().padStart(2, "0")}`; // Format waktu datang
+
+        // Membandingkan waktu datang dengan jam 7:30
+        const batasJam = new Date(tanggal);
+        batasJam.setHours(7, 30, 0, 0); // Jam batas 7:30
+
+        if (datangDate > batasJam) {
+          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah jam 7:30
+          bgColorDatang = "orange"; // Set background color oranye untuk Telat
+          textColorDatang = "black"; // Set warna teks hitam untuk Telat
+        } else {
+          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang sebelum atau tepat jam 7:30
+          bgColorDatang = "green"; // Set background color hijau untuk Hadir
+          textColorDatang = "white"; // Set warna teks putih untuk Hadir
+        }
+      } else {
+        timeFormattedDatang = "..."; // Jika tidak hadir atau tidak ada waktu
+        bgColorDatang = absen.hadir === null ? "gray" : "red"; // Set warna untuk yang tidak hadir
+        textColorDatang = "white"; // Set warna teks putih untuk yang tidak hadir
+      }
+
+      // Menambahkan waktu pulang jika ada
+      if (absen.pulang) {
+        const pulangDate = new Date(absen.pulang); // Mengonversi string pulang menjadi objek Date
+        const hoursPulang = pulangDate.getHours(); // Ambil jam pulang
+        const minutesPulang = pulangDate.getMinutes(); // Ambil menit pulang
+        timeFormattedPulang = `${hoursPulang
+          .toString()
+          .padStart(2, "0")}:${minutesPulang.toString().padStart(2, "0")}`; // Format waktu pulang
+
+        // Validasi waktu pulang
+        const jamPulang = pulangDate.getHours();
+        if (jamPulang < 16) {
+          timeFormattedPulang = `${timeFormattedPulang}`; // Jika pulang sebelum jam 16:00
+          bgColorPulang = "yellow"; // Set warna latar belakang kuning untuk Pulang Cepat
+          textColorPulang = "black"; // Set warna teks hitam untuk Pulang Cepat
+        } else {
+          timeFormattedPulang = `${timeFormattedPulang}`; // Jika pulang setelah jam 16:00
+          bgColorPulang = "blue"; // Set warna latar belakang biru untuk Pulang Normal
+          textColorPulang = "white"; // Set warna teks putih untuk Pulang Normal
+        }
+      } else {
+        timeFormattedPulang = "..."; // Jika tidak ada waktu pulang
+        bgColorPulang = "gray"; // Set warna latar belakang gray jika belum ada pulang
+        textColorPulang = "white"; // Set warna teks putih
+      }
+
+      return [
+        // Event untuk datang
+        {
+          title: `${timeFormattedDatang}`, // Menampilkan waktu datang
+          date: absen.tanggal,
+          groupId: absen.id,
+          backgroundColor: bgColorDatang, // Menggunakan warna latar belakang datang
+          color: textColorDatang, // Menggunakan warna teks datang
+        },
+        // Event untuk pulang
+        {
+          title: `${timeFormattedPulang}`, // Menampilkan waktu pulang
+          date: absen.tanggal,
+          groupId: absen.id,
+          backgroundColor: bgColorPulang, // Menggunakan warna latar belakang pulang
+          color: textColorPulang, // Menggunakan warna teks pulang
+        },
+      ];
+    })
+    .flat(); // Menggabungkan dua event (datang dan pulang) menjadi satu array
 
   const maxDate = new Date(
     Math.max(...absensiFormatted.map((absen) => absen.dateObj))

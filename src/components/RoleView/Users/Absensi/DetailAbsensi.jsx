@@ -11,7 +11,7 @@ const DetailAbsensi = () => {
   const { user } = useAuthStore();
   const mapData = user?.Pkl?.map((item) => item);
   const filterData = mapData?.filter((item) => item.isDelete === false);
-
+  const [modal, setModal] = useState(false);
   const tanggal = user.DateIndonesia;
   const data = filterData?.[0]?.absensi || [];
   const [selectedDate, setSelectedDate] = useState(
@@ -74,10 +74,11 @@ const DetailAbsensi = () => {
     const serverMinutes = serverDate.getMinutes();
 
     // Rentang waktu yang diizinkan: 10:00 - 12:30
+    console.log(serverHours);
     const isWithinAllowedTime =
-      serverHours === 10 ||
-      serverHours === 11 || // Jam 10:00 hingga sebelum 12:00
-      (serverHours === 12 && serverMinutes <= 30); // Jam 12:00 hingga 12:30
+      (serverHours === 6 && serverMinutes >= 30) || // Jam 06:30 - 06:59
+      (serverHours > 6 && serverHours < 12) || // Jam 07:00 - 11:59
+      (serverHours === 12 && serverMinutes === 0); // Tepat jam 12:00
 
     if (!isWithinAllowedTime) {
       return true; // Tombol disabled jika tidak berada dalam rentang waktu
@@ -99,8 +100,9 @@ const DetailAbsensi = () => {
 
     // Rentang waktu: 15:30 - 00:00
     const isWithinCheckoutTime =
-      serverHours > 15 || // Setelah jam 15:00
-      (serverHours === 15 && serverMinutes >= 30); // Tepat jam 15:30 dan seterusnya
+    (serverHours === 12 && serverMinutes >= 30) || 
+    (serverHours > 12 && serverHours < 18) || 
+    (serverHours === 18 && serverMinutes === 0); 
 
     if (!isWithinCheckoutTime) {
       return true; // Tombol dinonaktifkan jika tidak dalam rentang waktu
