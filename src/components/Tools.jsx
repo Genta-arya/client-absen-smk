@@ -62,7 +62,7 @@ const Tools = ({ title, role }) => {
         <>
           <div className="flex justify-between items-center">
             <div
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/admin")}
               className="cursor-pointer hover:underline w-fit"
             >
               <div className="flex items-center gap-3">

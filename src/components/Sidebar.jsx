@@ -46,7 +46,7 @@ const Sidebar = ({ isMenuOpen, toggleMenu, setMenu, role }) => {
 
         <div className="flex justify-start mt-5 px-1 gap-2">
           <img
-            src="https://storage.apiservices.my.id/uploads/Screenshot_2025-01-16_075511-removebg-preview-1736988960901.png"
+            src="https://uploads.mgentaarya.my.id/storage-documents/Screenshot_2025-01-16_075511-removebg-preview.png"
             alt="Logo"
             className="w-10 h-10 bg-white p-1 rounded-full"
           />
