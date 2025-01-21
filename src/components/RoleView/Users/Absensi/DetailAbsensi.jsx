@@ -15,13 +15,8 @@ const DetailAbsensi = () => {
   const tanggal = user.DateIndonesia;
   const data = filterData?.[0]?.absensi || [];
   const [selectedDate, setSelectedDate] = useState(() => {
-    const userDate = new Date(user.DateIndonesia);
 
-    const localDate = new Date(
-      userDate.getTime() - userDate.getTimezoneOffset() * 60000
-    );
-
-    return localDate.toISOString().split("T")[0];
+    return new Date(user?.tanggal).toISOString().split("T")[0];
   });
 
   const [isScrolled, setIsScrolled] = useState(false);
