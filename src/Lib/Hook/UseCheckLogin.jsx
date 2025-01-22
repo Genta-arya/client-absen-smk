@@ -18,7 +18,7 @@ const UseCheckLogin = () => {
       const response = await CheckSession(token);
       setUser(response.data);
     } catch (error) {
-      ResponseHandler(error.response, "/login");
+      ResponseHandler(error.response, "/");
 
       localStorage.removeItem("token");
     } finally {

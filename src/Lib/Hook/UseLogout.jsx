@@ -13,7 +13,7 @@ const UseLogout = () => {
       await Logout(user.id);
       localStorage.removeItem("token");
       clearUser();
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (error) {
       ResponseHandler(error);
     } finally {

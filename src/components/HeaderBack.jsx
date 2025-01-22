@@ -43,7 +43,7 @@ const HeaderBack = ({ children }) => {
 
   return (
     <div className="bg-white text-black dark:bg-dark-bg dark:text-white ">
-      <div className="border-b py-2  px-6 w-full flex justify-between items-center">
+      <div className="border-b py-5  px-6 w-full flex justify-between items-center">
         <button className="flex items-center gap-3" onClick={handleBack}>
           <FaArrowLeft />
        

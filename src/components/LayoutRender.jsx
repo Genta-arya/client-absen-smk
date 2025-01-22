@@ -27,9 +27,7 @@ const LayoutRender = () => {
         break;
     }
 
-    if (location.pathname === "/") {
-      navigate("/404");
-    }
+   
   }, [role, navigate]);
 
   let content;

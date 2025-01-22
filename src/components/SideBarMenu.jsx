@@ -7,6 +7,8 @@ import {
   FaCog,
   FaFolderOpen,
   FaCircle,
+  FaWarehouse,
+  FaSchool,
 } from "react-icons/fa";
 import { FaCircleRight } from "react-icons/fa6";
 import useAuthStore from "../Lib/Zustand/AuthStore";
@@ -30,6 +32,14 @@ const menuItems = [
     name: "Management User",
     path: "/admin/user",
     icon: FaUser,
+    // Hanya tampilkan jika role admin
+    restrictedTo: 'admin',
+  },
+
+  {
+    name: "Management Kelas",
+    path: "/admin/kelas",
+    icon: FaSchool,
     // Hanya tampilkan jika role admin
     restrictedTo: 'admin',
   },

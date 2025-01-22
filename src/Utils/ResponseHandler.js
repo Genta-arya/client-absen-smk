@@ -10,7 +10,7 @@ export const ResponseHandler = (response, navigate = null) => {
       localStorage.removeItem("token");
       toast.error(response.data.message, {
         duration: 2000,
-        onAutoClose: () => (window.location.href = "/login"),
+        onAutoClose: () => (window.location.href = "/"),
       });
       throw response.data;
 
@@ -24,7 +24,7 @@ export const ResponseHandler = (response, navigate = null) => {
 
     case 500:
       toast.error("Internal Server Error: Terjadi kesalahan pada server.", {
-        onAutoClose: () => (window.location.href = "/login"),
+        onAutoClose: () => (window.location.href = "/"),
       });
       throw response.data;
 

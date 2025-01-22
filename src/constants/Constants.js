@@ -33,9 +33,10 @@ export const formatDate = (dateString) => {
 };
 
 // export const API_URL = "http://localhost:8080/api";
+export const SOCKET = "https://absensi-pkl.apiservices.my.id";
 export const API_URL = "https://absensi-pkl.apiservices.my.id/api";
 export const API_URL_IMAGE = "http://localhost:8080/uploads/";
-export const UPLOAD_URL = "https://uploads.mgentaarya.my.id/uploads.php";
+export const UPLOAD_URL = "https://uploads.apiservices.my.id/uploads.php";
 export const formatTanggal = (dateString) => {
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const date = new Date(dateString);

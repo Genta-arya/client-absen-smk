@@ -14,9 +14,11 @@ const DetailAbsensi = () => {
   const [modal, setModal] = useState(false);
   const tanggal = user.DateIndonesia;
   const data = filterData?.[0]?.absensi || [];
-  const [selectedDate, setSelectedDate] = useState(
-    new Date(tanggal).toISOString().split("T")[0]
-  );
+  const [selectedDate, setSelectedDate] = useState(() => {
+
+    return new Date(user?.tanggal).toISOString().split("T")[0];
+  });
+
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Menambahkan event listener untuk scroll
@@ -114,7 +116,8 @@ const DetailAbsensi = () => {
 
     return false; // Tombol diaktifkan jika memenuhi semua syarat
   };
-
+  console.log("Tanggal User:", user.DateIndonesia);
+  console.log("Tanggal Default:", new Date().toISOString().split("T")[0]);
   const getStatusClass = (hadir) => {
     if (hadir === "hadir") return "bg-green-600 font-bold";
     if (hadir === "tidak_hadir") return "bg-red-600 font-bold";
@@ -175,7 +178,7 @@ const DetailAbsensi = () => {
             className="border border-gray-300 p-2 rounded-md shadow-sm text-xs"
             placeholder="Pilih tanggal"
             value={selectedDate}
-            min={new Date().toISOString().split("T")[0]}
+            min={selectedDate}
             max={minDate}
             onChange={handleDateChange}
           />

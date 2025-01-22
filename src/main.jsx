@@ -14,12 +14,13 @@ import MainSetting from "./View/Setting/MainSetting.jsx";
 import GantiPassword from "./View/Setting/components/GantiPassword.jsx";
 import MainProfile from "./View/Profile/MainProfile.jsx";
 import DetailProfile from "./View/Profile/DetailProfile.jsx";
-
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import MainPKL from "./components/RoleView/Pembimbing/MainPKL.jsx";
 import CreatePKL from "./components/RoleView/Pembimbing/components/CreatePKL.jsx";
 import DetailPkl from "./components/RoleView/Pembimbing/components/DetailPkl.jsx";
 import MainAbsensi from "./components/RoleView/Users/Absensi/MainAbsensi.jsx";
 import DetailAbsensi from "./components/RoleView/Users/Absensi/DetailAbsensi.jsx";
+import MainKelas from "./View/Kelas/MainKelas.jsx";
 
 
 const route = createBrowserRouter([
@@ -35,6 +36,10 @@ const route = createBrowserRouter([
       {
         path: "/admin/user",
         element: <MainUser />,
+      },
+      {
+        path: "/admin/kelas",
+        element: <MainKelas />,
       },
       {
         path: "/admin/setting",
@@ -96,7 +101,7 @@ const route = createBrowserRouter([
   },
 
   {
-    path: "/login",
+    path: "/",
     element: <MainLogin />,
   },
 
@@ -109,11 +114,13 @@ const route = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <>
-    <Toaster
-      richColors
-      position="bottom-center"
-      toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
-    />
-    <RouterProvider router={route} />
+   
+      <Toaster
+        richColors
+        position="bottom-center"
+        toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
+      />
+      <RouterProvider router={route} />
+
   </>
 );
