@@ -14,7 +14,6 @@ import MainSetting from "./View/Setting/MainSetting.jsx";
 import GantiPassword from "./View/Setting/components/GantiPassword.jsx";
 import MainProfile from "./View/Profile/MainProfile.jsx";
 import DetailProfile from "./View/Profile/DetailProfile.jsx";
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import MainPKL from "./components/RoleView/Pembimbing/MainPKL.jsx";
 import CreatePKL from "./components/RoleView/Pembimbing/components/CreatePKL.jsx";
 import DetailPkl from "./components/RoleView/Pembimbing/components/DetailPkl.jsx";

@@ -4,18 +4,27 @@ import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import { formatTanggal } from "../../../../constants/Constants";
 import { FaArrowUp, FaCalendarMinus, FaClock, FaTag } from "react-icons/fa";
 import { FaCalendarCheck } from "react-icons/fa6";
-import { HandleHadir } from "../../../../Api/Services/AbsensiServices";
+import {
+  HandleHadir,
+  handlePulangs,
+} from "../../../../Api/Services/AbsensiServices";
 import { handleError } from "../../../../Utils/Error";
+import ActModal from "../../../Modal/ActModal";
+import ModalAbsens from "./ModalAbsens";
+import { ResponseHandler } from "../../../../Utils/ResponseHandler";
+import { toast } from "sonner";
+import LoadingButton from "../../../LoadingButton";
 
 const DetailAbsensi = () => {
   const { user } = useAuthStore();
   const mapData = user?.Pkl?.map((item) => item);
   const filterData = mapData?.filter((item) => item.isDelete === false);
   const [modal, setModal] = useState(false);
+  const [selectData, setSelectData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const tanggal = user.DateIndonesia;
   const data = filterData?.[0]?.absensi || [];
   const [selectedDate, setSelectedDate] = useState(() => {
-
     return new Date(user?.tanggal).toISOString().split("T")[0];
   });
 
@@ -69,14 +78,19 @@ const DetailAbsensi = () => {
   }, {});
 
   const isDateDisabled = (date) => {
-    const selectedDate = new Date(date);
-    const serverDate = new Date(user.DateIndonesia);
+    const toUTC7 = (inputDate) => {
+      // Konversi waktu dari UTC ke UTC+7
+      return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000);
+    };
 
-    const serverHours = serverDate.getHours();
-    const serverMinutes = serverDate.getMinutes();
+    const selectedDate = toUTC7(new Date(date)); // Tanggal yang dipilih
+    const serverDate = toUTC7(new Date(user?.tanggal)); // Tanggal server disesuaikan ke UTC+7
+    // const serverDate = toUTC7(new Date(tanggal));
 
-    // Rentang waktu yang diizinkan: 10:00 - 12:30
-    console.log(serverHours);
+    const serverHours = serverDate.getUTCHours(); // Jam server di zona UTC+7
+    const serverMinutes = serverDate.getUTCMinutes(); // Menit server di zona UTC+7
+
+    // Rentang waktu yang diizinkan: 06:30 - 12:00 UTC+7
     const isWithinAllowedTime =
       (serverHours === 6 && serverMinutes >= 30) || // Jam 06:30 - 06:59
       (serverHours > 6 && serverHours < 12) || // Jam 07:00 - 11:59
@@ -86,38 +100,64 @@ const DetailAbsensi = () => {
       return true; // Tombol disabled jika tidak berada dalam rentang waktu
     }
 
-    if (selectedDate.toLocaleDateString() !== serverDate.toLocaleDateString()) {
+    // Format tanggal untuk perbandingan
+    const formatDate = (d) => {
+      const day = d.getUTCDate().toString().padStart(2, "0");
+      const month = (d.getUTCMonth() + 1).toString().padStart(2, "0");
+      const year = d.getUTCFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    if (formatDate(selectedDate) !== formatDate(serverDate)) {
       return true; // Tombol disabled jika tanggal tidak sama dengan tanggal server
     }
 
     return false; // Tombol diaktifkan jika berada dalam kondisi yang diperbolehkan
   };
 
+  const modalAbsen = (data) => {
+    setModal(!modal);
+    setSelectData(data);
+  };
+
   const isCheckoutDisabled = (date) => {
-    const selectedDate = new Date(date);
-    const serverDate = new Date(user.DateIndonesia);
+    const toUTC7 = (inputDate) => {
+      return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
+    };
 
-    const serverHours = serverDate.getHours();
-    const serverMinutes = serverDate.getMinutes();
+    // Ambil tanggal yang dipilih dan server tanggal
+    const selectedDate = new Date(date); // Tanggal dari input pengguna
+    const serverDate = toUTC7(new Date(tanggal)); // Tanggal server dikonversi ke UTC+7
 
-    // Rentang waktu: 15:30 - 00:00
+    const serverHours = serverDate.getUTCHours(); // Jam dari server
+    const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
+
+    // Rentang waktu: 15:30 - 18:00 UTC+7
     const isWithinCheckoutTime =
-      (serverHours === 12 && serverMinutes >= 30) ||
-      (serverHours > 12 && serverHours < 18) ||
-      (serverHours === 18 && serverMinutes === 0);
+      (serverHours === 15 && serverMinutes >= 0) || // Jam 15:30 - 15:59
+      (serverHours > 15 && serverHours < 18) || // Jam 16:00 - 17:59
+      (serverHours === 18 && serverMinutes === 0); // Tepat jam 18:00
 
     if (!isWithinCheckoutTime) {
       return true; // Tombol dinonaktifkan jika tidak dalam rentang waktu
     }
 
-    if (selectedDate.toLocaleDateString() !== serverDate.toLocaleDateString()) {
+    // Format tanggal ke dd-MM-yyyy untuk perbandingan
+    const formatDate = (d) => {
+      const day = d.getUTCDate().toString().padStart(2, "0");
+      const month = (d.getUTCMonth() + 1).toString().padStart(2, "0");
+      const year = d.getUTCFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    // Perbandingan tanggal dengan format Indonesia (dd-MM-yyyy)
+    if (formatDate(selectedDate) !== formatDate(serverDate)) {
       return true; // Tombol dinonaktifkan jika tanggal tidak sesuai
     }
 
     return false; // Tombol diaktifkan jika memenuhi semua syarat
   };
-  console.log("Tanggal User:", user.DateIndonesia);
-  console.log("Tanggal Default:", new Date().toISOString().split("T")[0]);
+
   const getStatusClass = (hadir) => {
     if (hadir === "hadir") return "bg-green-600 font-bold";
     if (hadir === "tidak_hadir") return "bg-red-600 font-bold";
@@ -136,31 +176,47 @@ const DetailAbsensi = () => {
     return `Belum absen`;
   };
 
-  const handleCheckIn = async (id) => {
-    try {
-      const currentDate = new Date(tanggal); // Tanggal yang diberikan
-
-      // Manipulasi waktu
-      const hours = currentDate.getHours();
-      const minutes = currentDate.getMinutes();
-      const seconds = currentDate.getSeconds();
-
-      // Pastikan format ISO
-      currentDate.setHours(hours);
-      currentDate.setMinutes(minutes);
-      currentDate.setSeconds(seconds);
-
-      const isoString = currentDate.toISOString();
-      const response = await HandleHadir({ id: id, jam_masuk: isoString });
-      console.log(response);
-    } catch (error) {
-      handleError(error);
-    }
+  const toUTC7 = (date) => {
+    const localDate = new Date(date);
+    const utc7Date = new Date(localDate.getTime() + 7 * 60 * 60 * 1000);
+    return utc7Date.toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }); // Format lokal
   };
+
+  const utcDate = new Date("2025-01-22T12:00:00Z");
+  console.log(toUTC7(utcDate));
 
   // Fungsi untuk scroll ke atas
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePulang = async (id) => {
+    setLoading(true);
+    const currentDate = new Date(tanggal); // Tanggal yang diberikan
+
+    // Manipulasi waktu
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const seconds = currentDate.getSeconds();
+
+    // Pastikan format ISO
+    currentDate.setHours(hours);
+    currentDate.setMinutes(minutes);
+    currentDate.setSeconds(seconds);
+
+    const isoString = currentDate.toISOString();
+    try {
+      await handlePulangs({
+        id: id,
+        jam_pulang : isoString
+      });
+      toast.success("Berhasil absen pulang");
+      window.location.reload();
+    } catch (error) {
+      ResponseHandler(error.response);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -178,7 +234,7 @@ const DetailAbsensi = () => {
             className="border border-gray-300 p-2 rounded-md shadow-sm text-xs"
             placeholder="Pilih tanggal"
             value={selectedDate}
-            min={selectedDate}
+            min={new Date(user?.tanggal).toISOString().split("T")[0]}
             max={minDate}
             onChange={handleDateChange}
           />
@@ -231,9 +287,7 @@ const DetailAbsensi = () => {
                 </p>
                 <div className="mt-1">
                   <button
-                    onClick={() => {
-                      handleCheckIn(absensi.id);
-                    }}
+                    onClick={() => modalAbsen(absensi.id)}
                     className="w-full flex items-center disabled:cursor-not-allowed disabled:bg-gray-500 justify-center cursor-pointer text-sm font-bold hover:opacity-85 transition-all duration-300 ease-in-out bg-green-500 text-white rounded-md py-1"
                     disabled={
                       isDateDisabled(absensi.tanggal) ||
@@ -248,12 +302,20 @@ const DetailAbsensi = () => {
                 </div>
                 <div className="mt-1">
                   <button
+                    onClick={() => handlePulang(absensi.id)}
                     className="w-full flex items-center disabled:cursor-not-allowed disabled:bg-gray-500 justify-center cursor-pointer text-sm font-bold hover:opacity-85 transition-all duration-300 ease-in-out bg-orange-500 text-white rounded-md py-1"
-                    disabled={isCheckoutDisabled(absensi.tanggal)}
+                    disabled={
+                      isCheckoutDisabled(absensi.tanggal) ||
+                      absensi.pulang ||
+                      loading
+                    }
                   >
                     <div className="flex items-center gap-2 ">
-                      <FaCalendarMinus size={18} />
-                      <p>Absen Pulang</p>
+                      <LoadingButton
+                        icon={<FaClock size={18} />}
+                        text="Absen Pulang"
+                        loading={loading}
+                      />
                     </div>
                   </button>
                 </div>
@@ -270,6 +332,17 @@ const DetailAbsensi = () => {
         >
           <FaArrowUp />
         </button>
+      )}
+
+      {modal && (
+        <ActModal
+          isModalOpen={modal}
+          setIsModalOpen={setModal}
+          title="Absen Masuk"
+        >
+          {" "}
+          <ModalAbsens id={selectData} tanggal={tanggal} utc={toUTC7} />
+        </ActModal>
       )}
     </ContainerGlobal>
   );

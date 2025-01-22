@@ -11,7 +11,7 @@ import useAuthStore from "../../Lib/Zustand/AuthStore";
 
 const Calendar = ({ data }) => {
   const { user } = useAuthStore();
-  const tanggal = user.DateIndonesia;
+  const tanggal = user.tanggal;
 
   const calendarRef = useRef(null);
   const [monthName, setMonthName] = useState("");
@@ -29,10 +29,10 @@ const Calendar = ({ data }) => {
     .map((absen) => {
       let timeFormattedDatang = "";
       let timeFormattedPulang = "";
-      let bgColorDatang = ""; 
-      let textColorDatang = ""; 
-      let bgColorPulang = "gray"; 
-      let textColorPulang = ""; 
+      let bgColorDatang = "";
+      let textColorDatang = "";
+      let bgColorPulang = "gray";
+      let textColorPulang = "";
 
       // Cek waktu datang
       if (absen.hadir === "hadir" && absen.datang) {
@@ -48,11 +48,11 @@ const Calendar = ({ data }) => {
         batasJam.setHours(7, 30, 0, 0); // Jam batas 7:30
 
         if (datangDate > batasJam) {
-          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah jam 7:30
+          timeFormattedDatang = `Tm ${timeFormattedDatang}`; // Jika datang setelah jam 7:30
           bgColorDatang = "orange"; // Set background color oranye untuk Telat
-          textColorDatang = "black"; // Set warna teks hitam untuk Telat
+          textColorDatang = "white"; // Set warna teks hitam untuk Telat
         } else {
-          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang sebelum atau tepat jam 7:30
+          timeFormattedDatang = ` M ${timeFormattedDatang}`; // Jika datang sebelum atau tepat jam 7:30
           bgColorDatang = "green"; // Set background color hijau untuk Hadir
           textColorDatang = "white"; // Set warna teks putih untuk Hadir
         }
@@ -74,12 +74,12 @@ const Calendar = ({ data }) => {
         // Validasi waktu pulang
         const jamPulang = pulangDate.getHours();
         if (jamPulang < 16) {
-          timeFormattedPulang = `${timeFormattedPulang}`; // Jika pulang sebelum jam 16:00
-          bgColorPulang = "yellow"; // Set warna latar belakang kuning untuk Pulang Cepat
-          textColorPulang = "black"; // Set warna teks hitam untuk Pulang Cepat
+          timeFormattedPulang = `Pc ${timeFormattedPulang}`; // Jika pulang sebelum jam 16:00
+          bgColorPulang = "orange"; // Set warna latar belakang kuning untuk Pulang Cepat
+          textColorPulang = "white"; // Set warna teks hitam untuk Pulang Cepat
         } else {
-          timeFormattedPulang = `${timeFormattedPulang}`; // Jika pulang setelah jam 16:00
-          bgColorPulang = "blue"; // Set warna latar belakang biru untuk Pulang Normal
+          timeFormattedPulang = `P ${timeFormattedPulang}`; // Jika pulang setelah jam 16:00
+          bgColorPulang = "sky"; // Set warna latar belakang biru untuk Pulang Normal
           textColorPulang = "white"; // Set warna teks putih untuk Pulang Normal
         }
       } else {
@@ -89,7 +89,6 @@ const Calendar = ({ data }) => {
       }
 
       return [
-        // Event untuk datang
         {
           title: `${timeFormattedDatang}`, // Menampilkan waktu datang
           date: absen.tanggal,
@@ -97,7 +96,6 @@ const Calendar = ({ data }) => {
           backgroundColor: bgColorDatang, // Menggunakan warna latar belakang datang
           color: textColorDatang, // Menggunakan warna teks datang
         },
-        // Event untuk pulang
         {
           title: `${timeFormattedPulang}`, // Menampilkan waktu pulang
           date: absen.tanggal,
@@ -105,6 +103,7 @@ const Calendar = ({ data }) => {
           backgroundColor: bgColorPulang, // Menggunakan warna latar belakang pulang
           color: textColorPulang, // Menggunakan warna teks pulang
         },
+        
       ];
     })
     .flat(); // Menggabungkan dua event (datang dan pulang) menjadi satu array

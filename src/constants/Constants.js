@@ -31,19 +31,28 @@ export const formatDate = (dateString) => {
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
 };
-
-// export const API_URL = "http://localhost:8080/api";
-export const SOCKET = "https://absensi-pkl.apiservices.my.id";
-export const API_URL = "https://absensi-pkl.apiservices.my.id/api";
+ 
+export const API_URL = "http://localhost:8080/api";
+export const SOCKET = "http://localhost:8080";
+//  export const SOCKET = "https://absensi-pkl.apiservices.my.id";
+// export const API_URL = "https://absensi-pkl.apiservices.my.id/api";
 export const API_URL_IMAGE = "http://localhost:8080/uploads/";
 export const UPLOAD_URL = "https://uploads.apiservices.my.id/uploads.php";
+
 export const formatTanggal = (dateString) => {
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const date = new Date(dateString);
-  const day = days[date.getDay()];
 
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  // Menyesuaikan ke UTC+7
+  const utc7Date = new Date(date.getTime() + 7 * 60 * 60 * 1000);
 
-  const formattedDate = `${day}, ${date.getDate()} - ${month} - ${date.getFullYear()}`;
+  const day = days[utc7Date.getUTCDay()];
+  const month = (utc7Date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const dayOfMonth = utc7Date.getUTCDate().toString().padStart(2, "0");
+  const year = utc7Date.getUTCFullYear();
+
+
+  const formattedDate = `${day}, ${dayOfMonth}/${month}/${year}`;
   return formattedDate;
 };
+
