@@ -18,7 +18,7 @@ const MainSetting = () => {
         </Container>
       ) : (
         <>
-          <Navbar role={user?.role} />
+       
           <ContainerGlobal>
             <MenuSetting />
           </ContainerGlobal>

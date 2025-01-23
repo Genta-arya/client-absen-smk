@@ -39,11 +39,11 @@ const MainLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!recaptchaToken) {
-      alert("Please complete the CAPTCHA");
-      setLoading(false);
-      return;
-    }
+    // if (!recaptchaToken) {
+    //   alert("Please complete the CAPTCHA");
+    //   setLoading(false);
+    //   return;
+    // }
 
     setLoading(true);
     try {
@@ -157,14 +157,14 @@ const MainLogin = () => {
           </div>
 
           {/* reCAPTCHA v2 widget */}
-          <div className="mb-6 text-xs flex justify-center">
+          {/* <div className="mb-6 text-xs flex justify-center">
             <ReCAPTCHA
               type="image"
               size="normal"
               sitekey="6Lcv3L4qAAAAAJoWWTTOuo9SubeanyIoNZ2wPKj5"
               onChange={handleRecaptchaChange}
             />
-          </div>
+          </div> */}
 
           {/* Submit Button */}
           <button

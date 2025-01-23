@@ -13,7 +13,7 @@ import { HandleHadir } from "../../../../Api/Services/AbsensiServices";
 import LoadingButton from "../../../LoadingButton";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-const ModalAbsens = ({ tanggal, utc, id }) => {
+const ModalAbsens = ({ tanggal,  id }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [photo, setPhoto] = useState(null);
@@ -49,10 +49,10 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
         },
       });
 
-      // Pastikan videoRef.current sudah ada sebelum mengatur srcObject
+ 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        setCameraError(null); // Menghapus pesan error jika berhasil
+        setCameraError(null);
       } else {
         console.error("videoRef.current is null");
         setCameraError("Elemen video tidak ditemukan.");
@@ -97,7 +97,7 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
       console.log(currentDate);
 
       if (cropData) {
-        const timestamp = Date.now(); // Timestamp untuk nama unik
+        const timestamp = Date.now();
         const uniqueFileName = `photo_${timestamp}.png`;
         const formData = new FormData();
         formData.append("file", cropData, uniqueFileName);
@@ -203,13 +203,13 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Mengonversi canvas menjadi Blob
+
       canvas.toBlob(
         (blob) => {
-          setPhoto(blob); // Simpan Blob ke state
+          setPhoto(blob); 
         },
-        "image/png", // Format gambar
-        1 // Kualitas (opsional, default 1)
+        "image/png", 
+        1 
       );
     }
   };

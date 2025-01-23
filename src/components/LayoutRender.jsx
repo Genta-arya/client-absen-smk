@@ -4,8 +4,9 @@ import MainHome from "../View/Homes/MainHome";
 import MainUsers from "./RoleView/Users/MainUsers";
 import Container from "./Container";
 import useAuthStore from "../Lib/Zustand/AuthStore";
+import MainUser from "../View/User/MainUser";
 
-const LayoutRender = () => {
+const LayoutRender = ({loading}) => {
   const { user } = useAuthStore();
   const role = user?.role;
   const navigate = useNavigate();
@@ -26,8 +27,6 @@ const LayoutRender = () => {
       default:
         break;
     }
-
-   
   }, [role, navigate]);
 
   let content;
@@ -44,7 +43,20 @@ const LayoutRender = () => {
       break;
   }
 
-  return <>{user !== null && <Container role={role}>{content}</Container>}</>;
+  return (
+    <>
+      {user !== null && (
+        <>
+          {" "}
+          {user?.role === "user" ? (
+            <MainUsers role={role} user={user} />
+          ) : (
+            <Container role={role}>{content}</Container>
+          )}
+        </>
+      )}
+    </>
+  );
 };
 
 export default LayoutRender;

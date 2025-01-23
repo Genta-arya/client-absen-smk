@@ -8,17 +8,37 @@ import useAuthStore from "../../../Lib/Zustand/AuthStore";
 import ActModal from "../../Modal/ActModal";
 import Input from "../../Input";
 import LoadingButton from "../../LoadingButton";
-import { FaSave } from "react-icons/fa";
+import {
+  FaCalendar,
+  FaClock,
+  FaMapMarker,
+  FaMapMarkerAlt,
+  FaRegCalendar,
+  FaSave,
+  FaSign,
+  FaSignInAlt,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { updateDataUser, getKelas } from "../../../Api/Services/LoginServices";
 import { ResponseHandler } from "../../../Utils/ResponseHandler";
 import { toast } from "sonner";
 import { io } from "socket.io-client";
-import { SOCKET } from "../../../constants/Constants";
+import { formatTanggal, SOCKET } from "../../../constants/Constants";
+
+import { useNavigate } from "react-router-dom";
+import useLocationStore from "../../../Lib/Zustand/useLocationStore";
+import { BeatLoader } from "react-spinners";
+import UseLogout from "../../../Lib/Hook/UseLogout";
+import ModalAbsens from "./Absensi/ModalAbsens";
 
 const MainUsers = () => {
   const { user } = useAuthStore();
+  const mapData = user?.Pkl?.map((item) => item);
+  const filterData = mapData?.filter((item) => item.isDelete === false);
+  const dataAbsen = filterData?.[0]?.absensi || [];
   const role = user?.role;
   const [modal, setModal] = useState(false);
+  const [modal1, setModal1] = useState(false);
   const [next, setNext] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loading1, setLoading1] = useState(false);
@@ -30,7 +50,26 @@ const MainUsers = () => {
     email: user?.email,
     kelas: user?.kelas,
   });
+  const currentDate = user?.DateIndonesia
+    ? new Date(user?.DateIndonesia)
+    : null;
+  const formattedCurrentDate = currentDate
+    ? currentDate.toISOString().split("T")[0]
+    : null;
 
+  // Ambil data absen yang tanggalnya sama dengan tanggal hari ini
+  const dataAbsenToday = dataAbsen.filter(
+    (item) =>
+      new Date(item.tanggal).toISOString().split("T")[0] ===
+      formattedCurrentDate
+  );
+  const absenToday = dataAbsenToday[0] || null;
+
+  console.log(absenToday);
+
+  const navigate = useNavigate();
+  const { location, locationError, locationPermission } = useLocationStore();
+  const { logout, loading: loadingLogout } = UseLogout();
   const fetchKelas = async () => {
     setLoading1(true);
     try {
@@ -113,15 +152,212 @@ const MainUsers = () => {
     }
   };
 
+  // Fungsi untuk memeriksa apakah tombol masuk harus dinonaktifkan
+  const isMasukDisabled = () => {
+    const toUTC7 = (inputDate) => {
+      return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
+    };
+
+    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
+    const serverHours = serverDate.getUTCHours(); // Jam dari server
+    const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
+
+    // Rentang waktu: 06:30 - 12:00 UTC+7 untuk masuk
+    const isWithinMasukTime =
+      (serverHours === 6 && serverMinutes >= 30) || // Jam 06:30 - 06:59
+      (serverHours > 6 && serverHours < 9) || // Jam 06:00 - 08:59
+      (serverHours === 9 && serverMinutes === 0); // Tepat jam 9:00
+
+    return !isWithinMasukTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
+  };
+
+  // Fungsi untuk memeriksa apakah tombol pulang harus dinonaktifkan
+  const isPulangDisabled = () => {
+    const toUTC7 = (inputDate) => {
+      return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
+    };
+
+    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
+    const serverHours = serverDate.getUTCHours(); // Jam dari server
+    const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
+
+    // Rentang waktu: 15:30 - 18:00 UTC+7 untuk pulang
+    const isWithinPulangTime =
+      (serverHours === 15 && serverMinutes >= 30) || // Jam 15:30 - 15:59
+      (serverHours > 15 && serverHours < 18) || // Jam 16:00 - 17:59
+      (serverHours === 18 && serverMinutes === 0); // Tepat jam 18:00
+
+    return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
+  };
+
   return (
-    <div>
+    <div className="min-h-screen w-full bg-gray-100 pb-8">
       <>
         <Tools title={"Dashboard"} role={role} />
         {!modal && (
-          <>
-            <Headers user={user} />
-            <ContentUser />
-          </>
+          <div>
+            <div className="bg-[linear-gradient(to_bottom,_#1e3a8a,_#334e8c,_#4f6a92)] pb-40 py-16 rounded-bl-[35px] rounded-br-[35px]">
+              {/* <Headers user={user} /> */}
+
+              <div className="px-6 -mt-8">
+                <div className="flex  gap-4 items-center justify-between ">
+                  <div className="flex gap-4 items-center">
+                    <img
+                      onClick={() => navigate(`/app/profil`)}
+                      src={user?.avatar}
+                      alt=""
+                      className="border-2 lg:w-16 lg:h-16 md:w-16 md:h-16 w-12 h-12 hover:cursor-pointer border-white rounded-full"
+                    />
+                    <div>
+                      <h1 className="text-white font-bold lg:text-xl md:text-xl text-base mt-2">
+                        Hi, {user?.name}
+                      </h1>
+                      {user && user.Kelas && user.Kelas.length > 0 ? (
+                        <p className="text-white text-xs">
+                          {user.Kelas[0]?.nama} | {user.nim}
+                        </p>
+                      ) : (
+                        <p className="text-white text-sm">
+                          Kelas tidak tersedia
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <button
+                      disabled={loadingLogout}
+                      onClick={() => logout()}
+                      className="bg-white text-xs text-blue py-2 px-4 rounded-md"
+                    >
+                      <div className="flex items-center gap-2">
+                        {loadingLogout ? (
+                          <>
+                            <BeatLoader color={"#1e3a8a"} size={8} margin={2} />
+                          </>
+                        ) : (
+                          <>
+                            <FaSignOutAlt />
+                            <p>Logout</p>
+                          </>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="px-4 -mt-36">
+              <div className=" px-4 bg-white p-4 mt-4 rounded-lg shadow">
+                <div className="flex-col flex">
+                  <div className="flex gap-2 items-center text-sm">
+                    <FaRegCalendar size={24} className="text-blue" />
+                    <p className="font-bold text-sm">{formatTanggal(user?.tanggal)}</p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {absenToday !== null ? (
+                      <div className="flex flex-col gap-2">
+                        <h1 className="text-center mt-4 font-medium text-gray-600 text-sm">
+                          Tempat PKL
+                        </h1>
+                        {user?.Pkl?.length > 0 && (
+                          <h1 className="text-center font-extrabold text-blue">
+                            {user?.Pkl[0]?.name}
+                          </h1>
+                        )}
+                        <div className="flex justify-center gap-4 mt-4">
+                          <div className="flex flex-col gap-2">
+                            <button
+                              onClick={() => setModal1(true)}
+                              disabled={isMasukDisabled()}
+                              className="bg-blue disabled:hover:opacity-100 hover:opacity-85 transition-all disabled:bg-gray-500 text-white w-52 py-3  rounded-md"
+                            >
+                              <div className="flex items-center justify-center gap-2">
+                                <FaSignInAlt />
+                                <p>Masuk</p>
+                              </div>
+                            </button>
+                            <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
+                              <FaClock />
+
+                              <h1>06:30 - 09:00</h1>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <button
+                              disabled={isPulangDisabled()}
+                              className="border disabled:bg-gray-500 disabled:text-white disabled:hover:opacity-100 hover:opacity-85 transition-all border-black w-52 text-black  py-3  rounded-md"
+                            >
+                              <div className="flex items-center justify-center gap-2">
+                                <FaSignInAlt />
+                                <p>Pulang</p>
+                              </div>
+                            </button>
+                            <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
+                              <FaClock />
+
+                              <h1>15:30 - 18:00</h1>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-4">
+                        <h1 className="font-bold text-sm text-center">
+                          Kamu Belum memiliki tempat PKL & absensi
+                        </h1>
+                      </div>
+                    )}
+                    <div className="mt-3">
+                      <h1 className="text-center text-black md:text-base lg:text-base text-sm">
+                        Lokasi Anda saat ini :
+                      </h1>
+
+                      <div className="bg-gray-200 px-5  mt-1 py-4 flex items-center justify-center  flex-col  gap-2">
+                        <FaMapMarkerAlt size={20} className="text-red-500 " />
+                        {locationError ? (
+                          <>
+                            <h1 className="text-center text-sm">
+                              {locationError}
+                            </h1>
+                          </>
+                        ) : (
+                          <>
+                            <h1 className="text-center text-sm">
+                              {location.address || (
+                                <BeatLoader
+                                  color="#294a70"
+                                  className="text-blue mt-2"
+                                />
+                              )}
+                            </h1>
+                            <p
+                              onClick={() => {
+                                const gmapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+                                window.open(gmapsUrl, "_blank");
+                              }}
+                              className="text-xs border-dashed border-t border-gray-400 w-full text-center pt-3 cursor-pointer hover:underline"
+                            >
+                              {location.latitude}, {location.longitude}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="px-4 mt-8 pb-24">
+              <h1 className="text-base font-bold">Menu</h1>
+              <p className="text-xs dark:text-gray-300 text-gray-500">
+                Silahkan pilih menu yang digunakan
+              </p>
+              <ContentUser />
+            </div>
+          </div>
         )}
 
         <ButtonNav />
@@ -192,6 +428,16 @@ const MainUsers = () => {
               </div>
             </div>
           )}
+        </ActModal>
+      )}
+      {modal1 && (
+        <ActModal
+          isModalOpen={modal1}
+          setIsModalOpen={setModal1}
+          title="Absen Masuk"
+        >
+          {" "}
+          <ModalAbsens id={absenToday.id} tanggal={currentDate} />
         </ActModal>
       )}
     </div>
