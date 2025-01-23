@@ -11,6 +11,7 @@ import LoadingButton from "../../LoadingButton";
 import {
   FaCalendar,
   FaClock,
+  FaGlobe,
   FaMapMarker,
   FaMapMarkerAlt,
   FaRegCalendar,
@@ -18,6 +19,7 @@ import {
   FaSign,
   FaSignInAlt,
   FaSignOutAlt,
+  FaWifi,
 } from "react-icons/fa";
 import { updateDataUser, getKelas } from "../../../Api/Services/LoginServices";
 import { ResponseHandler } from "../../../Utils/ResponseHandler";
@@ -30,6 +32,7 @@ import useLocationStore from "../../../Lib/Zustand/useLocationStore";
 import { BeatLoader } from "react-spinners";
 import UseLogout from "../../../Lib/Hook/UseLogout";
 import ModalAbsens from "./Absensi/ModalAbsens";
+import { FaMapLocation } from "react-icons/fa6";
 
 const MainUsers = () => {
   const { user } = useAuthStore();
@@ -43,7 +46,9 @@ const MainUsers = () => {
   const [loading, setLoading] = useState(false);
   const [loading1, setLoading1] = useState(false);
   const [kelasOptions, setKelasOptions] = useState([]); // Options for React Select
-  const [selectedKelas, setSelectedKelas] = useState(null); // Selected class
+  const [selectedKelas, setSelectedKelas] = useState(null);
+  const [iplocal, setIplocal] = useState(null);
+  const [ping, setPing] = useState(20);
   const [data, setData] = useState({
     name: user?.name,
     nim: user?.nim,
@@ -65,10 +70,8 @@ const MainUsers = () => {
   );
   const absenToday = dataAbsenToday[0] || null;
 
-  console.log(absenToday);
-
   const navigate = useNavigate();
-  const { location, locationError, locationPermission } = useLocationStore();
+  const { location, locationError, ip } = useLocationStore();
   const { logout, loading: loadingLogout } = UseLogout();
   const fetchKelas = async () => {
     setLoading1(true);
@@ -89,33 +92,35 @@ const MainUsers = () => {
     }
   };
 
-  useEffect(() => {
-    const socket = io(SOCKET, {
-      withCredentials: true,
-    });
+  const socket = io(SOCKET);
 
-    const userId = user?.id;
-    socket.emit("joinRoom", userId);
+  // useEffect(() => {
+  //   const socket = io(SOCKET, {
+  //     withCredentials: true,
+  //   });
 
-    socket.on("new-pkl-notification", (data) => {
-      if (Notification.permission === "granted") {
-        new Notification("PKL Notification", {
-          body: data.message,
-          icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfqgzc3z4pYYehdJbSmuMT8Gp7abIEiE-zw&s", // Ganti dengan ikon yang sesuai
-        });
-      }
+  //   const userId = user?.id;
+  //   socket.emit("joinRoom", userId);
 
-      toast.info(data.message);
-    });
+  //   socket.on("new-pkl-notification", (data) => {
+  //     if (Notification.permission === "granted") {
+  //       new Notification("PKL Notification", {
+  //         body: data.message,
+  //         icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfqgzc3z4pYYehdJbSmuMT8Gp7abIEiE-zw&s", // Ganti dengan ikon yang sesuai
+  //       });
+  //     }
 
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
+  //     toast.info(data.message);
+  //   });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [user?.id]);
+  //   if (Notification.permission !== "granted") {
+  //     Notification.requestPermission();
+  //   }
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, [user?.id]);
 
   useEffect(() => {
     if (user?.email === null || user?.Kelas?.length === 0) {
@@ -165,7 +170,7 @@ const MainUsers = () => {
     // Rentang waktu: 06:30 - 12:00 UTC+7 untuk masuk
     const isWithinMasukTime =
       (serverHours === 6 && serverMinutes >= 30) || // Jam 06:30 - 06:59
-      (serverHours > 6 && serverHours < 9) || // Jam 06:00 - 08:59
+      (serverHours > 6 && serverHours < 21) || // Jam 06:00 - 08:59
       (serverHours === 9 && serverMinutes === 0); // Tepat jam 9:00
 
     return !isWithinMasukTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
@@ -188,6 +193,80 @@ const MainUsers = () => {
       (serverHours === 18 && serverMinutes === 0); // Tepat jam 18:00
 
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
+  };
+
+  const fetchLocalIPAddress = () => {
+    return new Promise((resolve, reject) => {
+      const localIPs = new Set();
+      const rtcPeerConnection = new RTCPeerConnection({
+        iceServers: [],
+      });
+
+      rtcPeerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          const candidate = event.candidate.candidate;
+          const regex = /(?:\d{1,3}\.){3}\d{1,3}/;
+          const ipMatch = candidate.match(regex);
+          if (ipMatch) {
+            localIPs.add(ipMatch[0]);
+          }
+        } else {
+          // Jika kandidat selesai, kembalikan hasil
+          resolve(Array.from(localIPs));
+          rtcPeerConnection.close();
+        }
+      };
+
+      rtcPeerConnection.createDataChannel(""); // Buat data channel untuk memulai proses
+      rtcPeerConnection
+        .createOffer()
+        .then((offer) => rtcPeerConnection.setLocalDescription(offer))
+        .catch((error) => reject(error));
+    });
+  };
+
+  fetchLocalIPAddress()
+    .then((ips) => {
+      setIplocal(ips[0]);
+    })
+    .catch((error) => {
+      console.error("Gagal mendapatkan IP lokal:", error);
+    });
+
+  useEffect(() => {
+    // Fungsi untuk mengukur ping
+    const measurePing = () => {
+      const startTime = Date.now();
+
+      // Kirim "ping" ke server
+      socket.emit("ping", startTime);
+
+      // Menunggu respons "pong" dan hitung latensi
+      socket.on("pong", (timestamp) => {
+        const endTime = Date.now();
+        const pingLatency = endTime - timestamp;
+        setPing(pingLatency); // Set nilai ping ke state
+      });
+    };
+
+    // Set interval untuk mengukur ping setiap detik (1000 ms)
+    const pingInterval = setInterval(measurePing, 20000);
+
+    // Bersihkan interval ketika komponen unmount
+    return () => {
+      clearInterval(pingInterval);
+    };
+  }, []);
+
+  const getPingClass = () => {
+    if (ping < 80) {
+      return "text-green-500"; // Hijau jika ping < 80
+    } else if (ping >= 80 && ping < 180) {
+      return "text-orange-500"; // Oranye jika ping >= 80 dan < 180
+    } else if (ping >= 180) {
+      return "text-red-500"; // Merah jika ping >= 180
+    }
+    return ""; // Default jika ping belum tersedia
   };
 
   return (
@@ -227,6 +306,7 @@ const MainUsers = () => {
                   <div>
                     <button
                       disabled={loadingLogout}
+                      title="Logout"
                       onClick={() => logout()}
                       className="bg-white text-xs text-blue py-2 px-4 rounded-md"
                     >
@@ -238,7 +318,6 @@ const MainUsers = () => {
                         ) : (
                           <>
                             <FaSignOutAlt />
-                            <p>Logout</p>
                           </>
                         )}
                       </div>
@@ -252,7 +331,9 @@ const MainUsers = () => {
                 <div className="flex-col flex">
                   <div className="flex gap-2 items-center text-sm">
                     <FaRegCalendar size={24} className="text-blue" />
-                    <p className="font-bold text-sm">{formatTanggal(user?.tanggal)}</p>
+                    <p className="font-bold text-sm">
+                      {formatTanggal(user?.tanggal)}
+                    </p>
                   </div>
                   <div className="flex flex-col gap-2">
                     {absenToday !== null ? (
@@ -270,7 +351,7 @@ const MainUsers = () => {
                             <button
                               onClick={() => setModal1(true)}
                               disabled={isMasukDisabled()}
-                              className="bg-blue disabled:hover:opacity-100 hover:opacity-85 transition-all disabled:bg-gray-500 text-white w-52 py-3  rounded-md"
+                              className="bg-blue disabled:hover:opacity-100  hover:opacity-85 transition-all disabled:bg-gray-500 text-white w-32 py-3  rounded-md"
                             >
                               <div className="flex items-center justify-center gap-2">
                                 <FaSignInAlt />
@@ -287,7 +368,7 @@ const MainUsers = () => {
                           <div className="flex flex-col gap-2">
                             <button
                               disabled={isPulangDisabled()}
-                              className="border disabled:bg-gray-500 disabled:text-white disabled:hover:opacity-100 hover:opacity-85 transition-all border-black w-52 text-black  py-3  rounded-md"
+                              className="border disabled:bg-gray-500 disabled:text-white disabled:hover:opacity-100 hover:opacity-85 transition-all border-black w-32 text-black  py-3  rounded-md"
                             >
                               <div className="flex items-center justify-center gap-2">
                                 <FaSignInAlt />
@@ -332,15 +413,39 @@ const MainUsers = () => {
                                 />
                               )}
                             </h1>
-                            <p
-                              onClick={() => {
-                                const gmapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
-                                window.open(gmapsUrl, "_blank");
-                              }}
-                              className="text-xs border-dashed border-t border-gray-400 w-full text-center pt-3 cursor-pointer hover:underline"
-                            >
-                              {location.latitude}, {location.longitude}
-                            </p>
+                            <div className="flex flex-col items-center gap-1 w-full">
+                              <div className="flex w-full justify-center items-center">
+                                <div className="flex  gap-2 justify-center items-center text-xs">
+                                  <FaWifi className="text-blue text-xl" />
+                                  <p>
+                                    {iplocal}{" "}
+                                    <span
+                                      className={getPingClass() + " font-bold"}
+                                    >
+                                      ({ping}ms)
+                                    </span>
+                                  </p>
+                                </div>
+                                {/* <div className="flex  gap-2 justify-center items-center text-xs">
+                                  <FaGlobe className="text-blue text-xl" />
+                                  <p>{ip.ip}</p>
+                                </div> */}
+                              </div>
+                              <p
+                                onClick={() => {
+                                  const gmapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+                                  window.open(gmapsUrl, "_blank");
+                                }}
+                                className="text-xs border-dashed border-t border-gray-400 w-full text-center pt-3 cursor-pointer hover:underline"
+                              >
+                                <div className="flex gap-2 justify-center items-center">
+                                  <FaMapLocation className="text-blue text-xl" />
+                                  <p>
+                                    {location.latitude}, {location.longitude}
+                                  </p>
+                                </div>
+                              </p>
+                            </div>
                           </>
                         )}
                       </div>

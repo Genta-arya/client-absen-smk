@@ -9,7 +9,7 @@ import Tools from "./Tools";
 const Container = ({ children, role }) => {
   return (
     <>
-      <div className="md:block lg:block hidden">
+      <div className={`${role === "user" && "hidden"} `}>
         <Navbar role={role} />
       </div>
 

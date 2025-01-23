@@ -10,8 +10,7 @@ const UseCheckLogin = () => {
   const token = localStorage.getItem("token");
   const { user, setUser } = useAuthStore();
 
-  // Menggunakan state global dari Zustand
-  const { setLocation, setLocationError, setLocationPermission } =
+  const { setLocation, setLocationError, setIp, setLocationPermission } =
     useLocationStore();
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +31,6 @@ const UseCheckLogin = () => {
       async (position) => {
         const { latitude, longitude } = position.coords;
 
-        // Set latitude dan longitude awal
         setLocation({ latitude, longitude });
 
         const apiKey = getRandomApiKey();
@@ -67,14 +65,14 @@ const UseCheckLogin = () => {
             });
           }
         } catch (error) {
-          console.error("Error fetching address:", error);
+          ResponseHandler(error.response);
+
           setLocationError("Gagal mengambil alamat lokasi.");
         } finally {
           setLocationPermission(true);
         }
       },
       (error) => {
-        console.error("Error getting location:", error);
         setLocationError(
           "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
         );
@@ -83,10 +81,18 @@ const UseCheckLogin = () => {
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
       }
     );
+  };
+  const fetchIpAddress = async () => {
+    try {
+   
+      const responses = await axios.get("https://ipwhois.app/json/");
+      setIp(responses.data);
+      
+    } catch (error) {
+      console.error("Gagal mengambil alamat IP:", error);
+    }
   };
 
   const fetch = async () => {
@@ -109,6 +115,7 @@ const UseCheckLogin = () => {
 
   useEffect(() => {
     fetchLocation();
+    fetchIpAddress();
   }, []);
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import Loading from "../../../Loading";
 import { formatTanggal } from "../../../../constants/Constants";
 import { FaCircle, FaTag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const ListPKL = ({ searchTerm }) => {
   const { user } = useAuthStore();
@@ -18,11 +19,11 @@ const ListPKL = ({ searchTerm }) => {
       const response = await getPKLCreator(user.id);
       setData(response.data);
     } catch (error) {
-      console.error(error);
-    } finally {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
       }
+      ResponseHandler(error.response);
+    } finally {
       setLoading(false);
     }
   };
