@@ -4,10 +4,11 @@ import AppMenu from "./AppMenu";
 
 const ContentUser = () => {
   return (
-    <div className="mt-8 mb-4 px-4 ">
+    <div className="mt-4">
       <div className="flex flex-col gap-2">
-        <AppMenu />
-        <DaftarPermohonan />
+        <div className="bg-white  md:p-5 p-2 lg:p-5 rounded-md">
+          <AppMenu />
+        </div>
       </div>
     </div>
   );

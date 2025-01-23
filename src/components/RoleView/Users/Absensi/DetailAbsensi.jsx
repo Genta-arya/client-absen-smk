@@ -51,6 +51,9 @@ const DetailAbsensi = () => {
     setSelectedDate(e.target.value);
   };
 
+  const firstDate = data[0]?.tanggal;
+  const maxDate = firstDate.split("T")[0];
+
   const lastDate = data[data.length - 1]?.tanggal;
   const minDate = lastDate.split("T")[0];
 
@@ -212,6 +215,9 @@ const DetailAbsensi = () => {
       toast.success("Berhasil absen pulang");
       window.location.reload();
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);
@@ -233,9 +239,17 @@ const DetailAbsensi = () => {
             className="border border-gray-300 p-2 rounded-md shadow-sm text-xs"
             placeholder="Pilih tanggal"
             value={selectedDate}
-            min={new Date(user?.tanggal).toISOString().split("T")[0]}
+            // disable clear
+            onWheel={(e) => e.target.blur()}
+            min={maxDate}
             max={minDate}
-            onChange={handleDateChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              // Pastikan hanya tanggal valid yang dipilih
+              if (value !== '') {
+                handleDateChange(e);
+              }
+            }}
           />
         </div>
       </div>

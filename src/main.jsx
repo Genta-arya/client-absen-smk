@@ -20,6 +20,7 @@ import DetailPkl from "./components/RoleView/Pembimbing/components/DetailPkl.jsx
 import MainAbsensi from "./components/RoleView/Users/Absensi/MainAbsensi.jsx";
 import DetailAbsensi from "./components/RoleView/Users/Absensi/DetailAbsensi.jsx";
 import MainKelas from "./View/Kelas/MainKelas.jsx";
+import InfoAbsensi from "./components/RoleView/Users/Absensi/InfoAbsensi.jsx";
 
 
 const route = createBrowserRouter([
@@ -83,6 +84,14 @@ const route = createBrowserRouter([
       {
         path: "/app/setting",
         element: <MainSetting />,
+      },
+      {
+        path: "/app/ganti/password",
+        element: <GantiPassword />,
+      },
+      {
+        path: "/app/info/absensi/:id",
+        element: <InfoAbsensi />,
       },
       {
         path: "/app/profil",

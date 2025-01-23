@@ -9,10 +9,12 @@ import Tools from "./Tools";
 const Container = ({ children, role }) => {
   return (
     <>
-      <Navbar role={role} />
+      <div className="md:block lg:block hidden">
+        <Navbar role={role} />
+      </div>
 
       <div
-        className={`${Text} bg-light-bg dark:bg-dark-bg text-black dark:text-white
+        className={`${Text} md: bg-light-bg dark:bg-dark-bg text-black dark:text-white
   flex flex-col min-h-screen   lg:px-4 md:px-4 px-1 py-8`}
       >
         {children}

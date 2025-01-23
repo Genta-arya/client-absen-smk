@@ -15,6 +15,10 @@ const UseLogout = () => {
       clearUser();
       window.location.href = "/";
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+        window.location.href = "/";
+      }
       ResponseHandler(error);
     } finally {
       setLoading(false);

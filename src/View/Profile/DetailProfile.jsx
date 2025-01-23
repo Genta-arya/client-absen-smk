@@ -20,6 +20,9 @@ const DetailProfile = () => {
       setData(response.data);
       setDataAbsen(response.data.Pkl[0].absensi);
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);

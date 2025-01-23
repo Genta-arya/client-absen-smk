@@ -10,6 +10,7 @@ import LoadingButton from "../../components/LoadingButton";
 import { ResponseHandler } from "../../Utils/ResponseHandler";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
 const MainLogin = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -38,11 +39,11 @@ const MainLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!recaptchaToken) {
-      alert("Please complete the CAPTCHA");
-      setLoading(false);
-      return;
-    }
+    // if (!recaptchaToken) {
+    //   alert("Please complete the CAPTCHA");
+    //   setLoading(false);
+    //   return;
+    // }
 
     setLoading(true);
     try {
@@ -58,6 +59,10 @@ const MainLogin = () => {
         navigate("/admin");
       }
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+        
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);
@@ -152,14 +157,14 @@ const MainLogin = () => {
           </div>
 
           {/* reCAPTCHA v2 widget */}
-          <div className="mb-6 text-xs flex justify-center">
+          {/* <div className="mb-6 text-xs flex justify-center">
             <ReCAPTCHA
               type="image"
               size="normal"
               sitekey="6Lcv3L4qAAAAAJoWWTTOuo9SubeanyIoNZ2wPKj5"
               onChange={handleRecaptchaChange}
             />
-          </div>
+          </div> */}
 
           {/* Submit Button */}
           <button

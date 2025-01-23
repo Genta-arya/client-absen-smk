@@ -50,6 +50,9 @@ const Pembimbing = ({
       onClose();
       fetchData();
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     }
   };
@@ -61,7 +64,7 @@ const Pembimbing = ({
         id: selectData.id,
         name: selectData.name,
         nim: selectData.nim,
-        email : selectData.email,
+        email: selectData.email,
       });
 
       toast.success("Data berhasil diperbarui");
@@ -71,6 +74,9 @@ const Pembimbing = ({
     } catch (error) {
       setSelectData(null);
       setEditingField(null);
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading1(false);

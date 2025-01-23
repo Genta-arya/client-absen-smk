@@ -24,7 +24,7 @@ const Action = ({ searchTerm, setSearchTerm, placeholder, refresh }) => {
   const handleSave = async () => {
     setLoading(true);
     try {
-     await HandleRegister({
+      await HandleRegister({
         nim: nisn,
         name: nama,
         password: nisn,
@@ -34,6 +34,9 @@ const Action = ({ searchTerm, setSearchTerm, placeholder, refresh }) => {
       refresh();
       toast.success("Berhasil menambahkan Membuat akun.");
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);

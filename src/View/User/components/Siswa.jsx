@@ -50,6 +50,9 @@ const Siswa = ({
       onClose();
       fetchData();
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     }
   };
@@ -70,6 +73,9 @@ const Siswa = ({
     } catch (error) {
       setSelectData(null);
       setEditingField(null);
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading1(false);

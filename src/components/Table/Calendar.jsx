@@ -8,11 +8,12 @@ import {
   FaCircle,
 } from "react-icons/fa";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
+import { useNavigate } from "react-router-dom";
 
 const Calendar = ({ data }) => {
   const { user } = useAuthStore();
   const tanggal = user.tanggal;
-
+ const navigate = useNavigate();
   const calendarRef = useRef(null);
   const [monthName, setMonthName] = useState("");
   const absensiFormatted = data.map((absen) => ({
@@ -48,11 +49,11 @@ const Calendar = ({ data }) => {
         batasJam.setHours(7, 30, 0, 0); // Jam batas 7:30
 
         if (datangDate > batasJam) {
-          timeFormattedDatang = `Tm ${timeFormattedDatang}`; // Jika datang setelah jam 7:30
-          bgColorDatang = "orange"; // Set background color oranye untuk Telat
+          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah jam 7:30
+          bgColorDatang = "purple"; // Set background color oranye untuk Telat
           textColorDatang = "white"; // Set warna teks hitam untuk Telat
         } else {
-          timeFormattedDatang = ` M ${timeFormattedDatang}`; // Jika datang sebelum atau tepat jam 7:30
+          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang sebelum atau tepat jam 7:30
           bgColorDatang = "green"; // Set background color hijau untuk Hadir
           textColorDatang = "white"; // Set warna teks putih untuk Hadir
         }
@@ -74,11 +75,11 @@ const Calendar = ({ data }) => {
         // Validasi waktu pulang
         const jamPulang = pulangDate.getHours();
         if (jamPulang < 16) {
-          timeFormattedPulang = `Pc ${timeFormattedPulang}`; // Jika pulang sebelum jam 16:00
+          timeFormattedPulang = `${timeFormattedPulang}`; // Jika pulang sebelum jam 16:00
           bgColorPulang = "orange"; // Set warna latar belakang kuning untuk Pulang Cepat
           textColorPulang = "white"; // Set warna teks hitam untuk Pulang Cepat
         } else {
-          timeFormattedPulang = `P ${timeFormattedPulang}`; // Jika pulang setelah jam 16:00
+          timeFormattedPulang = `${timeFormattedPulang}`; // Jika pulang setelah jam 16:00
           bgColorPulang = "sky"; // Set warna latar belakang biru untuk Pulang Normal
           textColorPulang = "white"; // Set warna teks putih untuk Pulang Normal
         }
@@ -114,8 +115,12 @@ const Calendar = ({ data }) => {
   maxDate.setMonth(maxDate.getMonth() + 1);
 
   const handleDateClick = (info) => {
-    console.log(info.event);
+    // Mendapatkan ID dari event yang dipilih
+    const eventId = info.event.groupId; // ID dapat diambil dari groupId atau field lain
+    // Navigasi ke halaman dengan format /:id
+    navigate(`/app/info/absensi/${eventId}`);
   };
+  
 
   const handlePrevMonth = () => {
     if (calendarRef.current) {
@@ -144,26 +149,39 @@ const Calendar = ({ data }) => {
       </h2>
 
       <div className="mt-4 p-4 mb-8 border border-gray-300 rounded-lg">
-        <h1 className="text-xl font-semibold mb-4"> ~ Info</h1>
-        <p className="text-sm">
-          <span className="flex items-center gap-2">
-            <FaCircle className="text-red-500" />
-            Merah menandakan Tidak Hadir
-          </span>
-        </p>
-        <p className="text-sm mt-2">
-          <span className="flex items-center gap-2">
-            <FaCircle className="text-green-500" />
-            Hijau menandakan kehadiran
-          </span>
-        </p>
-        <p className="text-sm mt-2">
-          <span className="flex items-center gap-2">
-            <FaCircle className="text-gray-500" />
-            Gray menandakan belum melakukan absensi
-          </span>
-        </p>
-      </div>
+  <h1 className="text-xl font-semibold mb-4"> ~ Info Kehadiran </h1>
+  <p className="text-sm">
+    <span className="flex items-center gap-2">
+      <FaCircle className="text-red-500" />
+      Merah menandakan Tidak Hadir (T)
+    </span>
+  </p>
+  <p className="text-sm mt-2">
+    <span className="flex items-center gap-2">
+      <FaCircle className="text-green-500" />
+      Hijau menandakan Kehadiran (M) atau Masuk
+    </span>
+  </p>
+  <p className="text-sm mt-2">
+    <span className="flex items-center gap-2">
+      <FaCircle className="text-purple-600" />
+      Ungu menandakan Terlambat Masuk (Tm)
+    </span>
+  </p>
+  <p className="text-sm mt-2">
+    <span className="flex items-center gap-2">
+      <FaCircle className="text-sky-500" />
+      Biru menandakan Pulang (P)
+    </span>
+  </p>
+  <p className="text-sm mt-2">
+    <span className="flex items-center gap-2">
+      <FaCircle className="text-orange-500" />
+      Oren menandakan Pulang cepat (Pc)
+    </span>
+  </p>
+</div>
+
 
       <div className="flex justify-between mb-4">
         {/* Tombol Kustom untuk navigasi bulan */}

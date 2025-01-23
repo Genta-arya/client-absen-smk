@@ -32,7 +32,10 @@ const GantiPassword = () => {
         new_password: "",
       })
     } catch (error) {
-      
+       if (error.code === "ERR_NETWORK") {
+              toast.error("Tidak dapat terhubung ke server.");
+             
+            }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);

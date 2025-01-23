@@ -85,6 +85,9 @@ const DetailPkl = () => {
       setModalSiswa(false);
       toast.success("Siswa berhasil ditambahkan");
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       toast.error("Gagal menambahkan siswa");
       console.error(error);
     }
