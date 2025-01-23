@@ -84,7 +84,7 @@ const DetailAbsensi = () => {
     };
 
     const selectedDate = toUTC7(new Date(date)); // Tanggal yang dipilih
-    const serverDate = toUTC7(new Date(user?.tanggal)); // Tanggal server disesuaikan ke UTC+7
+    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server disesuaikan ke UTC+7
     // const serverDate = toUTC7(new Date(tanggal));
 
     const serverHours = serverDate.getUTCHours(); // Jam server di zona UTC+7
@@ -127,16 +127,15 @@ const DetailAbsensi = () => {
 
     // Ambil tanggal yang dipilih dan server tanggal
     const selectedDate = new Date(date); // Tanggal dari input pengguna
-    const serverDate = toUTC7(new Date(tanggal)); // Tanggal server dikonversi ke UTC+7
+    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
 
     const serverHours = serverDate.getUTCHours(); // Jam dari server
     const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
 
-    // Rentang waktu: 15:30 - 18:00 UTC+7
+    // Rentang waktu checkout dari 15:30 - 23:59
     const isWithinCheckoutTime =
-      (serverHours === 15 && serverMinutes >= 0) || // Jam 15:30 - 15:59
-      (serverHours > 15 && serverHours < 18) || // Jam 16:00 - 17:59
-      (serverHours === 18 && serverMinutes === 0); // Tepat jam 18:00
+      (serverHours === 15 && serverMinutes >= 30) || // Jam 15:30 - 15:59
+      (serverHours > 15 && serverHours < 24); // Jam 16:00 - 23:59
 
     if (!isWithinCheckoutTime) {
       return true; // Tombol dinonaktifkan jika tidak dalam rentang waktu
@@ -208,7 +207,7 @@ const DetailAbsensi = () => {
     try {
       await handlePulangs({
         id: id,
-        jam_pulang : isoString
+        jam_pulang: isoString,
       });
       toast.success("Berhasil absen pulang");
       window.location.reload();
@@ -306,7 +305,7 @@ const DetailAbsensi = () => {
                     className="w-full flex items-center disabled:cursor-not-allowed disabled:bg-gray-500 justify-center cursor-pointer text-sm font-bold hover:opacity-85 transition-all duration-300 ease-in-out bg-orange-500 text-white rounded-md py-1"
                     disabled={
                       isCheckoutDisabled(absensi.tanggal) ||
-                      absensi.pulang ||
+                      absensi.pulang !== null ||
                       loading
                     }
                   >
