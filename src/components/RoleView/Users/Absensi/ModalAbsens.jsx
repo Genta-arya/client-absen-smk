@@ -11,7 +11,8 @@ import { uploadProfile } from "../../../../Api/Services/LoginServices";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 import { HandleHadir } from "../../../../Api/Services/AbsensiServices";
 import LoadingButton from "../../../LoadingButton";
-
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 const ModalAbsens = ({ tanggal, utc, id }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -22,14 +23,15 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
     address: null,
   });
   const [loadings, setLoadings] = useState(false);
-
+  const [crop, setCrop] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cameraError, setCameraError] = useState(null);
   const [locationError, setLocationError] = useState(null);
-  const [cameraPermission, setCameraPermission] = useState(false);
+  const [cropData, setCropData] = useState(null);
+  const [cropper, setCropper] = useState(null);
   const [locationPermission, setLocationPermission] = useState(false);
   const [apikeys, setApikeys] = useState([
-    "7ba09287e7a5442bb3cc94465e1ed244",
+    "155de109609643f9a1b432e22774f675",
     "1de3b41c01ef4a50a5a37b954081b6b4",
     "8c45cf1167774a22913483caa6b3d3c1",
     "2c316c1b439147b2b42e794724c4edb5",
@@ -39,7 +41,12 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
     try {
       // Meminta izin kamera
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
+        video: {
+          facingMode: "user",
+          frameRate: { max: 30 },
+          displaySurface: "monitor",
+          aspectRatio: { min: 1, max: 1 },
+        },
       });
 
       // Pastikan videoRef.current sudah ada sebelum mengatur srcObject
@@ -64,7 +71,7 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
       return;
     }
 
-    if (!photo) {
+    if (!cropData) {
       toast.info("Silahkan foto dulu.");
       return;
     }
@@ -89,11 +96,11 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
       console.log(isoString);
       console.log(currentDate);
 
-      if (photo) {
+      if (cropData) {
         const timestamp = Date.now(); // Timestamp untuk nama unik
         const uniqueFileName = `photo_${timestamp}.png`;
         const formData = new FormData();
-        formData.append("file", photo, uniqueFileName);
+        formData.append("file", cropData, uniqueFileName);
         const uploadFoto = await uploadProfile(formData);
 
         if (uploadFoto.data.status === "success") {
@@ -165,9 +172,14 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
         console.error("Error getting location:", error);
         setLocationError(
           "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
-        );
-        setLoading(false);
+        ),
+          setLoading(false);
         setLocationPermission(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
       }
     );
   };
@@ -176,6 +188,10 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
     fetchLocation();
     startCamera();
   }, []);
+
+  useEffect(() => {
+    console.log(cropData);
+  }, [cropData]);
 
   const takePhoto = () => {
     const video = videoRef.current;
@@ -209,7 +225,10 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
         <video
           ref={videoRef}
           autoPlay
+          muted
+          controls={false}
           playsInline
+          onContextMenu={(e) => e.preventDefault()}
           className={`w-full ${
             cameraError || photo ? "hidden" : ""
           } rounded-lg shadow-md`}
@@ -218,16 +237,61 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
 
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
-      {photo && (
-        <div className="photo-preview mb-4">
-          <img
+      {photo && !cropData && (
+        <div className=" mb-4">
+          <Cropper
             src={URL.createObjectURL(photo)}
-            alt="Captured"
-            className="w-full rounded-lg shadow-md"
+            guides={true} 
+            viewMode={1} 
+            dragMode="move" 
+            zoomable={true} 
+            scalable={true} 
+            cropBoxResizable={true} 
+            background={true} 
+            minCropBoxWidth={100} 
+            minCropBoxHeight={100}
+            onInitialized={(instance) => {
+              setCropper(instance), setCrop(true);
+            }}
           />
+          <div className="flex justify-center mt-4 gap-2">
+            <button
+              onClick={() => {
+                if (cropper) {
+                  cropper.getCroppedCanvas().toBlob((blob) => {
+                    {
+                      setCropData(blob), setCrop(false);
+                    }
+                  }, "image/png");
+                }
+              }}
+              className="bg-blue w-32 text-white text-sm px-4 py-2 rounded-md"
+            >
+              Simpan
+            </button>
+            <button
+              onClick={() => {
+                setPhoto(null), setCropData(null), setCrop(false);
+              }}
+              className="bg-red-500 w-32 text-white text-sm px-4 py-2 rounded-md"
+            >
+              Batal
+            </button>
+          </div>
         </div>
       )}
 
+      {/* preview crop */}
+
+      {cropData && (
+        <div className="flex justify-center  w-full">
+          <img
+            src={URL.createObjectURL(cropData)}
+            alt="Preview"
+            className="w-full rounded-lg"
+          />
+        </div>
+      )}
       {locationError && (
         <p className="text-red-500 text-center  text-sm">{locationError}</p>
       )}
@@ -244,7 +308,7 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
                 const mapUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
                 window.open(mapUrl, "_blank");
               }}
-              className="text-xs mt-1 cursor-pointer hover:underline"
+              className="text-xs mt-1 w-fit cursor-pointer hover:underline"
             >
               {`${location.latitude}, ${location.longitude}` ||
                 "Belum tersedia"}
@@ -260,45 +324,64 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
           </div>
         </>
       )}
+      {!crop ? (
+        <div className="flex justify-center gap-2 items-center">
+          {photo ? (
+            <button
+              onClick={() => {
+                setPhoto(null), setCropData(null);
+              }}
+              disabled={cameraError}
+              className="bg-green-500 flex disabled:bg-gray-500 diasbled:cursor-not-allowed justify-center text-sm text-white px-4 py-2 w-36 rounded-md "
+            >
+              <div className="flex items-center gap-2">
+                <FaCamera />
+                <p>Ganti Foto</p>
+              </div>
+            </button>
+          ) : (
+            <button
+              onClick={takePhoto}
+              disabled={cameraError}
+              className="bg-blue hover:opacity-85 transition-all duration-300 ease-in-out hover:scale-95 flex disabled:bg-gray-500 diasbled:cursor-not-allowed justify-center text-sm text-white px-8 py-8 rounded-full"
+            >
+              <div className="flex items-center gap-2">
+                <FaCamera size={20} />
+              </div>
+            </button>
+          )}
 
-      <div className="flex justify-center gap-2 items-center">
-        {photo ? (
-          <button
-            onClick={() => setPhoto("")}
-            disabled={cameraError}
-            className="bg-green-500 flex disabled:bg-gray-500 diasbled:cursor-not-allowed justify-center text-sm text-white px-4 py-2 w-36 rounded-md "
-          >
-            <div className="flex items-center gap-2">
-              <FaCamera />
-              <p>Ganti Foto</p>
-            </div>
-          </button>
-        ) : (
-          <button
-            onClick={takePhoto}
-            disabled={cameraError}
-            className="bg-green-500 flex disabled:bg-gray-500 diasbled:cursor-not-allowed justify-center text-sm text-white px-4 py-2 w-36 rounded-md "
-          >
-            <div className="flex items-center gap-2">
-              <FaCamera />
-              <p>Ambil Foto</p>
-            </div>
-          </button>
-        )}
-
-        <button
-          onClick={handleCheckIn}
-          className="bg-blue text-white text-sm px-4 py-2 w-36 flex justify-center rounded-md"
-        >
-          <div className="flex items-center gap-2">
-            <LoadingButton
-              loading={loadings}
-              icon={<FaPaperPlane />}
-              text="Absen"
-            />
-          </div>
-        </button>
-      </div>
+          {photo && (
+            <button
+              onClick={handleCheckIn}
+              className="bg-blue text-white text-sm px-4 py-2 w-36 flex justify-center rounded-md"
+            >
+              <div className="flex items-center gap-2">
+                <LoadingButton
+                  loading={loadings}
+                  icon={<FaPaperPlane />}
+                  text="Absen"
+                />
+              </div>
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="flex justify-center gap-2 items-center">
+          {!crop && (
+            <button
+              onClick={takePhoto}
+              disabled={cameraError}
+              className="bg-green-500 flex disabled:bg-gray-500 diasbled:cursor-not-allowed justify-center text-sm text-white px-4 py-2 w-36 rounded-md "
+            >
+              <div className="flex items-center gap-2">
+                <FaCamera />
+                <p>Ambil Foto</p>
+              </div>
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

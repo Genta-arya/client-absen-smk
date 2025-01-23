@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import ContainerGlobal from "../../components/ContainerGlobal";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import Input from "../../components/Input";
@@ -13,6 +13,8 @@ import {
 } from "../../Api/Services/LoginServices";
 import LoadingButton from "../../components/LoadingButton";
 import Calendar from "../../components/Table/Calendar";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css"; // Pastikan CSS cropper juga diimport
 
 const MainProfile = () => {
   const { user, setUser } = useAuthStore();
@@ -20,29 +22,10 @@ const MainProfile = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [preview, setPreview] = useState(user?.avatar);
   const [loading, setLoading] = useState(false);
-
+  const [cropper, setCropper] = useState(null); // Untuk menyimpan referensi ke Cropper
+  const [croppedImage, setCroppedImage] = useState(null);
+  const [statusCrop, setStatusCrop] = useState(false);
   const data = user;
-  console.log(data);
-  const toastCalled = useRef(false);
-  useEffect(() => {
-    const path = window.location.pathname;
-
-    if (path === "/app/profil" || user?.role === "pembimbing") {
-      if (!toastCalled.current) {
-        toast.info(
-          "Hubungi administrator sekolah jika NISN atau Nama tidak sesuai.",
-          {
-            duration: 10000,
-            position: "bottom-left",
-          }
-        );
-        toastCalled.current = true;
-      }
-    } else {
-      toast.dismiss();
-      toastCalled.current = false;
-    }
-  }, [window.location.pathname]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -53,7 +36,7 @@ const MainProfile = () => {
     }
     if (file) {
       setSelectedImage(file);
-      setPreview(URL.createObjectURL(file));
+      setPreview(URL.createObjectURL(file)); // Menampilkan preview gambar yang dipilih
     }
   };
 
@@ -61,50 +44,52 @@ const MainProfile = () => {
     setModal(false);
     setSelectedImage(null);
     setPreview(user?.avatar);
+    setCroppedImage(null); // Reset cropped image saat modal ditutup
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
 
-    if (!selectedImage) {
-      toast.error("Tidak ada gambar yang dipilih.");
+    if (!croppedImage) {
+      toast.error("Tidak ada gambar yang dipotong.");
       return;
     }
+
     try {
-      const fileTypes = ["image/jpeg", "image/png", "image/jpg", "image/JPG"];
-      if (!fileTypes.includes(selectedImage.type)) {
-        toast.error("File harus berupa gambar (jpg, jpeg, png).");
-        return;
-      }
+      setLoading(true);
+      const formData = new FormData();
+      const filename = Date.now() + selectedImage.name;
+      formData.append("file", croppedImage , filename);
+      const response = await uploadProfile(formData);
 
-      if (selectedImage) {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append("file", selectedImage);
-        const response = await uploadProfile(formData);
-        console.log(response);
-
-        if (response.status === 200) {
-          console.log(response.file_url);
-          await updateFotoProfile({
-            id: user?.id,
-            image_url: response.data.file_url,
-          });
-          toast.success("Foto profil berhasil diperbarui.");
-          setModal(false);
-          setUser({ ...user, avatar: response.data.file_url });
-        } else {
-          toast.error("Foto profil gagal diperbarui.");
-        }
+      if (response.status === 200) {
+        await updateFotoProfile({
+          id: user?.id,
+          image_url: response.data.file_url,
+        });
+        toast.success("Foto profil berhasil diperbarui.");
+        setModal(false);
+        setUser({ ...user, avatar: response.data.file_url });
+      } else {
+        toast.error("Foto profil gagal diperbarui.");
       }
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
-       
       }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCrop = () => {
+    if (cropper) {
+      cropper.getCroppedCanvas().toBlob((blob) => {
+        setCroppedImage(blob);
+        setStatusCrop(false);
+        setPreview(URL.createObjectURL(blob)); // Menampilkan preview dari hasil crop
+      }, "image/png");
     }
   };
 
@@ -119,7 +104,7 @@ const MainProfile = () => {
             className="w-32 h-32 cursor-pointer rounded-full object-cover border-2 border-gray-200"
           />
           <button
-            onClick={() => setModal(!modal)}
+            onClick={() => setModal(true)}
             className="absolute bg-blue bottom-0 right-2 bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600 focus:outline-none"
           >
             <FaPencilAlt className="text-sm" />
@@ -153,33 +138,79 @@ const MainProfile = () => {
           setIsModalOpen={onClose}
         >
           <div className="flex flex-col items-center space-y-4">
-            <div className="relative">
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
-              />
-            </div>
+            {/* Hanya tampilkan cropper jika ada gambar yang dipilih */}
+            {selectedImage && !croppedImage ? (
+              <div className="relative">
+                <Cropper
+                  src={preview}
+                  style={{ height: 400 }}
+                  initialAspectRatio={1}
+                  aspectRatio={1}
+                  guides={true}
+                  viewMode={1}
+                  dragMode="move"
+                  scalable={true}
+                  cropBoxResizable={true}
+                  background={false}
+                  onInitialized={(instance) => {
+                    setCropper(instance), setStatusCrop(true);
+                  }}
+                />
+              </div>
+            ) : (
+              <> 
+              {croppedImage && (
+                <div className="relative">
+                  <img
+                  // blob
+                    src={preview}
+                    alt="profile"
+                    className="w-32 h-32 cursor-pointer rounded-full object-cover border-2 border-gray-200"
+                  />
+                </div>
+              )}
+              
+              </>
+            )}
             <form onSubmit={handleSave} className="flex flex-col gap-4">
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/jpg,image/JPG"
                 onChange={handleImageChange}
+                placeholder="Pilih gambar"
                 required
                 className="mt-2"
               />
-              <button
-                type="submit"
-                disabled={loading}
-                onClick={handleSave}
-                className="bg-blue hover:bg-opacity-80 text-white py-2 px-4 rounded-md"
-              >
-                <LoadingButton text={"Simpan"} loading={loading} />
-              </button>
+
+              {selectedImage && statusCrop ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleCrop}
+                    className="bg-blue text-white text-xs py-2 px-4 rounded-md"
+                  >
+                    Potong Gambar
+                  </button>
+                </>
+              ) : (
+                <>
+                  {selectedImage && (
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      onClick={handleSave}
+                      className="bg-blue text-xs text-white py-2 px-4 rounded-md"
+                    >
+                      <LoadingButton text={"Simpan"} loading={loading} />
+                    </button>
+                  )}
+                </>
+              )}
             </form>
           </div>
         </ActModal>
       )}
+
       {user?.role === "user" && (
         <>
           {data?.Pkl[0]?.absensi && data?.Pkl[0]?.absensi.length > 0 ? (
