@@ -84,7 +84,7 @@ const DetailAbsensi = () => {
     };
 
     const selectedDate = toUTC7(new Date(date)); // Tanggal yang dipilih
-    const serverDate = toUTC7(new Date(user?.tanggal)); // Tanggal server disesuaikan ke UTC+7
+    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server disesuaikan ke UTC+7
     // const serverDate = toUTC7(new Date(tanggal));
 
     const serverHours = serverDate.getUTCHours(); // Jam server di zona UTC+7
@@ -127,7 +127,7 @@ const DetailAbsensi = () => {
 
     // Ambil tanggal yang dipilih dan server tanggal
     const selectedDate = new Date(date); // Tanggal dari input pengguna
-    const serverDate = toUTC7(new Date(tanggal)); // Tanggal server dikonversi ke UTC+7
+    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
 
     const serverHours = serverDate.getUTCHours(); // Jam dari server
     const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
@@ -208,11 +208,14 @@ const DetailAbsensi = () => {
     try {
       await handlePulangs({
         id: id,
-        jam_pulang : isoString
+        jam_pulang: isoString,
       });
       toast.success("Berhasil absen pulang");
       window.location.reload();
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);

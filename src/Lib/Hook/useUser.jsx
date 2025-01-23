@@ -11,7 +11,8 @@ const useUser = () => {
   const { tab, setTab } = TabStore();
   const [userOptions, setUserOptions] = React.useState([]);
   // Menentukan role berdasarkan tab
-  const role = tab === "siswa" ? "user" : tab === "pembimbing" ? "pembimbing" : null;
+  const role =
+    tab === "siswa" ? "user" : tab === "pembimbing" ? "pembimbing" : null;
 
   // Fungsi untuk mengambil data pengguna
   const fetchData = async () => {
@@ -20,6 +21,9 @@ const useUser = () => {
       const response = await getDataUser(role);
       setData(response.data);
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error);
     } finally {
       setLoading(false);
@@ -43,46 +47,39 @@ const useUser = () => {
     }
   };
 
+  const getDataUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await getDataUser("user");
 
-  
-    const getDataUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await getDataUser("user");
-  
-        const users = response.data;
-        // ambil user yang belum ada PKL
-        const filteredUsers = users.filter((user) => {
-          // Pkl nya null
-          return user.Pkl.length === 0;
-        });
-  
-        const options = filteredUsers.map((user) => ({
-          value: user.id,
-          label: user.name,
-        }));
-  
-        setUserOptions(options);
-      } catch (error) {
-        ResponseHandler(error.response);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const users = response.data;
+      // ambil user yang belum ada PKL
+      const filteredUsers = users.filter((user) => {
+        // Pkl nya null
+        return user.Pkl.length === 0;
+      });
 
-  
+      const options = filteredUsers.map((user) => ({
+        value: user.id,
+        label: user.name,
+      }));
 
-  return (
-    {
-      loading,
-      data,
-      userOptions,
-      fetchData,
-      getDataUsers,
-      updatePasswords,
-   
+      setUserOptions(options);
+    } catch (error) {
+      ResponseHandler(error.response);
+    } finally {
+      setLoading(false);
     }
-  );
+  };
+
+  return {
+    loading,
+    data,
+    userOptions,
+    fetchData,
+    getDataUsers,
+    updatePasswords,
+  };
 };
 
 export default useUser;

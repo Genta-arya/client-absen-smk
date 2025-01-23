@@ -6,11 +6,11 @@ import { formatTanggal } from "../../../../constants/Constants";
 import { FaCircle, FaTag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const ListPKL = ({searchTerm}) => {
+const ListPKL = ({ searchTerm }) => {
   const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
- 
+
   const navigate = useNavigate();
   const fetchData = async () => {
     setLoading(true);
@@ -20,6 +20,9 @@ const ListPKL = ({searchTerm}) => {
     } catch (error) {
       console.error(error);
     } finally {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       setLoading(false);
     }
   };
@@ -29,7 +32,9 @@ const ListPKL = ({searchTerm}) => {
   }, []);
 
   const filterDataName = (data, searchTerm) => {
-    return data.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    return data.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   };
 
   if (loading) return <Loading />;
@@ -55,13 +60,10 @@ const ListPKL = ({searchTerm}) => {
               </p>
               <div className="text-xs border-b p-1">
                 <div className="py-1">
-
-                <h1 className="text-center font-bold text-base">
-                  Periode
-                </h1>
-                <h1 className="text-center font-bold text-sm">
-                  Praktek Kerja Lapangan
-                </h1>
+                  <h1 className="text-center font-bold text-base">Periode</h1>
+                  <h1 className="text-center font-bold text-sm">
+                    Praktek Kerja Lapangan
+                  </h1>
                 </div>
                 <div className="flex gap-2 items-center justify-center">
                   <p className="text-gray-700 text-xs">
@@ -93,7 +95,9 @@ const ListPKL = ({searchTerm}) => {
                   )}
                 </div>
                 <div
-                  onClick={() => navigate(`/admin/management/pkl/detail/${item.id}`)}
+                  onClick={() =>
+                    navigate(`/admin/management/pkl/detail/${item.id}`)
+                  }
                   className="flex hover:opacity-85 cursor-pointer transition-all duration-300  items-center justify-center gap-2 bg-blue text-white px-4 py-2 rounded-md"
                 >
                   <button className="">Detail </button>

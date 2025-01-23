@@ -5,20 +5,16 @@ import Input from "../../../Input";
 
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 
-
 import { toast } from "sonner";
 import { updatePkl } from "../../../../Api/Services/PKLServices";
 import LoadingButton from "../../../LoadingButton";
 
-const EditPkl = ({ datas, setStatusEdit , refresh }) => {
- 
-
+const EditPkl = ({ datas, setStatusEdit, refresh }) => {
   const [data, setData] = React.useState({
     name: "",
     address: "",
     id: datas.id,
   });
-  
 
   useEffect(() => {
     setData({
@@ -47,6 +43,9 @@ const EditPkl = ({ datas, setStatusEdit , refresh }) => {
       refresh();
       setStatusEdit(false);
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);
@@ -85,7 +84,7 @@ const EditPkl = ({ datas, setStatusEdit , refresh }) => {
           disabled={loading}
           className="bg-blue text-sm hover:opacity-90 text-white py-2 px-4 rounded-lg"
         >
-         <LoadingButton icon={<FaSave />} text={"Simpan"} loading={loading} />
+          <LoadingButton icon={<FaSave />} text={"Simpan"} loading={loading} />
         </button>
       </form>
       <button

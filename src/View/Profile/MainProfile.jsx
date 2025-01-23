@@ -98,7 +98,10 @@ const MainProfile = () => {
         }
       }
     } catch (error) {
-      console.error(error);
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+       
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);

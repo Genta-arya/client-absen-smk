@@ -31,8 +31,6 @@ const MainUsers = () => {
     kelas: user?.kelas,
   });
 
- 
-
   const fetchKelas = async () => {
     setLoading1(true);
     try {
@@ -43,6 +41,9 @@ const MainUsers = () => {
       }));
       setKelasOptions(options);
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading1(false);
@@ -103,6 +104,9 @@ const MainUsers = () => {
 
       window.location.reload();
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);
@@ -156,9 +160,10 @@ const MainUsers = () => {
                     Pilih Kelas
                   </label>
                   <Select
-                  
                     options={kelasOptions}
-                    value={kelasOptions.find((option) => option.value === user?.kelas?.id)}
+                    value={kelasOptions.find(
+                      (option) => option.value === user?.kelas?.id
+                    )}
                     onChange={setSelectedKelas}
                     isLoading={loading1}
                     required

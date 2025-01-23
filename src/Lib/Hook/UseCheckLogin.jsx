@@ -3,6 +3,7 @@ import { ResponseHandler } from "../../Utils/ResponseHandler";
 import { CheckSession } from "../../Api/Services/LoginServices";
 import useAuthStore from "../Zustand/AuthStore";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const UseCheckLogin = () => {
   const token = localStorage.getItem("token");
@@ -18,6 +19,11 @@ const UseCheckLogin = () => {
       const response = await CheckSession(token);
       setUser(response.data);
     } catch (error) {
+    
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+        localStorage.removeItem("token");
+      }
       ResponseHandler(error.response, "/");
 
       localStorage.removeItem("token");

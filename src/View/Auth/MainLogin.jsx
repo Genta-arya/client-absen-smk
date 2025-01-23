@@ -10,6 +10,7 @@ import LoadingButton from "../../components/LoadingButton";
 import { ResponseHandler } from "../../Utils/ResponseHandler";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "sonner";
 
 const MainLogin = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -58,6 +59,10 @@ const MainLogin = () => {
         navigate("/admin");
       }
     } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+        
+      }
       ResponseHandler(error.response);
     } finally {
       setLoading(false);

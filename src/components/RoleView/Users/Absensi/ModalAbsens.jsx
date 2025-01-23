@@ -119,7 +119,9 @@ const ModalAbsens = ({ tanggal, utc, id }) => {
         }
       }
     } catch (error) {
-      console.error(error);
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
       ResponseHandler(error.response);
     } finally {
       setLoadings(false);
