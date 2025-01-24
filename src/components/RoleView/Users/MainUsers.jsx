@@ -56,9 +56,15 @@ const MainUsers = () => {
   const currentDate = user?.DateIndonesia
     ? new Date(user?.DateIndonesia)
     : null;
-  const formattedCurrentDate = currentDate
-    ? currentDate.toISOString().split("T")[0]
-    : null;
+
+  // Fungsi untuk mengonversi ke UTC dari zona waktu Indonesia (UTC+7)
+  const convertToUTC = (date) => {
+    if (!date) return null;
+    const utcDate = new Date(date.getTime() + 7 * 60 * 60 * 1000); // Kurangi 7 jam (UTC+7)
+    return utcDate.toISOString().split("T")[0];
+  };
+
+  const formattedCurrentDate = convertToUTC(currentDate);
 
   // Ambil data absen yang tanggalnya sama dengan tanggal hari ini
   const dataAbsenToday = dataAbsen.filter(
@@ -67,6 +73,8 @@ const MainUsers = () => {
       formattedCurrentDate
   );
   const absenToday = dataAbsenToday[0] || null;
+
+  console.log(absenToday);
 
   const navigate = useNavigate();
   const { location, locationError } = useLocationStore();
@@ -163,6 +171,7 @@ const MainUsers = () => {
 
     const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
     const serverHours = serverDate.getUTCHours(); // Jam dari server
+
     const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
 
     // Rentang waktu: 07:00 - 08:00 UTC+7

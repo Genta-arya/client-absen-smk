@@ -13,6 +13,13 @@ export const ResponseHandler = (response, navigate = null) => {
         onAutoClose: () => (window.location.href = "/"),
       });
       throw response.data;
+    case 403:
+      localStorage.removeItem("token");
+      toast.error(response.data.message, {
+        duration: 2000,
+        onAutoClose: () => (window.location.href = "/"),
+      });
+      throw response.data;
 
     case 401:
       toast.warning(response.data.message);

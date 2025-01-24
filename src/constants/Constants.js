@@ -36,10 +36,10 @@ export const formatDate = (dateString) => {
   return `${day}-${month}-${year}`;
 };
 
-// export const API_URL = "http://localhost:8080/api";
-// export const SOCKET = "http://localhost:8080";
-export const SOCKET = "https://absensi-pkl.apiservices.my.id";
- export const API_URL = "https://absensi-pkl.apiservices.my.id/api";
+export const API_URL = "http://localhost:8080/api";
+export const SOCKET = "http://localhost:8080";
+// export const SOCKET = "https://absensi-pkl.apiservices.my.id";
+//  export const API_URL = "https://absensi-pkl.apiservices.my.id/api";
 export const API_URL_IMAGE = "http://localhost:8080/uploads/";
 export const UPLOAD_URL = "https://uploads.apiservices.my.id/uploads.php";
 
