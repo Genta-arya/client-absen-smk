@@ -252,7 +252,7 @@ const MainUsers = () => {
                 <div className="flex-col flex">
                   <div className="flex gap-2 items-center text-sm">
                     <FaRegCalendar size={24} className="text-blue" />
-                    <p className="font-bold text-sm">{formatTanggal(user?.tanggal)}</p>
+                    <p className="font-bold ">{formatTanggal(user?.tanggal)}</p>
                   </div>
                   <div className="flex flex-col gap-2">
                     {absenToday !== null ? (
