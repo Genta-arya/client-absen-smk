@@ -21,10 +21,9 @@ import MainAbsensi from "./components/RoleView/Users/Absensi/MainAbsensi.jsx";
 import DetailAbsensi from "./components/RoleView/Users/Absensi/DetailAbsensi.jsx";
 import MainKelas from "./View/Kelas/MainKelas.jsx";
 import InfoAbsensi from "./components/RoleView/Users/Absensi/InfoAbsensi.jsx";
-
+import MainCalendar from "./components/RoleView/Users/Calendar/MainCalendar.jsx";
 
 const route = createBrowserRouter([
-
   {
     path: "/admin",
     element: <ProtectedRoute redirectPath="/login" />,
@@ -113,6 +112,10 @@ const route = createBrowserRouter([
         path: "/app/detail/absensi",
         element: <DetailAbsensi />,
       },
+      {
+        path: "/app/kalender",
+        element: <MainCalendar />,
+      },
     ],
   },
 
@@ -130,13 +133,11 @@ const route = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <>
-   
-      <Toaster
-        richColors
-        position="bottom-center"
-        toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
-      />
-      <RouterProvider router={route} />
-
+    <Toaster
+      richColors
+      position="bottom-center"
+      toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
+    />
+    <RouterProvider router={route} />
   </>
 );

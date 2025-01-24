@@ -91,14 +91,14 @@ const MainAbsensi = () => {
                         </div>
                       )}
                     </div>
-                    <div
+                    {/* <div
                       onClick={() => navigate(`/app/detail/absensi`)}
                       className="flex hover:opacity-85 cursor-pointer transition-all duration-300 items-center justify-center gap-2 bg-blue text-white px-4 py-2 rounded-md"
                     >
                       <button className="">
                         <FaArrowRight />
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ))}

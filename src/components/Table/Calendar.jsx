@@ -149,7 +149,7 @@ const Calendar = ({ data }) => {
       <h2 className="text-xl font-semibold mb-8">
         <div className="flex items-center gap-2">
           <FaCalendar />
-          <p>Kalendar Absensi</p>
+          <p>Kalender Absensi</p>
         </div>
       </h2>
 

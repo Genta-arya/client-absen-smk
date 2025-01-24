@@ -13,6 +13,7 @@ import { CreateKelas, getKelas } from "../../Api/Services/LoginServices";
 import { toast } from "sonner";
 import Search from "../../components/Search";
 import Loading from "../../components/Loading";
+import useAuthStore from "../../Lib/Zustand/AuthStore";
 
 const MainKelas = () => {
   const [modal, setModal] = useState(false);
@@ -20,7 +21,7 @@ const MainKelas = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [kelas, setKelas] = useState("");
   const [data, setData] = useState([]);
-
+ const {user} = useAuthStore();
   const filterData = (data, searchTerm) => {
     return data.filter((item) =>
       item.nama.toLowerCase().includes(searchTerm.toLowerCase())
@@ -58,6 +59,14 @@ const MainKelas = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+      if (user?.role !== "admin") {
+        window.location.href = "/";
+       
+      }
+    }, [user]);
+  
 
   if (loading) return <Loading />
   return (

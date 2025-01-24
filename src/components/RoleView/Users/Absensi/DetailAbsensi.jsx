@@ -94,12 +94,12 @@ const DetailAbsensi = () => {
     const serverMinutes = serverDate.getUTCMinutes(); // Menit server di zona UTC+7
 
     // Rentang waktu yang diizinkan: 06:30 - 12:00 UTC+7
-    const isWithinAllowedTime =
-      (serverHours === 6 && serverMinutes >= 30) || // Jam 06:30 - 06:59
-      (serverHours > 6 && serverHours < 12) || // Jam 07:00 - 11:59
-      (serverHours === 12 && serverMinutes === 0); // Tepat jam 12:00
+    const isWithinMasukTime =
+      (serverHours === 7 && serverMinutes >= 0) ||
+      (serverHours > 7 && serverHours < 10) ||
+      (serverHours === 10 && serverMinutes === 0);
 
-    if (!isWithinAllowedTime) {
+    if (!isWithinMasukTime) {
       return true; // Tombol disabled jika tidak berada dalam rentang waktu
     }
 
@@ -136,11 +136,12 @@ const DetailAbsensi = () => {
     const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
 
     // Rentang waktu checkout dari 15:30 - 23:59
-    const isWithinCheckoutTime =
+    const isWithinPulangTime =
       (serverHours === 15 && serverMinutes >= 30) || // Jam 15:30 - 15:59
-      (serverHours > 15 && serverHours < 24); // Jam 16:00 - 23:59
+      (serverHours > 16 && serverHours < 17) || // Jam 16:00 - 17:59
+      (serverHours === 17 && serverMinutes === 0); // Tepat jam 18:00
 
-    if (!isWithinCheckoutTime) {
+    if (!isWithinPulangTime) {
       return true; // Tombol dinonaktifkan jika tidak dalam rentang waktu
     }
 

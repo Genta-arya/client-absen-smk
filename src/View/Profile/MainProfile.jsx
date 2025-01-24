@@ -16,6 +16,7 @@ import LoadingButton from "../../components/LoadingButton";
 import Calendar from "../../components/Table/Calendar";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css"; // Pastikan CSS cropper juga diimport
+import axios from "axios";
 
 const MainProfile = () => {
   const { user, setUser } = useAuthStore();
@@ -109,10 +110,9 @@ const MainProfile = () => {
       });
       toast.success("Data berhasil diperbarui", {
         duration: 1500,
-        onAutoClose: () => (window.location.reload()),
+        onAutoClose: () => window.location.reload(),
       });
       setModal1(false);
-
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
@@ -168,6 +168,16 @@ const MainProfile = () => {
           disabled
         />
       </div>
+
+      <button
+        onClick={() => setModal1(true)}
+        className="bg-blue text-sm w-full items-center justify-center flex hover:opacity-95 text-white px-4 py-2 rounded-md text-end"
+      >
+        <div className="flex items-center gap-2">
+          <FaEdit />
+          <span>Edit Profile</span>
+        </div>
+      </button>
 
       {modal && (
         <ActModal
@@ -268,15 +278,7 @@ const MainProfile = () => {
         <span className="text-white text-sm">Administrator</span>
       </a>
 
-      <button
-        onClick={() => setModal1(true)}
-        className="bg-blue text-sm w-full items-center justify-center flex hover:opacity-95 text-white px-4 py-2 rounded-md text-end"
-      >
-        <div className="flex items-center gap-2">
-          <FaEdit />
-          <span>Edit Profile</span>
-        </div>
-      </button>
+      
       {modal1 && (
         <ActModal
           title={"Edit Profile"}

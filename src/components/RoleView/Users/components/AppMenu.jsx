@@ -33,7 +33,7 @@ const AppMenu = () => {
       icon: (
         <FaCalendarAlt className="text-blue text-3xl dark:text-white mb-4" />
       ),
-      link: "#",
+      link: "/app/kalender",
     },
     {
       title: "Pembimbing",
