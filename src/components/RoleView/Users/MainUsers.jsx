@@ -30,6 +30,7 @@ import { BeatLoader } from "react-spinners";
 import UseLogout from "../../../Lib/Hook/UseLogout";
 import ModalAbsens from "./Absensi/ModalAbsens";
 import { FaMapLocation } from "react-icons/fa6";
+import { handlePulangs } from "../../../Api/Services/AbsensiServices";
 
 const MainUsers = () => {
   const { user } = useAuthStore();
@@ -225,7 +226,7 @@ const MainUsers = () => {
   useEffect(() => {
     fetchLocalIPAddress()
       .then((ips) => {
-        setIplocal(ips[0]); 
+        setIplocal(ips[0]);
       })
       .catch((error) => {
         console.error("Gagal mendapatkan IP lokal:", error);
@@ -233,11 +234,9 @@ const MainUsers = () => {
   }, []);
 
   useEffect(() => {
-
     const measurePing = () => {
       const startTime = Date.now();
 
-     
       socket.emit("ping", startTime);
 
       // Menunggu respons "pong" dan hitung latensi
@@ -266,6 +265,40 @@ const MainUsers = () => {
       return "text-red-500"; // Merah jika ping >= 180
     }
     return ""; // Default jika ping belum tersedia
+  };
+
+  const handlePulang = async (id) => {
+    setLoading(true);
+    const currentDate = new Date(user?.DateIndonesia); // Tanggal yang diberikan
+
+    // Manipulasi waktu
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const seconds = currentDate.getSeconds();
+
+    // Pastikan format ISO
+    currentDate.setHours(hours);
+    currentDate.setMinutes(minutes);
+    currentDate.setSeconds(seconds);
+
+    const isoString = currentDate.toISOString();
+    try {
+      await handlePulangs({
+        id: id,
+        jam_pulang: isoString,
+      });
+      toast.success("Berhasil absen pulang", {
+        duration: 1500,
+        onAutoClose: () => window.location.reload(),
+      });
+    } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
+      ResponseHandler(error.response);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -380,12 +413,29 @@ const MainUsers = () => {
 
                           <div className="flex flex-col gap-2">
                             <button
-                              disabled={isPulangDisabled()}
+                              disabled={
+                                isPulangDisabled() ||
+                                absenToday.pulang !== null ||
+                                loading
+                              }
+                              onClick={() => handlePulang(absenToday.id)}
                               className="border disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all  w-36 text-black  py-3  rounded-md"
                             >
                               <div className="flex items-center justify-center gap-2">
-                                <FaSignInAlt />
-                                <p>Pulang</p>
+                                {absenToday.pulang !== null ? (
+                                  <>
+                                    <div className="flex    items-center justify-center gap-2 text-sm">
+                                      <FaCheck />
+                                      <p>Sudah Pulang</p>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <LoadingButton
+                                    loading={loading}
+                                    icon={<FaSignOutAlt />}
+                                    text={"Pulang"}
+                                  />
+                                )}
                               </div>
                             </button>
                             <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">

@@ -25,3 +25,12 @@ export const handlePulangs = async (data) => {
     handleError(error);
   }
 };
+
+export const getSingleAbsen = async (id) => {
+  try {
+    const response = await Axios.get("/absensi/detail/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

@@ -58,6 +58,10 @@ const route = createBrowserRouter([
         element: <DetailProfile />,
       },
       {
+        path: "/admin/info/absensi/:id",
+        element: <InfoAbsensi />,
+      },
+      {
         path: "/admin/management/pkl",
         element: <MainPKL />,
       },

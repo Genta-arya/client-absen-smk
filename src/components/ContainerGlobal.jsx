@@ -9,7 +9,7 @@ const ContainerGlobal = ({ children, visible = false }) => {
     <div>
       <div
         className={`${Text} border-t-8 gap-4 border-oren  bg-light-bg dark:bg-dark-bg text-black dark:text-white
-  flex flex-col min-h-screen  `}
+  flex flex-col min-h-screen  pb-8`}
       >
         {!visible ? (
           <>

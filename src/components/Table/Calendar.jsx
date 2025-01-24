@@ -118,7 +118,12 @@ const Calendar = ({ data }) => {
     // Mendapatkan ID dari event yang dipilih
     const eventId = info.event.groupId; // ID dapat diambil dari groupId atau field lain
     // Navigasi ke halaman dengan format /:id
-    navigate(`/app/info/absensi/${eventId}`);
+    if (user?.role === "user" ) {
+
+      navigate(`/app/info/absensi/${eventId}`);
+    } else {
+      navigate(`/admin/info/absensi/${eventId}`);
+    }
   };
   
 
