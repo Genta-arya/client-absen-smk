@@ -325,6 +325,7 @@ const MainUsers = () => {
                     <img
                       onClick={() => navigate(`/app/profil`)}
                       src={user?.avatar}
+                      loading="lazy"
                       alt=""
                       className="border-2 lg:w-16 lg:h-16 md:w-16 md:h-16 w-12 h-12 hover:cursor-pointer border-white rounded-full"
                     />
