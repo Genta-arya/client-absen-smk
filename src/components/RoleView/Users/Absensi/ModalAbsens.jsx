@@ -13,7 +13,7 @@ import { HandleHadir } from "../../../../Api/Services/AbsensiServices";
 import LoadingButton from "../../../LoadingButton";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-const ModalAbsens = ({ tanggal,  id }) => {
+const ModalAbsens = ({ tanggal, id }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [photo, setPhoto] = useState(null);
@@ -49,7 +49,6 @@ const ModalAbsens = ({ tanggal,  id }) => {
         },
       });
 
- 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         setCameraError(null);
@@ -119,8 +118,10 @@ const ModalAbsens = ({ tanggal,  id }) => {
             posisi: location.address,
             foto: uploadFoto.data.file_url,
           });
-          toast.success("Absen Berhasil");
-          window.location.reload();
+          toast.success("Absen Berhasil", {
+            duration: 2000,
+            onAutoClose: () => window.location.reload(),
+          });
         } else {
           toast.error("Foto absensi gagal diupload");
         }
@@ -131,7 +132,7 @@ const ModalAbsens = ({ tanggal,  id }) => {
       }
       ResponseHandler(error.response);
     } finally {
-      setLoadings(false);
+      setLoadings(true);
     }
   };
 
@@ -203,13 +204,12 @@ const ModalAbsens = ({ tanggal,  id }) => {
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-
       canvas.toBlob(
         (blob) => {
-          setPhoto(blob); 
+          setPhoto(blob);
         },
-        "image/png", 
-        1 
+        "image/png",
+        1
       );
     }
   };
@@ -241,14 +241,14 @@ const ModalAbsens = ({ tanggal,  id }) => {
         <div className=" mb-4">
           <Cropper
             src={URL.createObjectURL(photo)}
-            guides={true} 
-            viewMode={1} 
-            dragMode="move" 
-            zoomable={true} 
-            scalable={true} 
-            cropBoxResizable={true} 
-            background={true} 
-            minCropBoxWidth={100} 
+            guides={true}
+            viewMode={1}
+            dragMode="move"
+            zoomable={true}
+            scalable={true}
+            cropBoxResizable={true}
+            background={true}
+            minCropBoxWidth={100}
             minCropBoxHeight={100}
             onInitialized={(instance) => {
               setCropper(instance), setCrop(true);
@@ -354,6 +354,7 @@ const ModalAbsens = ({ tanggal,  id }) => {
           {photo && (
             <button
               onClick={handleCheckIn}
+              disabled={loadings}
               className="bg-blue text-white text-sm px-4 py-2 w-36 flex justify-center rounded-md"
             >
               <div className="flex items-center gap-2">

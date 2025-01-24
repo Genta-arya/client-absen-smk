@@ -106,7 +106,7 @@ const MainAbsensi = () => {
           )}
         </div>
       </ContainerGlobal>
-      <ButtonNav />
+   
     </>
   );
 };

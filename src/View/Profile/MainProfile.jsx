@@ -2,13 +2,14 @@ import React, { useState, useRef } from "react";
 import ContainerGlobal from "../../components/ContainerGlobal";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import Input from "../../components/Input";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaEdit, FaPencilAlt } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa"; // Import WhatsApp icon
 import ActModal from "../../components/Modal/ActModal";
 import { ResponseHandler } from "../../Utils/ResponseHandler";
 import { toast } from "sonner";
 import {
   updateFotoProfile,
+  updateSingleUser,
   uploadProfile,
 } from "../../Api/Services/LoginServices";
 import LoadingButton from "../../components/LoadingButton";
@@ -22,9 +23,12 @@ const MainProfile = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [preview, setPreview] = useState(user?.avatar);
   const [loading, setLoading] = useState(false);
-  const [cropper, setCropper] = useState(null); // Untuk menyimpan referensi ke Cropper
+  const [cropper, setCropper] = useState(null);
+  const [modal1, setModal1] = useState(false);
   const [croppedImage, setCroppedImage] = useState(null);
   const [statusCrop, setStatusCrop] = useState(false);
+  const [email, setEmail] = useState(user?.email);
+  const [whatsapp, setWhatsapp] = useState(user?.noHp);
   const data = user;
 
   const handleImageChange = (e) => {
@@ -59,7 +63,7 @@ const MainProfile = () => {
       setLoading(true);
       const formData = new FormData();
       const filename = Date.now() + selectedImage.name;
-      formData.append("file", croppedImage , filename);
+      formData.append("file", croppedImage, filename);
       const response = await uploadProfile(formData);
 
       if (response.status === 200) {
@@ -93,6 +97,32 @@ const MainProfile = () => {
     }
   };
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await updateSingleUser({
+        id: user?.id,
+        noHp: whatsapp,
+
+        email: email,
+      });
+      toast.success("Data berhasil diperbarui", {
+        duration: 1500,
+        onAutoClose: () => (window.location.reload()),
+      });
+      setModal1(false);
+
+    } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
+      ResponseHandler(error.response);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ContainerGlobal>
       <div className="flex flex-col items-center justify-center">
@@ -117,16 +147,24 @@ const MainProfile = () => {
           placeholder={"Belum ada nama"}
           disabled
         />
-        <Input
-          value={user?.Kelas[0]?.nama}
-          label={"Kelas / Jurusan"}
-          placeholder={"Belum ada kelas"}
-          disabled
-        />
+        {user?.role === "user" && (
+          <Input
+            value={user?.Kelas[0]?.nama}
+            label={"Kelas / Jurusan"}
+            placeholder={"Belum ada kelas"}
+            disabled
+          />
+        )}
         <Input
           value={user?.email}
           label={"Email"}
           placeholder={"Belum ada email"}
+          disabled
+        />{" "}
+        <Input
+          value={user?.noHp}
+          label={"Whatsapp"}
+          placeholder={"Belum ada whatsapp"}
           disabled
         />
       </div>
@@ -158,18 +196,17 @@ const MainProfile = () => {
                 />
               </div>
             ) : (
-              <> 
-              {croppedImage && (
-                <div className="relative">
-                  <img
-                  // blob
-                    src={preview}
-                    alt="profile"
-                    className="w-32 h-32 cursor-pointer rounded-full object-cover border-2 border-gray-200"
-                  />
-                </div>
-              )}
-              
+              <>
+                {croppedImage && (
+                  <div className="relative">
+                    <img
+                      // blob
+                      src={preview}
+                      alt="profile"
+                      className="w-32 h-32 cursor-pointer rounded-full object-cover border-2 border-gray-200"
+                    />
+                  </div>
+                )}
               </>
             )}
             <form onSubmit={handleSave} className="flex flex-col gap-4">
@@ -230,6 +267,50 @@ const MainProfile = () => {
         <FaWhatsapp size={30} />
         <span className="text-white text-sm">Administrator</span>
       </a>
+
+      <button
+        onClick={() => setModal1(true)}
+        className="bg-blue text-sm w-full items-center justify-center flex hover:opacity-95 text-white px-4 py-2 rounded-md text-end"
+      >
+        <div className="flex items-center gap-2">
+          <FaEdit />
+          <span>Edit Profile</span>
+        </div>
+      </button>
+      {modal1 && (
+        <ActModal
+          title={"Edit Profile"}
+          isModalOpen={modal1}
+          setIsModalOpen={() => setModal1(false)}
+        >
+          <form onSubmit={onSubmit}>
+            <Input
+              value={email}
+              id={"email"}
+              label={"Email"}
+              type={"email"}
+              placeholder={"Lengkapi email"}
+              onChange={(e) => setEmail(e.target.value)}
+              required={true}
+            />
+            <Input
+              value={whatsapp}
+              id={"whatsapp"}
+              type={"text"}
+              maxlength={15}
+              label={"Whatsapp"}
+              placeholder={"Lengkapi whatsapp"}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              required={true}
+            />
+            <div className="flex justify-end">
+              <button className=" bg-blue text-xs text-white py-2 px-4 rounded-md">
+                <LoadingButton text={"Simpan"} loading={loading} />
+              </button>
+            </div>
+          </form>
+        </ActModal>
+      )}
     </ContainerGlobal>
   );
 };

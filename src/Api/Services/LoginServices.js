@@ -141,7 +141,7 @@ export const updateDataUser = async (data) => {
       name: data.name,
       nim: data.nim,
       email: data.email,
-      kelas : data.kelas
+      kelas: data.kelas,
     });
     return response.data;
   } catch (error) {
@@ -183,6 +183,18 @@ export const EditKelas = async (data) => {
 export const DeleteKelas = async (id) => {
   try {
     const response = await Axios.delete("/auth/kelas/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateSingleUser = async (data) => {
+  try {
+    const response = await Axios.put(`/auth/update/single/user/${data.id}`, {
+      noHp: data.noHp,
+      email: data.email,
+    });
     return response.data;
   } catch (error) {
     handleError(error);

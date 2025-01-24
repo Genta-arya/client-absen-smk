@@ -86,6 +86,10 @@ const route = createBrowserRouter([
         element: <MainSetting />,
       },
       {
+        path: "/app/detail/profile/:id/:nama",
+        element: <DetailProfile />,
+      },
+      {
         path: "/app/ganti/password",
         element: <GantiPassword />,
       },

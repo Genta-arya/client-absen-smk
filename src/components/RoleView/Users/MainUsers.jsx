@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import Tools from "../../Tools";
-import Headers from "../../Headers";
+
 import ButtonNav from "../../ButtonNav";
 import ContentUser from "./components/ContentUser";
 import useAuthStore from "../../../Lib/Zustand/AuthStore";
@@ -9,14 +9,11 @@ import ActModal from "../../Modal/ActModal";
 import Input from "../../Input";
 import LoadingButton from "../../LoadingButton";
 import {
-  FaCalendar,
+  FaCheck,
   FaClock,
-  FaGlobe,
-  FaMapMarker,
   FaMapMarkerAlt,
   FaRegCalendar,
   FaSave,
-  FaSign,
   FaSignInAlt,
   FaSignOutAlt,
   FaWifi,
@@ -48,7 +45,7 @@ const MainUsers = () => {
   const [kelasOptions, setKelasOptions] = useState([]); // Options for React Select
   const [selectedKelas, setSelectedKelas] = useState(null);
   const [iplocal, setIplocal] = useState(null);
-  const [ping, setPing] = useState(20);
+  const [ping, setPing] = useState(30);
   const [data, setData] = useState({
     name: user?.name,
     nim: user?.nim,
@@ -71,7 +68,7 @@ const MainUsers = () => {
   const absenToday = dataAbsenToday[0] || null;
 
   const navigate = useNavigate();
-  const { location, locationError, ip } = useLocationStore();
+  const { location, locationError } = useLocationStore();
   const { logout, loading: loadingLogout } = UseLogout();
   const fetchKelas = async () => {
     setLoading1(true);
@@ -167,11 +164,11 @@ const MainUsers = () => {
     const serverHours = serverDate.getUTCHours(); // Jam dari server
     const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
 
-    // Rentang waktu: 06:30 - 12:00 UTC+7 untuk masuk
+    // Rentang waktu: 07:00 - 08:00 UTC+7
     const isWithinMasukTime =
-      (serverHours === 6 && serverMinutes >= 30) || // Jam 06:30 - 06:59
-      (serverHours > 6 && serverHours < 21) || // Jam 06:00 - 08:59
-      (serverHours === 9 && serverMinutes === 0); // Tepat jam 9:00
+      (serverHours === 7 && serverMinutes >= 0) ||
+      (serverHours > 7 && serverHours < 10) ||
+      (serverHours === 10 && serverMinutes === 0);
 
     return !isWithinMasukTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -186,11 +183,11 @@ const MainUsers = () => {
     const serverHours = serverDate.getUTCHours(); // Jam dari server
     const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
 
-    // Rentang waktu: 15:30 - 18:00 UTC+7 untuk pulang
+    // Rentang waktu: 15:30 - 18:00 UTC+7
     const isWithinPulangTime =
       (serverHours === 15 && serverMinutes >= 30) || // Jam 15:30 - 15:59
-      (serverHours > 15 && serverHours < 18) || // Jam 16:00 - 17:59
-      (serverHours === 18 && serverMinutes === 0); // Tepat jam 18:00
+      (serverHours > 16 && serverHours < 17) || // Jam 16:00 - 17:59
+      (serverHours === 17 && serverMinutes === 0); // Tepat jam 18:00
 
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -225,20 +222,22 @@ const MainUsers = () => {
     });
   };
 
-  fetchLocalIPAddress()
-    .then((ips) => {
-      setIplocal(ips[0]);
-    })
-    .catch((error) => {
-      console.error("Gagal mendapatkan IP lokal:", error);
-    });
+  useEffect(() => {
+    fetchLocalIPAddress()
+      .then((ips) => {
+        setIplocal(ips[0]); 
+      })
+      .catch((error) => {
+        console.error("Gagal mendapatkan IP lokal:", error);
+      });
+  }, []);
 
   useEffect(() => {
-    // Fungsi untuk mengukur ping
+
     const measurePing = () => {
       const startTime = Date.now();
 
-      // Kirim "ping" ke server
+     
       socket.emit("ping", startTime);
 
       // Menunggu respons "pong" dan hitung latensi
@@ -250,7 +249,7 @@ const MainUsers = () => {
     };
 
     // Set interval untuk mengukur ping setiap detik (1000 ms)
-    const pingInterval = setInterval(measurePing, 20000);
+    const pingInterval = setInterval(measurePing, 60000);
 
     // Bersihkan interval ketika komponen unmount
     return () => {
@@ -331,7 +330,9 @@ const MainUsers = () => {
                 <div className="flex-col flex">
                   <div className="flex gap-2 items-center text-sm">
                     <FaRegCalendar size={24} className="text-blue" />
-                    <p className="font-bold text-sm">{formatTanggal(user?.tanggal)}</p>
+                    <p className="font-bold text-sm">
+                      {formatTanggal(user?.tanggal)}
+                    </p>
                   </div>
                   <div className="flex flex-col gap-2">
                     {absenToday !== null ? (
@@ -348,25 +349,39 @@ const MainUsers = () => {
                           <div className="flex flex-col gap-2">
                             <button
                               onClick={() => setModal1(true)}
-                              disabled={isMasukDisabled()}
-                              className="bg-blue disabled:hover:opacity-100  hover:opacity-85 transition-all disabled:bg-gray-500 text-white w-32 py-3  rounded-md"
+                              disabled={
+                                isMasukDisabled() ||
+                                absenToday.hadir === "hadir"
+                              }
+                              className={`${
+                                absenToday.hadir !== "hadir"
+                                  ? "bg-blue disabled:bg-gray-500"
+                                  : "bg-green-600"
+                              } disabled:hover:opacity-100  hover:opacity-85 transition-all  text-white w-36 py-3  rounded-md`}
                             >
-                              <div className="flex items-center justify-center gap-2">
-                                <FaSignInAlt />
-                                <p>Masuk</p>
-                              </div>
+                              {absenToday.hadir === "hadir" ? (
+                                <div className="flex items-center justify-center gap-2 text-sm">
+                                  <FaCheck />
+                                  <p>Sudah Absen</p>
+                                </div>
+                              ) : (
+                                <div className="flex items-center justify-center gap-2 text-sm">
+                                  <FaSignInAlt />
+                                  <p>Masuk</p>
+                                </div>
+                              )}
                             </button>
                             <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
                               <FaClock />
 
-                              <h1>06:30 - 09:00</h1>
+                              <h1>07:00 - 09:00</h1>
                             </div>
                           </div>
 
                           <div className="flex flex-col gap-2">
                             <button
                               disabled={isPulangDisabled()}
-                              className="border disabled:bg-gray-500 disabled:text-white disabled:hover:opacity-100 hover:opacity-85 transition-all border-black w-32 text-black  py-3  rounded-md"
+                              className="border disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all  w-36 text-black  py-3  rounded-md"
                             >
                               <div className="flex items-center justify-center gap-2">
                                 <FaSignInAlt />
@@ -376,7 +391,7 @@ const MainUsers = () => {
                             <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
                               <FaClock />
 
-                              <h1>15:30 - 18:00</h1>
+                              <h1>15:30 - 17:00</h1>
                             </div>
                           </div>
                         </div>
