@@ -8,6 +8,7 @@ import Input from "../../components/Input";
 import Calendar from "../../components/Table/Calendar";
 import { FaFolderOpen, FaTag } from "react-icons/fa";
 import { toast } from "sonner";
+import NotfoundData from "../../components/NotfoundData";
 
 const DetailProfile = () => {
   const { id } = useParams();
@@ -24,7 +25,7 @@ const DetailProfile = () => {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
       }
-      console.error(error);
+      
       ResponseHandler(error.response);
     } finally {
       setLoading(false);
@@ -40,9 +41,7 @@ const DetailProfile = () => {
   if (!data) {
     return (
       <ContainerGlobal>
-        <div className="flex justify-center items-center text-xl font-bold text-gray-700">
-          Data pengguna tidak ditemukan
-        </div>
+        <NotfoundData />
       </ContainerGlobal>
     );
   }

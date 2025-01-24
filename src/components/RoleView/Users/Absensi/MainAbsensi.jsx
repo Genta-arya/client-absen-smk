@@ -1,11 +1,11 @@
 import React from "react";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import ContainerGlobal from "../../../ContainerGlobal";
-import ButtonNav from "../../../ButtonNav";
-import { formatDate, formatTanggal } from "../../../../constants/Constants";
-import { FaArrowRight, FaCircle, FaTag } from "react-icons/fa";
+
+import { formatTanggal } from "../../../../constants/Constants";
+import {FaCircle, FaTag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import notfound from "../../../../assets/notfound.png";
+import NotfoundData from "../../../NotfoundData";
 const MainAbsensi = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
@@ -17,9 +17,10 @@ const MainAbsensi = () => {
       <ContainerGlobal>
         <div className="my-6">
           {filterData?.length === 0 ? (
-            <div className="flex justify-center  mt-52 md:mt-12 lg:mt-12">
-              <img src={notfound} alt="" className=" md:w-[80%] lg:w-[40%] w-[80%]" />
-            </div>
+            <>
+            <NotfoundData />
+            </>
+            
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-6">
               {filterData.map((item) => (

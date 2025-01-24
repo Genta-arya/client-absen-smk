@@ -3,6 +3,7 @@ import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import ContainerGlobal from "../../../ContainerGlobal";
 import Calendar from "../../../Table/Calendar";
 import ActModal from "../../../Modal/ActModal";
+import NotfoundData from "../../../NotfoundData";
 
 const MainCalendar = () => {
   const { user } = useAuthStore();
@@ -16,7 +17,7 @@ const MainCalendar = () => {
   return (
     <ContainerGlobal>
       {dataAbsen.length === 0 ? (
-        <h1 className="text-gray-700 text-sm text-center mt-20">Anda belum memiliki absensi</h1>
+        <NotfoundData />
       ) : (
         <Calendar data={dataAbsen} />
       )}
