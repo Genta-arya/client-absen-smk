@@ -5,18 +5,23 @@ import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 import { getSingleAbsen } from "../../../../Api/Services/AbsensiServices";
 import Loading from "../../../Loading";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
+import { toast } from "sonner";
 
 const InfoAbsensi = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const { user } = useAuthStore();
+  const [status, setStatus] = useState(false);
   const curentDate = user?.DateIndonesia;
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getSingleAbsen(id);
+      if (response.data.hadir === null) {
+        setStatus(true);
+      }
       setData(response.data);
     } catch (error) {
       ResponseHandler(error.response);
@@ -79,6 +84,8 @@ const InfoAbsensi = () => {
     }
   };
 
+  if (status) return (window.location.href = "/");
+
   if (loading) return <Loading />;
 
   return (
@@ -91,7 +98,6 @@ const InfoAbsensi = () => {
             </h1>
             <div className="space-y-4">
               <div className="flex items-center">
-               
                 <span className="text-gray-900">
                   {formatTanggal(data.tanggal)}
                 </span>
