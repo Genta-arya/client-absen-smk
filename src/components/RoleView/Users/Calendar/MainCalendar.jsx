@@ -6,7 +6,7 @@ import ActModal from "../../../Modal/ActModal";
 
 const MainCalendar = () => {
   const { user } = useAuthStore();
-  const id = user?.id;
+
   const dataAbsen = user?.Pkl?.[0]?.absensi || [];
   const [modal, setModal] = useState(false);
   useEffect(() => {
@@ -15,7 +15,11 @@ const MainCalendar = () => {
 
   return (
     <ContainerGlobal>
-      <Calendar data={dataAbsen} />
+      {dataAbsen.length === 0 ? (
+        <h1 className="text-gray-700 text-sm text-center mt-20">Anda belum memiliki absensi</h1>
+      ) : (
+        <Calendar data={dataAbsen} />
+      )}
       {modal && (
         <ActModal
           isModalOpen={modal}
