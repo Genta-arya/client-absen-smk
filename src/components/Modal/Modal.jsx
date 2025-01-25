@@ -18,9 +18,9 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+    <div className="fixed  inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
       <motion.div
-        className=" bg-gray-100 rounded-lg shadow-lg w-11/12 max-w-lg"
+        className=" bg-gray-100 lg:h-[95%] lg:overflow-auto   rounded-lg shadow-lg w-11/12 max-w-lg"
         initial={{ y: 10, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 10, opacity: 0, scale: 0.95 }}

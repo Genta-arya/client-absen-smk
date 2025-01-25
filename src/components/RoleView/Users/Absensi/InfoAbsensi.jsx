@@ -6,6 +6,8 @@ import { getSingleAbsen } from "../../../../Api/Services/AbsensiServices";
 import Loading from "../../../Loading";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import { toast } from "sonner";
+import { FaClock, FaImage, FaTag } from "react-icons/fa";
+import { FaLocationPin, FaLocationPinLock } from "react-icons/fa6";
 
 const InfoAbsensi = () => {
   const { id } = useParams();
@@ -102,8 +104,12 @@ const InfoAbsensi = () => {
           {data ? (
             <>
               <h1 className="text-xl font-bold text-gray-800 mb-4 text-center border-b pb-2">
-                Informasi Absensi
+                <div className="flex items-center gap-2">
+                  <FaTag />
+                  <p>Informasi Absensi</p>
+                </div>
               </h1>
+
               <div className="space-y-4">
                 <div className="flex items-center">
                   <span className="text-gray-900">
@@ -111,9 +117,64 @@ const InfoAbsensi = () => {
                   </span>
                 </div>
 
+                <div className="flex w-full flex-col items-center gap-4  p-2 pb-4 rounded-md ">
+                  <div className="font-bold border-b w-full text-center pb-2 pt-4 ">
+                    <div className="flex items-center justify-center gap-2">
+                      <FaClock className="text-blue" />
+                      <p>Jam Kehadiran</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex lg:text-base md:text-base text-sm items-center justify-between w-full gap-8">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-center  text-gray-700 w-full">
+                          Masuk
+                        </span>
+                        <div className="mt-4 flex-col flex items-center">
+                          <span className="text-gray-900">
+                            {formatWaktu24Jam(data.datang)}
+                          </span>
+                          <span
+                            className={` text-xs px-2 py-1 rounded ${
+                              validateDatang(data.datang) === "Hadir"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-yellow-100 text-yellow-700"
+                            }`}
+                          >
+                            {validateDatang(data.datang)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center flex-col ">
+                        <span className="font-medium text-gray-700 ">
+                          Keluar
+                        </span>
+                        <div className="mt-4 flex-col flex items-center">
+                          <span className="text-gray-900 ">
+                            {data.pulang ? formatWaktu24Jam(data.pulang) : "-"}
+                          </span>
+                          <span
+                            className={`text-xs px-2 py-1 rounded ${
+                              validatePulang(data.pulang) === "Tepat Waktu"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {validatePulang(data.pulang)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex items-center flex-col">
                   <span className="font-bold text-gray-700 ">
-                    Bukti Kehadiran
+                    <div className="flex items-center gap-2">
+                      <FaImage />
+                      <p>Bukti Kehadiran</p>
+                    </div>
                   </span>
 
                   {!data.foto ? (
@@ -133,7 +194,10 @@ const InfoAbsensi = () => {
                 <div className="flex flex-col gap-4 ">
                   <div className="flex    flex-col items-center">
                     <span className=" text-gray-700 border-b w-full text-center font-bold mt-8">
-                      Lokasi
+                      <div className="flex items-center justify-center gap-2">
+                        <FaLocationPinLock className="text-red-500" />
+                        <p>Lokasi</p>
+                      </div>
                     </span>
                     <a
                       href={`https://www.google.com/maps?q=${data.gps}`}
@@ -147,60 +211,14 @@ const InfoAbsensi = () => {
                       </div>
                     </a>
                   </div>
-                  <div className="w-full md:h-96 h-72 mt-2">
-                    <iframe
-                      src={`https://www.google.com/maps?q=${data.gps}&output=embed&style=feature:all|element:geometry|color:0x212121&style=feature:all|element:labels.icon|visibility:off&style=feature:landscape|element:all|color:0x121212&style=feature:poi|element:all|color:0x121212&style=feature:road|element:geometry|color:0x2f2f2f&style=feature:road|element:labels|visibility:off&style=feature:transit|element:geometry|color:0x2f2f2f&style=feature:water|element:all|color:0x121212`}
-                      title="Google Maps Preview"
-                      className="w-full h-full border rounded-lg shadow-xl shadow-black"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                </div>
-                <div className="flex flex-col items-center gap-4 bg-gray-50 p-2 pb-4 rounded-md ">
-                  <div className="font-bold border-b w-full text-center pb-2 pt-4 ">
-                    Keterangan Hadir
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="flex md:flex-row lg:flex-row flex-col items-center justify-between w-full gap-8">
-                      <div className="flex flex-col">
-                        <span className="font-medium text-center  text-gray-700 w-full">
-                          Datang:
-                        </span>
-                        <div className="mt-4">
-                          <span className="text-gray-900">
-                            {formatWaktu24Jam(data.datang)}
-                          </span>
-                          <span
-                            className={`ml-2 px-2 py-1 rounded ${
-                              validateDatang(data.datang) === "Hadir"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}
-                          >
-                            {validateDatang(data.datang)}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center flex-col ">
-                        <span className="font-medium text-gray-700 ">
-                          Pulang:
-                        </span>
-                        <div className="mt-4">
-                          <span className="text-gray-900 ">
-                            {data.pulang ? formatWaktu24Jam(data.pulang) : "-"}
-                          </span>
-                          <span
-                            className={`ml-2 px-2 py-1 rounded ${
-                              validatePulang(data.pulang) === "Tepat Waktu"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {validatePulang(data.pulang)}
-                          </span>
-                        </div>
-                      </div>
+                  <div className="flex flex-col items-center ">
+                    <div className="w-screen h-screen  mt-2">
+                      <iframe
+                        src={`https://www.google.com/maps?q=${data.gps}&output=embed&style=feature:all|element:geometry|color:0x212121&style=feature:all|element:labels.icon|visibility:off&style=feature:landscape|element:all|color:0x121212&style=feature:poi|element:all|color:0x121212&style=feature:road|element:geometry|color:0x2f2f2f&style=feature:road|element:labels|visibility:off&style=feature:transit|element:geometry|color:0x2f2f2f&style=feature:water|element:all|color:0x121212`}
+                        title="Google Maps Preview"
+                        className="w-full h-full border"
+                        allowFullScreen
+                      ></iframe>
                     </div>
                   </div>
                 </div>

@@ -17,44 +17,48 @@ const AppMenu = () => {
     {
       title: "PKL",
       icon: (
-        <FaClipboardList className="text-blue text-3xl dark:text-white mb-4" />
+        <FaClipboardList className="text-blue text-3xl dark:text-white " />
       ),
       link: "/app/daftar/absensi",
     },
     {
       title: "Laporan",
       icon: (
-        <FaRegClipboard className="text-blue text-3xl dark:text-white mb-4" />
+        <FaRegClipboard className="text-blue text-3xl dark:text-white " />
       ),
       link: "#",
     },
     {
       title: "Kalender",
       icon: (
-        <FaCalendarAlt className="text-blue text-3xl dark:text-white mb-4" />
+        <FaCalendarAlt className="text-blue text-3xl dark:text-white " />
       ),
       link: "/app/kalender",
     },
     {
       title: "Pembimbing",
-      icon: <FaUserAlt className="text-blue text-3xl dark:text-white mb-4" />,
-      link: `/app/detail/profile/${data.creatorId || "defaultId"}/${data.creator?.[0]?.name || "defaultName"}`,
+      icon: <FaUserAlt className="text-blue text-3xl dark:text-white " />,
+      link: `/app/detail/profile/${data.creatorId || "defaultId"}/${
+        data.creator?.[0]?.name || "defaultName"
+      }`,
     },
   ];
 
   return (
     <div className="">
-      <div className="grid grid-cols-4 gap-2 px-0">
+      <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-2 gap-4 px-0">
         {menuItems.map((item, index) => (
           <Link
             to={item.link}
             key={index}
-            className="flex flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-all ease-in duration-300 border-b-4 border-b-oren hover:opacity-80 cursor-pointer"
+            className="flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-all ease-in duration-300 border-b-2  hover:opacity-80 cursor-pointer"
           >
-            {item.icon}
-            <p className="text-center text-xs font-semibold text-blue">
-              {item.title}
-            </p>
+            <div className="flex md:flex-row lg:flex-row flex-col items-center  gap-2">
+              {item.icon}
+              <p className="text-center text-xs font-semibold text-blue">
+                {item.title}
+              </p>
+            </div>
           </Link>
         ))}
       </div>

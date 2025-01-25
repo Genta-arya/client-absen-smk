@@ -311,313 +311,323 @@ const MainUsers = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 pb-8">
-      <>
-        <Tools title={"Dashboard"} role={role} />
-        {!modal && (
-          <div>
-            <div className="bg-[linear-gradient(to_bottom,_#1e3a8a,_#334e8c,_#4f6a92)] pb-40 py-16 rounded-bl-[35px] rounded-br-[35px]">
-              {/* <Headers user={user} /> */}
+    <div className="">
+      <div className="min-h-screen  bg-gray-100 pb-8">
+        <>
+          <Tools title={"Dashboard"} role={role} />
+          {!modal && (
+            <div>
+              <div className="bg-[linear-gradient(to_bottom,_#1e3a8a,_#334e8c,_#4f6a92)] pb-40 py-16 rounded-bl-[35px] rounded-br-[35px]">
+                {/* <Headers user={user} /> */}
 
-              <div className="px-6 -mt-8">
-                <div className="flex  gap-4 items-center justify-between ">
-                  <div className="flex gap-4 items-center">
-                    <img
-                      onClick={() => navigate(`/app/profil`)}
-                      src={user?.avatar}
-                      loading="lazy"
-                      alt=""
-                      className="border-2 lg:w-16 lg:h-16 md:w-16 md:h-16 w-12 h-12 hover:cursor-pointer border-white rounded-full"
-                    />
-                    <div>
-                      <h1 className="text-white font-bold lg:text-xl md:text-xl text-base mt-2">
-                        Hi, {user?.name}
-                      </h1>
-                      {user && user.Kelas && user.Kelas.length > 0 ? (
-                        <p className="text-white text-xs">
-                          {user.Kelas[0]?.nama} | {user.nim}
-                        </p>
-                      ) : (
-                        <p className="text-white text-sm">
-                          Kelas tidak tersedia
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <button
-                      disabled={loadingLogout}
-                      title="Logout"
-                      onClick={() => logout()}
-                      className="bg-white text-xs text-blue py-2 px-4 rounded-md"
-                    >
-                      <div className="flex items-center gap-2">
-                        {loadingLogout ? (
-                          <>
-                            <BeatLoader color={"#1e3a8a"} size={8} margin={2} />
-                          </>
+                <div className="px-6 -mt-8">
+                  <div className="flex  gap-4 items-center justify-between ">
+                    <div className="flex gap-4 items-center">
+                      <img
+                        onClick={() => navigate(`/app/profil`)}
+                        src={user?.avatar}
+                        loading="lazy"
+                        alt=""
+                        className="border-2 lg:w-16 lg:h-16 md:w-16 md:h-16 w-12 h-12 hover:cursor-pointer border-white rounded-full"
+                      />
+                      <div>
+                        <h1 className="text-white font-bold lg:text-xl md:text-xl text-base mt-2">
+                          Hi, {user?.name}
+                        </h1>
+                        {user && user.Kelas && user.Kelas.length > 0 ? (
+                          <p className="text-white text-xs">
+                            {user.Kelas[0]?.nama} | {user.nim}
+                          </p>
                         ) : (
-                          <>
-                            <FaSignOutAlt />
-                          </>
+                          <p className="text-white text-sm">
+                            Kelas tidak tersedia
+                          </p>
                         )}
                       </div>
-                    </button>
+                    </div>
+
+                    <div>
+                      <button
+                        disabled={loadingLogout}
+                        title="Logout"
+                        onClick={() => logout()}
+                        className="bg-white text-xs text-blue py-2 px-4 rounded-md"
+                      >
+                        <div className="flex items-center gap-2">
+                          {loadingLogout ? (
+                            <>
+                              <BeatLoader
+                                color={"#1e3a8a"}
+                                size={8}
+                                margin={2}
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <FaSignOutAlt />
+                            </>
+                          )}
+                        </div>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="px-4 -mt-36">
-              <div className=" px-4 bg-white p-4 mt-4 rounded-lg shadow">
-                <div className="flex-col flex">
-                  <div className="flex gap-2 items-center text-sm">
-                    <FaRegCalendar size={24} className="text-blue" />
-                    <p className="font-bold text-sm">
-                      {formatTanggal(user?.tanggal)}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    {absenToday !== null ? (
-                      <div className="flex flex-col gap-2">
-                        <h1 className="text-center mt-4 font-medium text-gray-600 text-sm">
-                          Tempat PKL
-                        </h1>
-                        {user?.Pkl?.length > 0 && (
-                          <h1 className="text-center font-extrabold text-blue">
-                            {user?.Pkl[0]?.name}
+              <div className="px-4 -mt-36">
+                <div className=" px-4 bg-white p-4 mt-4 rounded-lg shadow">
+                  <div className="flex-col flex">
+                    <div className="flex gap-2 items-center text-sm">
+                      <FaRegCalendar size={24} className="text-blue" />
+                      <p className="font-bold text-sm">
+                        {formatTanggal(user?.tanggal)}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      {absenToday !== null ? (
+                        <div className="flex flex-col gap-2">
+                          <h1 className="text-center mt-4 font-medium text-gray-600 text-sm">
+                            Tempat PKL
                           </h1>
-                        )}
-                        <div className="flex justify-center gap-4 mt-4">
-                          <div className="flex flex-col gap-2">
-                            <button
-                              onClick={() => setModal1(true)}
-                              disabled={
-                                isMasukDisabled() ||
-                                absenToday.hadir === "hadir"
-                              }
-                              className={`${
-                                absenToday.hadir !== "hadir"
-                                  ? "bg-blue disabled:bg-gray-500"
-                                  : "bg-green-600"
-                              } disabled:hover:opacity-100  hover:opacity-85 transition-all  text-white w-36 py-3  rounded-md`}
-                            >
-                              {absenToday.hadir === "hadir" ? (
-                                <div className="flex items-center justify-center gap-2 text-sm">
-                                  <FaCheck />
-                                  <p>Sudah Absen</p>
-                                </div>
-                              ) : (
-                                <div className="flex items-center justify-center gap-2 text-sm">
-                                  <FaSignInAlt />
-                                  <p>Masuk</p>
-                                </div>
-                              )}
-                            </button>
-                            <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
-                              <FaClock />
-
-                              <h1>07:00 - 09:00</h1>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col gap-2">
-                            <button
-                              disabled={
-                                isPulangDisabled() ||
-                                absenToday.pulang !== null ||
-                                loading
-                              }
-                              onClick={() => handlePulang(absenToday.id)}
-                              className="border disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all  w-36 text-black  py-3  rounded-md"
-                            >
-                              <div className="flex items-center justify-center gap-2">
-                                {absenToday.pulang !== null ? (
-                                  <>
-                                    <div className="flex    items-center justify-center gap-2 text-sm">
-                                      <FaCheck />
-                                      <p>Sudah Pulang</p>
-                                    </div>
-                                  </>
+                          {user?.Pkl?.length > 0 && (
+                            <h1 className="text-center font-extrabold text-blue">
+                              {user?.Pkl[0]?.name}
+                            </h1>
+                          )}
+                          <div className="flex justify-center gap-4 mt-4">
+                            <div className="flex flex-col gap-2">
+                              <button
+                                onClick={() => setModal1(true)}
+                                disabled={
+                                  isMasukDisabled() ||
+                                  absenToday.hadir === "hadir"
+                                }
+                                className={`${
+                                  absenToday.hadir !== "hadir"
+                                    ? "bg-blue disabled:bg-gray-500"
+                                    : "bg-green-600"
+                                } disabled:hover:opacity-100  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
+                              >
+                                {absenToday.hadir === "hadir" ? (
+                                  <div className="flex items-center justify-center gap-2 text-sm">
+                                    <FaCheck />
+                                    <p>Sudah Absen</p>
+                                  </div>
                                 ) : (
-                                  <LoadingButton
-                                    loading={loading}
-                                    icon={<FaSignOutAlt />}
-                                    text={"Pulang"}
-                                  />
+                                  <div className="flex items-center justify-center gap-2 text-sm">
+                                    <FaSignInAlt />
+                                    <p>Masuk</p>
+                                  </div>
                                 )}
-                              </div>
-                            </button>
-                            <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
-                              <FaClock />
+                              </button>
+                              <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
+                                <FaClock />
 
-                              <h1>15:30 - 17:00</h1>
+                                <h1>07:00 - 09:00</h1>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                              <button
+                                disabled={
+                                  isPulangDisabled() ||
+                                  absenToday.pulang !== null ||
+                                  loading
+                                }
+                                onClick={() => handlePulang(absenToday.id)}
+                                className="border disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all md:w-64 lg:w-64 w-36 text-black  py-3  rounded-md"
+                              >
+                                <div className="flex items-center justify-center gap-2">
+                                  {absenToday.pulang !== null ? (
+                                    <>
+                                      <div className="flex    items-center justify-center gap-2 text-sm">
+                                        <FaCheck />
+                                        <p>Sudah Pulang</p>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <LoadingButton
+                                      loading={loading}
+                                      icon={<FaSignOutAlt />}
+                                      text={"Pulang"}
+                                    />
+                                  )}
+                                </div>
+                              </button>
+                              <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
+                                <FaClock />
+
+                                <h1>15:30 - 17:00</h1>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="mt-4">
-                        <h1 className="font-bold text-sm text-center">
-                          Kamu Belum memiliki tempat PKL & absensi
+                      ) : (
+                        <div className="mt-4">
+                          <h1 className="font-bold text-sm text-center">
+                            Kamu Belum memiliki tempat PKL & absensi
+                          </h1>
+                        </div>
+                      )}
+                      <div className="mt-3">
+                        <h1 className="text-center text-black md:text-base lg:text-base text-sm">
+                          Lokasi Anda saat ini :
                         </h1>
-                      </div>
-                    )}
-                    <div className="mt-3">
-                      <h1 className="text-center text-black md:text-base lg:text-base text-sm">
-                        Lokasi Anda saat ini :
-                      </h1>
 
-                      <div className="bg-gray-200 px-5  mt-1 py-4 flex items-center justify-center  flex-col  gap-2">
-                        <FaMapMarkerAlt size={20} className="text-red-500 " />
-                        {locationError ? (
-                          <>
-                            <h1 className="text-center text-sm">
-                              {locationError}
-                            </h1>
-                          </>
-                        ) : (
-                          <>
-                            <h1 className="text-center text-sm">
-                              {location.address || (
-                                <BeatLoader
-                                  color="#294a70"
-                                  className="text-blue mt-2"
-                                />
-                              )}
-                            </h1>
-                            <div className="flex flex-col items-center gap-1 w-full">
-                              <div className="flex w-full justify-center items-center">
-                                <div className="flex  gap-2 justify-center items-center text-xs">
-                                  <FaWifi className="text-blue text-xl" />
-                                  <p>
-                                    {iplocal}{" "}
-                                    <span
-                                      className={getPingClass() + " font-bold"}
-                                    >
-                                      ({ping}ms)
-                                    </span>
-                                  </p>
-                                </div>
-                                {/* <div className="flex  gap-2 justify-center items-center text-xs">
+                        <div className="bg-gray-200 px-5  mt-1 py-4 flex items-center justify-center  flex-col  gap-2">
+                          <FaMapMarkerAlt size={20} className="text-red-500 " />
+                          {locationError ? (
+                            <>
+                              <h1 className="text-center text-sm">
+                                {locationError}
+                              </h1>
+                            </>
+                          ) : (
+                            <>
+                              <h1 className="text-center text-sm">
+                                {location.address || (
+                                  <BeatLoader
+                                    color="#294a70"
+                                    className="text-blue mt-2"
+                                  />
+                                )}
+                              </h1>
+                              <div className="flex flex-col items-center gap-1 w-full">
+                                <div className="flex w-full justify-center items-center">
+                                  <div className="flex  gap-2 justify-center items-center text-xs">
+                                    <FaWifi className="text-blue text-xl" />
+                                    <p>
+                                      {iplocal}{" "}
+                                      <span
+                                        className={
+                                          getPingClass() + " font-bold"
+                                        }
+                                      >
+                                        ({ping}ms)
+                                      </span>
+                                    </p>
+                                  </div>
+                                  {/* <div className="flex  gap-2 justify-center items-center text-xs">
                                   <FaGlobe className="text-blue text-xl" />
                                   <p>{ip.ip}</p>
                                 </div> */}
-                              </div>
-                              <p
-                                onClick={() => {
-                                  const gmapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
-                                  window.open(gmapsUrl, "_blank");
-                                }}
-                                className="text-xs border-dashed border-t border-gray-400 w-full text-center pt-3 cursor-pointer hover:underline"
-                              >
-                                <div className="flex gap-2 justify-center items-center">
-                                  <FaMapLocation className="text-blue text-xl" />
-                                  <p>
-                                    {location.latitude}, {location.longitude}
-                                  </p>
                                 </div>
-                              </p>
-                            </div>
-                          </>
-                        )}
+                                <p
+                                  onClick={() => {
+                                    const gmapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+                                    window.open(gmapsUrl, "_blank");
+                                  }}
+                                  className="text-xs border-dashed border-t border-gray-400 w-full text-center pt-3 cursor-pointer hover:underline"
+                                >
+                                  <div className="flex gap-2 justify-center items-center">
+                                    <FaMapLocation className="text-blue text-xl" />
+                                    <p>
+                                      {location.latitude}, {location.longitude}
+                                    </p>
+                                  </div>
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="px-4 mt-8 pb-24">
-              <h1 className="text-base font-bold">Menu</h1>
-              <p className="text-xs dark:text-gray-300 text-gray-500">
-                Silahkan pilih menu yang digunakan
-              </p>
-              <ContentUser />
-            </div>
-          </div>
-        )}
-
-        <ButtonNav />
-      </>
-      {modal && (
-        <ActModal isModalOpen={modal} title={"Notification"}>
-          {next ? (
-            <>
-              <form onSubmit={updateData}>
-                <Input
-                  type={"text"}
-                  placeholder={"Name"}
-                  label={"Nama"}
-                  value={user?.name}
-                  disabled={true}
-                  required
-                />
-                <Input
-                  type={"text"}
-                  placeholder={"NISN"}
-                  label={"NISN"}
-                  value={user?.nim}
-                  disabled={true}
-                  required
-                />
-                <Input
-                  type={"email"}
-                  placeholder={"Lengkapi email"}
-                  label={"Email"}
-                  value={data.email}
-                  onChange={(e) => setData({ ...data, email: e.target.value })}
-                  required
-                />
-                <div className="mt-4">
-                  <label htmlFor="kelas" className="block font-bold mb-2">
-                    Pilih Kelas
-                  </label>
-                  <Select
-                    options={kelasOptions}
-                    value={kelasOptions.find(
-                      (option) => option.value === user?.kelas?.id
-                    )}
-                    onChange={setSelectedKelas}
-                    isLoading={loading1}
-                    required
-                    placeholder="Pilih kelas ..."
-                  />
-                </div>
-                <button className="w-full bg-blue py-2 px-4 text-white rounded-lg hover:opacity-85 transition-all duration-300 ease-in mt-4">
-                  <LoadingButton
-                    text={"Simpan"}
-                    loading={loading}
-                    icon={<FaSave />}
-                  />
-                </button>
-              </form>
-            </>
-          ) : (
-            <div>
-              <h1 className="text-base font-bold">Mohon lengkapi profil</h1>
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setNext(true)}
-                  className="bg-blue text-white px-4 py-2 rounded hover:opacity-85 transition-all duration-300 ease-in"
-                >
-                  Lengkapi profil
-                </button>
+              <div className="px-4 mt-8 pb-24">
+                <h1 className="text-base font-bold">Menu</h1>
+                <p className="text-xs dark:text-gray-300 text-gray-500">
+                  Silahkan pilih menu yang digunakan
+                </p>
+                <ContentUser />
               </div>
             </div>
           )}
-        </ActModal>
-      )}
-      {modal1 && (
-        <ActModal
-          isModalOpen={modal1}
-          setIsModalOpen={setModal1}
-          title="Absen Masuk"
-        >
-          {" "}
-          <ModalAbsens id={absenToday.id} tanggal={currentDate} />
-        </ActModal>
-      )}
+
+          <ButtonNav />
+        </>
+        {modal && (
+          <ActModal isModalOpen={modal} title={"Notification"}>
+            {next ? (
+              <>
+                <form onSubmit={updateData}>
+                  <Input
+                    type={"text"}
+                    placeholder={"Name"}
+                    label={"Nama"}
+                    value={user?.name}
+                    disabled={true}
+                    required
+                  />
+                  <Input
+                    type={"text"}
+                    placeholder={"NISN"}
+                    label={"NISN"}
+                    value={user?.nim}
+                    disabled={true}
+                    required
+                  />
+                  <Input
+                    type={"email"}
+                    placeholder={"Lengkapi email"}
+                    label={"Email"}
+                    value={data.email}
+                    onChange={(e) =>
+                      setData({ ...data, email: e.target.value })
+                    }
+                    required
+                  />
+                  <div className="mt-4">
+                    <label htmlFor="kelas" className="block font-bold mb-2">
+                      Pilih Kelas
+                    </label>
+                    <Select
+                      options={kelasOptions}
+                      value={kelasOptions.find(
+                        (option) => option.value === user?.kelas?.id
+                      )}
+                      onChange={setSelectedKelas}
+                      isLoading={loading1}
+                      required
+                      placeholder="Pilih kelas ..."
+                    />
+                  </div>
+                  <button className="w-full bg-blue py-2 px-4 text-white rounded-lg hover:opacity-85 transition-all duration-300 ease-in mt-4">
+                    <LoadingButton
+                      text={"Simpan"}
+                      loading={loading}
+                      icon={<FaSave />}
+                    />
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div>
+                <h1 className="text-base font-bold">Mohon lengkapi profil</h1>
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setNext(true)}
+                    className="bg-blue text-white px-4 py-2 rounded hover:opacity-85 transition-all duration-300 ease-in"
+                  >
+                    Lengkapi profil
+                  </button>
+                </div>
+              </div>
+            )}
+          </ActModal>
+        )}
+        {modal1 && (
+          <ActModal
+            isModalOpen={modal1}
+            setIsModalOpen={setModal1}
+            title="Absen Masuk"
+          >
+            {" "}
+            <ModalAbsens id={absenToday.id} tanggal={currentDate} />
+          </ActModal>
+        )}
+      </div>
     </div>
   );
 };

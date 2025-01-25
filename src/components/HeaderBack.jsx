@@ -51,7 +51,7 @@ const HeaderBack = ({ children }) => {
           <FaArrowLeft />
         </button>
 
-        <div className={Text}>{dateTime}</div>
+      
       </div>
     </div>
   );
