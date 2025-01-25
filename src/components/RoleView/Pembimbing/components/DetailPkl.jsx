@@ -4,6 +4,7 @@ import {
   addSiswaToPkl,
   DeletePkl,
   getSinglePkl,
+  removeSingleUser,
   updateStatusPkl,
 } from "../../../../Api/Services/PKLServices";
 import Loading from "../../../Loading";
@@ -23,10 +24,11 @@ const DetailPkl = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
-
+  const [modal1, setModal1] = useState(false);
   const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [modalSiswa, setModalSiswa] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const [selectUser, setSelectUser] = useState([]);
   const { loading: loadingUser, userOptions, getDataUsers } = useUser();
   const [status, setStatus] = useState(null);
@@ -55,7 +57,7 @@ const DetailPkl = () => {
       setData(response.data);
     } catch (error) {
       if (error.response.status === 404) {
-        navigate("/management/pkl");
+        navigate("/admin/management/pkl");
       }
       ResponseHandler(error.response);
     } finally {
@@ -65,8 +67,9 @@ const DetailPkl = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await DeletePkl(id);
+      await DeletePkl(id);
       setModal(false);
+      fetchData();
       toast.success("Data PKL Berhasil dihapus");
       navigate("/admin/management/pkl");
     } catch (error) {
@@ -76,6 +79,7 @@ const DetailPkl = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await addSiswaToPkl({
         pkl_id: data?.id,
@@ -83,13 +87,49 @@ const DetailPkl = () => {
       });
       fetchData();
       setModalSiswa(false);
-      toast.success("Siswa berhasil ditambahkan");
+      toast.success("Siswa berhasil ditambahkan", {});
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
       }
       toast.error("Gagal menambahkan siswa");
       console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log(data?.users?.length);
+  const RemoveSiswa = async () => {
+    // jika siswa sisa 1 maka tidak boleh hapus
+    // if (data?.users?.length === 1) {
+    // toast.error(
+    //     "Tidak dapat menghapus siswa , PKL harus memiliki minimal 1 siswa"
+    //   );
+    //   return;
+    // }
+    setLoading(true);
+
+    try {
+      await removeSingleUser({
+        id: data?.id,
+        siswaId: deleteId,
+      });
+      fetchData();
+      setDeleteId(null);
+      setModal1(false);
+      toast.success("Siswa Berhasil dihapus", {
+        duration: 2000,
+     
+      });
+    } catch (error) {
+      if (error.code === "ERR_NETWORK") {
+        toast.error("Tidak dapat terhubung ke server.");
+      }
+      toast.error("Gagal menghapus siswa");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,6 +144,11 @@ const DetailPkl = () => {
   useEffect(() => {
     getDataUsers();
   }, []);
+
+  const openModalDelete = (id) => {
+    setModal1(true);
+    setDeleteId(id);
+  };
 
   if (loading) return <Loading />;
 
@@ -174,6 +219,11 @@ const DetailPkl = () => {
                   onClick={() => setModalSiswa(true)}
                 />
               </div>
+              {data?.users.length === 0 && (
+                <p className="text-gray-500 text-center mt-10 font-bold text-sm">
+                  Belum ada siswa
+                </p>
+              )}
               <ul className="space-y-4">
                 {data?.users.map((user) => (
                   <li
@@ -181,11 +231,20 @@ const DetailPkl = () => {
                     className="flex items-center justify-between bg-gray-100 p-4 rounded shadow"
                   >
                     <div className="flex items-center space-x-4">
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="w-10 h-10 rounded-full"
-                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openModalDelete(user.id)}
+                          title="Hapus Siswa"
+                          className=""
+                        >
+                          <FaTrash className="text-red-500" />
+                        </button>
+                        <img
+                          src={user.avatar}
+                          alt={user.name}
+                          className="w-10 h-10 rounded-full"
+                        />
+                      </div>
                       <div className="flex flex-col">
                         <span className="text-gray-800 font-medium">
                           {user.name}
@@ -254,6 +313,35 @@ const DetailPkl = () => {
               </div>
             </ActModal>
           )}
+          {modal1 && (
+            <ActModal
+              isModalOpen={modal1}
+              setIsModalOpen={setModal1}
+              title={"Konfirmasi"}
+            >
+              <div>
+                <h1 className="text-center font-bold text-red-500">
+                  Menghapus Siswa akan menghapus semua data absensi dan laporan
+                  kegiatan
+                </h1>
+                <h1 className="mt-2">
+                  Apakah anda yakin ingin menghapus Siswa ini?
+                </h1>
+
+                <div className="flex justify-end gap-2 items-center w-full text-center mt-4">
+                  <button
+                    onClick={() => RemoveSiswa(deleteId)}
+                    className="bg-red-500 text-white py-2 rounded-md w-40 text-center  hover:opacity-80 transition"
+                  >
+                    <div className="flex items-center gap-2 justify-center">
+                      <FaTrash />
+                      <p>Lanjutkan</p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </ActModal>
+          )}
           {modalSiswa && (
             <ActModal
               isModalOpen={modalSiswa}
@@ -264,6 +352,10 @@ const DetailPkl = () => {
                 <h1 className="text-center text-xs font-bold text-blue mb-1">
                   "Hanya siswa yang belum memiliki PKL yang akan ditampilkan"
                 </h1>
+                <p className="text-xs mb-2 text-red-500">
+                  Jika Pkl sudah dimulai maka siswa akan ketinggalan jadwal
+                  absensi tanggal sebelumnya.{" "}
+                </p>
                 <div className="text-xs">
                   {loadingUser ? (
                     <div className="flex items-center justify-center">

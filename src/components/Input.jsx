@@ -14,9 +14,9 @@ const Input = ({
   minlength,
   disabled,
   min,
-  multiple
+  multiple,
 }) => {
-  const [inputType, setInputType] = useState(type); 
+  const [inputType, setInputType] = useState(type);
 
   const togglePasswordVisibility = () => {
     setInputType((prevType) => (prevType === "password" ? "text" : "password"));
@@ -30,7 +30,7 @@ const Input = ({
 
       <input
         onChange={onChange}
-        type={inputType}
+        type={type}
         placeholder={placeholder}
         id={id}
         value={value}

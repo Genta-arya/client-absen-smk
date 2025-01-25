@@ -42,6 +42,7 @@ export const updatePkl = async (data) => {
     const response = await Axios.put("/pkl/edit/" + data.id, {
       alamat: data.address,
       name: data.name,
+      grupUrl: data.grupUrl,
     });
     return response.data;
   } catch (error) {
@@ -61,6 +62,18 @@ export const DeletePkl = async (id) => {
 export const updateStatusPkl = async (data) => {
   try {
     const response = await Axios.put("/pkl/status/" + data.id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+
+export const removeSingleUser = async (data) => {
+  try {
+    const response = await Axios.put("/pkl/remove/siswa/" + data.id, {
+      siswaId : data.siswaId
+    });
     return response.data;
   } catch (error) {
     handleError(error);

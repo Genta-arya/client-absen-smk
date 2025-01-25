@@ -13,19 +13,23 @@ const EditPkl = ({ datas, setStatusEdit, refresh }) => {
   const [data, setData] = React.useState({
     name: "",
     address: "",
+    grupUrl: "",
     id: datas.id,
   });
+
+
 
   useEffect(() => {
     setData({
       name: datas.name,
       address: datas.alamat,
       id: datas.id,
+      grupUrl: datas.link_grup,
     });
   }, [datas]);
 
   const [loading, setLoading] = React.useState(false);
-
+  console.log(data);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -34,11 +38,14 @@ const EditPkl = ({ datas, setStatusEdit, refresh }) => {
       const response = await updatePkl({
         ...data,
       });
+
+    
       toast.success("Data PKL Berhasil diubah");
       setData({
         name: response.data.name,
         address: response.data.alamat,
         id: response.data.id,
+        grupUrl: response.data.link_grup,
       });
       refresh();
       setStatusEdit(false);
@@ -77,6 +84,15 @@ const EditPkl = ({ datas, setStatusEdit, refresh }) => {
           value={data.address}
           onChange={(e) => setData({ ...data, address: e.target.value })}
           placeholder={"Alamat Tempat PKL"}
+        />
+
+        <Input
+          type="url"
+          label="Grup Whatsapp"
+          required={true}
+          value={data.grupUrl}
+          onChange={(e) => setData({ ...data, grupUrl: e.target.value })}
+          placeholder={"https://grupwhatsapp.example.com"}
         />
 
         <button

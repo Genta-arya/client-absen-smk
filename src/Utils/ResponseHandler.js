@@ -36,7 +36,6 @@ export const ResponseHandler = (response, navigate = null) => {
       throw response.data;
 
     default:
-      toast.error("Unexpected Error: Terjadi kesalahan yang tidak terduga.");
-      throw response.data;
+      null;
   }
 };
