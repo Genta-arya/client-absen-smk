@@ -16,6 +16,7 @@ import {
   FaSave,
   FaSignInAlt,
   FaSignOutAlt,
+  FaTimesCircle,
   FaWifi,
 } from "react-icons/fa";
 import { updateDataUser, getKelas } from "../../../Api/Services/LoginServices";
@@ -396,7 +397,9 @@ const MainUsers = () => {
                           {user?.Pkl[0]?.status !== true ? (
                             <>
                               <div>
-                                <h1 className="text-center mt-4 font-bold text-red-500 text-sm">Periode PKL telah berakhir</h1>
+                                <h1 className="text-center mt-4 font-bold text-red-500 text-sm">
+                                  Periode PKL telah berakhir
+                                </h1>
                               </div>
                             </>
                           ) : (
@@ -473,9 +476,33 @@ const MainUsers = () => {
                         </div>
                       ) : (
                         <div className="mt-4">
-                          <h1 className="font-bold text-sm text-center">
-                            Kamu Belum memiliki tempat PKL & absensi
-                          </h1>
+                          {user?.Pkl &&
+                          user.Pkl.length > 0 &&
+                          user.Pkl[0]?.name ? (
+                            <div>
+                              <h1 className="text-center font-extrabold text-blue und">
+                                {user.Pkl[0].name}
+                              </h1>
+                              <h1 className="text-center font-bold text-red-500 text-sm mt-2">
+                                <p>
+                                  Tidak ada absensi untuk hari ini, silahkan cek
+                                  kalender untuk info lebih lanjut
+                                </p>
+                              </h1>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex flex-col gap-2 items-center justify-center">
+                                <FaTimesCircle
+                                  size={30}
+                                  className="text-red-500"
+                                />
+                                <h1 className="font-bold text-sm text-center">
+                                  Kamu Belum memiliki tempat PKL & absensi
+                                </h1>
+                              </div>
+                            </>
+                          )}
                         </div>
                       )}
                       <div className="mt-3">

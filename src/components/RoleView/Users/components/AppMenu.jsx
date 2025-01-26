@@ -11,7 +11,7 @@ import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 const AppMenu = () => {
   const { user } = useAuthStore();
   const data = user?.Pkl?.[0] || {}; // Berikan nilai default berupa objek kosong
-  console.log(data);
+ 
 
   const menuItems = [
     {

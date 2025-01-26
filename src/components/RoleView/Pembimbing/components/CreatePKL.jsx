@@ -63,8 +63,10 @@ const CreatePKL = () => {
   };
 
   return (
+    <div className="pb-20">
+
     <ContainerGlobal>
-      <div className="flex gap-2 items-center border border-dashed p-4 justify-center">
+      <div className="flex gap-2 items-center border border-dashed p-4 justify-center ">
         <FaWarehouse />
         <h1 className="text-lg font-extrabold">Tambah Tempat PKL</h1>
       </div>
@@ -109,7 +111,7 @@ const CreatePKL = () => {
           onChange={(e) => setData({ ...data, end_date: e.target.value })}
         />
 
-        <div className="mb-4">
+        <div className="mb-4 ">
           <label className="block text-sm font-medium mb-2">Pilih Siswa</label>
           <p className="text-xs text-gray-500 mb-1">
             * Hanya menampilkan siswa yang belum memiliki PKL
@@ -143,6 +145,7 @@ const CreatePKL = () => {
         </button>
       </form>
     </ContainerGlobal>
+    </div>
   );
 };
 
