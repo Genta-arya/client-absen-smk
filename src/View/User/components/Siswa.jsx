@@ -13,7 +13,7 @@ import { ResponseHandler } from "../../../Utils/ResponseHandler";
 
 import Loading from "../../../components/Loading";
 import { useNavigate } from "react-router-dom";
-import { updateDataUser } from "../../../Api/Services/LoginServices";
+import { updateDataUser, updateDataUsers } from "../../../Api/Services/LoginServices";
 import { toast } from "sonner";
 import LoadingButton from "../../../components/LoadingButton";
 
@@ -60,7 +60,7 @@ const Siswa = ({
   const updateData = async () => {
     setLoading1(true);
     try {
-      await updateDataUser({
+      await updateDataUsers({
         id: selectData.id,
         name: selectData.name,
         nim: selectData.nim,

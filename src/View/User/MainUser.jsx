@@ -10,7 +10,7 @@ const MainUser = () => {
   useEffect(() => {
     if (user?.role !== "admin") {
       window.location.href = "/";
-      alert("Anda tidak memiliki akses ke halaman ini.");
+     
     }
   }, [user]);
 

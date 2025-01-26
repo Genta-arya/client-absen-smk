@@ -149,6 +149,20 @@ export const updateDataUser = async (data) => {
   }
 };
 
+export const updateDataUsers = async (data) => {
+  try {
+    const response = await Axios.post(`/auth/update/users/${data.id}`, {
+      name: data.name,
+      nim: data.nim,
+      email: data.email,
+      kelas: data.kelas,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 export const getKelas = async () => {
   try {
     const response = await Axios.get("/auth/kelas");

@@ -5,12 +5,13 @@ import TabStore from "../../../Lib/Zustand/TabStore";
 import Action from "./Action";
 import useUser from "../../../Lib/Hook/useUser";
 import { Text } from "../../../constants/Constants";
+import ScrollTop from "../../../components/ScrollTop";
 
 const Tab = () => {
   const { tab, setTab } = TabStore();
   const { data: dataSiswa, loading, updatePasswords, fetchData } = useUser();
   const [searchTerm, setSearchTerm] = React.useState("");
-
+  const [visible, setVisible] = React.useState(false);
   useEffect(() => {
     fetchData();
   }, [tab]);
@@ -26,10 +27,32 @@ const Tab = () => {
       );
     });
   };
-
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   const handleTabClick = (tab) => {
     setTab(tab);
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setVisible(true);
+      } else {
+        setVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup event listener saat komponen unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="font-sans">
@@ -92,6 +115,9 @@ const Tab = () => {
           </>
         )}
       </div>
+      {visible && (
+        <ScrollTop scrollToTop={scrollToTop} />
+      )}
     </div>
   );
 };
