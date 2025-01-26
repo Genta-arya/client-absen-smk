@@ -47,8 +47,7 @@ const MainLogin = () => {
 
     setLoading(true);
     try {
-      const parseNim = parseInt(nim);
-      const response = await HandleLogin({ nim: parseNim, password });
+      const response = await HandleLogin({ nim, password });
 
       localStorage.setItem("token", response.data.token);
 
@@ -61,7 +60,6 @@ const MainLogin = () => {
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
-        
       }
       ResponseHandler(error.response);
     } finally {
