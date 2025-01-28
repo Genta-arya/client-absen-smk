@@ -12,7 +12,10 @@ export const createPKL = async (data) => {
 
 export const addSiswaToPkl = async (data) => {
   try {
-    const response = await Axios.put("/pkl/add/siswa", data);
+    const response = await Axios.put("/pkl/add/siswa", {
+      pkl_id:data.pkl_id,
+      shift_data: data.shift_data, // Mengirimkan data shift yang lebih dinamis
+    });
     return response.data;
   } catch (error) {
     handleError(error);
@@ -72,6 +75,7 @@ export const updateStatusPkl = async (data) => {
 export const removeSingleUser = async (data) => {
   try {
     const response = await Axios.put("/pkl/remove/siswa/" + data.id, {
+      isDelete : data.isDelete,
       siswaId : data.siswaId
     });
     return response.data;

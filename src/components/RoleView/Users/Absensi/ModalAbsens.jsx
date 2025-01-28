@@ -92,9 +92,6 @@ const ModalAbsens = ({ tanggal, id }) => {
 
       const isoString = currentDate.toISOString();
 
-      console.log(isoString);
-      console.log(currentDate);
-
       if (cropData) {
         const timestamp = Date.now();
         const uniqueFileName = `photo_${timestamp}.png`;
@@ -111,13 +108,6 @@ const ModalAbsens = ({ tanggal, id }) => {
             foto: uploadFoto.data.file_url,
           });
 
-          console.log({
-            id: id,
-            jam_masuk: isoString,
-            gps: `${location.latitude},${location.longitude}`,
-            posisi: location.address,
-            foto: uploadFoto.data.file_url,
-          });
           toast.success("Absen Berhasil", {
             duration: 2000,
             onAutoClose: () => window.location.reload(),
@@ -132,7 +122,7 @@ const ModalAbsens = ({ tanggal, id }) => {
       }
       ResponseHandler(error.response);
     } finally {
-      setLoadings(true);
+      setLoadings(false);
     }
   };
 

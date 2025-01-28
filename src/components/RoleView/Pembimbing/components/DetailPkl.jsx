@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  addSiswaToPkl,
   DeletePkl,
   getSinglePkl,
   removeSingleUser,
@@ -9,7 +8,7 @@ import {
 } from "../../../../Api/Services/PKLServices";
 import Loading from "../../../Loading";
 import ContainerGlobal from "../../../ContainerGlobal";
-import { FaPlus, FaTag, FaTrash } from "react-icons/fa";
+import { FaClock, FaPlus, FaTag, FaTrash } from "react-icons/fa";
 import Input from "../../../Input";
 import { useNavigate } from "react-router-dom";
 import EditPkl from "./EditPkl";
@@ -20,6 +19,7 @@ import Button from "../../../Button";
 import Select from "react-select";
 import useUser from "../../../../Lib/Hook/useUser";
 import { BeatLoader } from "react-spinners";
+import ModalAddsiswa from "./ModalAddsiswa";
 const DetailPkl = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -29,9 +29,9 @@ const DetailPkl = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [modalSiswa, setModalSiswa] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [selectUser, setSelectUser] = useState([]);
   const { loading: loadingUser, userOptions, getDataUsers } = useUser();
   const [status, setStatus] = useState(null);
+
 
   const toggleStatus = async () => {
     setLoading(true);
@@ -77,42 +77,14 @@ const DetailPkl = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await addSiswaToPkl({
-        pkl_id: data?.id,
-        user_id: selectUser.map((user) => user.value),
-      });
-      fetchData();
-      setModalSiswa(false);
-      toast.success("Siswa berhasil ditambahkan", {});
-    } catch (error) {
-      if (error.code === "ERR_NETWORK") {
-        toast.error("Tidak dapat terhubung ke server.");
-      }
-      toast.error("Gagal menambahkan siswa");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   console.log(data?.users?.length);
   const RemoveSiswa = async () => {
-    // jika siswa sisa 1 maka tidak boleh hapus
-    // if (data?.users?.length === 1) {
-    // toast.error(
-    //     "Tidak dapat menghapus siswa , PKL harus memiliki minimal 1 siswa"
-    //   );
-    //   return;
-    // }
     setLoading(true);
 
     try {
       await removeSingleUser({
         id: data?.id,
+        isDelete: data?.users?.length === 1 ? true : false,
         siswaId: deleteId,
       });
       fetchData();
@@ -120,7 +92,6 @@ const DetailPkl = () => {
       setModal1(false);
       toast.success("Siswa Berhasil dihapus", {
         duration: 2000,
-     
       });
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
@@ -148,6 +119,26 @@ const DetailPkl = () => {
   const openModalDelete = (id) => {
     setModal1(true);
     setDeleteId(id);
+  };
+
+  const FormatJam = ({ item }) => {
+    const formatTime = (time) => {
+      const date = new Date(time);
+      return (
+        date.getHours().toString().padStart(2, "0") +
+        ":" +
+        date.getMinutes().toString().padStart(2, "0")
+      );
+    };
+
+    return (
+      <div>
+        <p className="flex items-center gap-2 text-blue">
+          <FaClock />
+          {formatTime(item?.jamMasuk)} - {formatTime(item?.jamPulang)}
+        </p>
+      </div>
+    );
   };
 
   if (loading) return <Loading />;
@@ -201,6 +192,43 @@ const DetailPkl = () => {
                           }`}
                         ></div>
                       </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h1 className="text-center font-bold mt-12">
+                      Kategori shift
+                    </h1>
+
+                    {data?.shifts?.length === 0 && (
+                      <p className="text-gray-500 text-center mt-5 font-bold text-sm">
+                        Belum ada shift
+                      </p>
+                    )}
+
+                    <div
+                      className={`flex text-sm ${
+                        data?.shifts?.length > 2
+                          ? "flex-col gap-0 items-center"
+                          : " flex-row gap-5"
+                      }  justify-evenly `}
+                    >
+                      {data?.shifts?.map((item) => (
+                        <>
+                          <div
+                            className={`flex flex-col ${
+                              data?.shifts?.length > 3
+                                ? "items-center mt-4"
+                                : "items-center py-4"
+                            } `}
+                            key={item.id}
+                          >
+                            <p>{item?.name}</p>
+                            <div>
+                              <FormatJam item={item} />
+                            </div>
+                          </div>
+                        </>
+                      ))}
                     </div>
                   </div>
                 </>
@@ -343,54 +371,15 @@ const DetailPkl = () => {
             </ActModal>
           )}
           {modalSiswa && (
-            <ActModal
-              isModalOpen={modalSiswa}
-              setIsModalOpen={setModalSiswa}
-              title={"Tambah Siswa PKL"}
-            >
-              <div>
-                <h1 className="text-center text-xs font-bold text-blue mb-1">
-                  "Hanya siswa yang belum memiliki PKL yang akan ditampilkan"
-                </h1>
-                <p className="text-xs mb-2 text-red-500">
-                  Jika Pkl sudah dimulai maka siswa akan ketinggalan jadwal
-                  absensi tanggal sebelumnya.{" "}
-                </p>
-                <div className="text-xs">
-                  {loadingUser ? (
-                    <div className="flex items-center justify-center">
-                      <BeatLoader size={10} color="#294A70" />
-                    </div>
-                  ) : (
-                    <>
-                      <form
-                        onSubmit={handleSubmit}
-                        className="flex flex-col gap-2"
-                      >
-                        <Select
-                          options={userOptions}
-                          isMulti
-                          placeholder="Cari Siswa..."
-                          required
-                          noOptionsMessage={() => "Tidak ada siswa"}
-                          onChange={(selectedOptions) =>
-                            setSelectUser(selectedOptions)
-                          }
-                        />
-                        <button type="submit" className="flex justify-end">
-                          <div className="bg-blue text-white py-2 rounded-md w-40 text-center  hover:opacity-80 transition">
-                            <div className="flex items-center gap-2 justify-center">
-                              <FaPlus />
-                              <p>Tambahkan</p>
-                            </div>
-                          </div>
-                        </button>
-                      </form>
-                    </>
-                  )}
-                </div>
-              </div>
-            </ActModal>
+            <ModalAddsiswa
+              modalSiswa={modalSiswa}
+              setModalSiswa={setModalSiswa}
+              loadingUser={loadingUser}
+              userOptions={userOptions}
+              data={data}
+              fetchData={fetchData}
+              setLoading={setLoading}
+            />
           )}
         </ContainerGlobal>
       )}

@@ -58,6 +58,18 @@ const MainUsers = () => {
     ? new Date(user?.DateIndonesia)
     : null;
 
+  const dataShift = dataAbsen[0]?.shift;
+  const jamKeluar = dataShift?.jamPulang;
+  const jamMasuk = dataShift?.jamMasuk;
+  const nameShift = dataShift?.name;
+
+  // jamMasuk get hours dan menit
+  const jamKeluarHours = new Date(jamKeluar).getHours();
+  const jamKeluarMinutes = new Date(jamKeluar).getMinutes();
+
+  const jamMasukHours = new Date(jamMasuk).getHours();
+  const jamMasukMinutes = new Date(jamMasuk).getMinutes();
+
   // Fungsi untuk mengonversi ke UTC dari zona waktu Indonesia (UTC+7)
   const convertToUTC = (date) => {
     if (!date) return null;
@@ -74,8 +86,6 @@ const MainUsers = () => {
       formattedCurrentDate
   );
   const absenToday = dataAbsenToday[0] || null;
-
-  console.log(absenToday);
 
   const navigate = useNavigate();
   const { location, locationError } = useLocationStore();
@@ -163,23 +173,49 @@ const MainUsers = () => {
       setLoading(false);
     }
   };
-
-  // Fungsi untuk memeriksa apakah tombol masuk harus dinonaktifkan
+  // const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
   const isMasukDisabled = () => {
     const toUTC7 = (inputDate) => {
       return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
     };
 
-    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
-    const serverHours = serverDate.getUTCHours(); // Jam dari server
+    if (!dataShift || !jamKeluar || !jamMasuk) {
+      return true; // Nonaktifkan jika data shift tidak tersedia
+    }
 
-    const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
+    const serverDate = new Date(user?.DateIndonesia); // Waktu server
+    const serverTime = serverDate.getTime(); // Waktu server dalam milidetik
 
-    // Rentang waktu: 07:00 - 08:00 UTC+7
+    const jamMasuks = new Date(jamMasuk).getTime(); // Waktu jamMasuk dalam milidetik
+
+    // Waktu 1 jam sebelum jamMasuk
+    const jamMasuksMinus1 = new Date(jamMasuks);
+    jamMasuksMinus1.setHours(jamMasuksMinus1.getHours()); // 1 jam sebelum
+
+    // Waktu 1 jam setelah jamMasuk
+    const jamMasuksPlus1 = new Date(jamMasuks);
+    jamMasuksPlus1.setHours(jamMasuksPlus1.getHours() + 2); // 1 jam setelah
+
+    // Debugging: log jam masuk dan batas waktu yang sudah diatur
+    console.log(
+      "Jam Masuk:",
+      new Date(jamMasuks).toLocaleTimeString("en-GB", { hour12: false })
+    );
+    console.log(
+      "Buka Jam Masuk (1 jam sebelum):",
+      jamMasuksMinus1.toLocaleTimeString("en-GB", { hour12: false })
+    );
+    console.log(
+      "Tutup Jam Masuk (1 jam setelah):",
+      jamMasuksPlus1.toLocaleTimeString("en-GB", { hour12: false })
+    );
+
+    // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamMasuk hingga 1 jam setelah jamMasuk
     const isWithinMasukTime =
-      (serverHours === 7 && serverMinutes >= 0) ||
-      (serverHours > 7 && serverHours < 10) ||
-      (serverHours === 10 && serverMinutes === 0);
+      serverTime >= jamMasuksMinus1 && serverTime <= jamMasuksPlus1;
+
+    // Debugging: log hasil perbandingan
+    console.log("Is server time within masuk time window?", isWithinMasukTime);
 
     return !isWithinMasukTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -190,15 +226,47 @@ const MainUsers = () => {
       return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
     };
 
-    const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
-    const serverHours = serverDate.getUTCHours(); // Jam dari server
-    const serverMinutes = serverDate.getUTCMinutes(); // Menit dari server
+    if (!dataShift || !jamKeluar || !jamMasuk) {
+      return true; // Nonaktifkan jika data shift tidak tersedia
+    }
 
-    // Rentang waktu: 15:30 - 18:00 UTC+7
+    const serverDate = new Date(user?.DateIndonesia); // Waktu server
+    const serverTime = serverDate.getTime(); // Waktu server dalam milidetik
+
+    // Waktu jamKeluar dalam milidetik
+    const jamKeluars = new Date(jamKeluar).getTime();
+
+    // Waktu 1 jam sebelum jamKeluar
+    const jamKeluarsMinus1 = new Date(jamKeluars);
+    jamKeluarsMinus1.setHours(jamKeluarsMinus1.getHours()); // 1 jam sebelum
+
+    // Waktu 2 jam setelah jamKeluar
+    const jamKeluarsPlus2 = new Date(jamKeluars);
+    jamKeluarsPlus2.setHours(jamKeluarsPlus2.getHours() + 1); // 2 jam setelah
+
+    // Debugging: log jam pulang dan batas waktu yang sudah diatur
+    console.log(
+      "Jam Pulang:",
+      new Date(jamKeluars).toLocaleTimeString("en-GB", { hour12: false })
+    );
+    console.log(
+      "Buka Jam Pulang (1 jam sebelum):",
+      jamKeluarsMinus1.toLocaleTimeString("en-GB", { hour12: false })
+    );
+    console.log(
+      "Tutup Jam Pulang (8 jam setelah):",
+      jamKeluarsPlus2.toLocaleTimeString("en-GB", { hour12: false })
+    );
+
+    // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamKeluar hingga 2 jam setelah jamKeluar
     const isWithinPulangTime =
-      (serverHours === 15 && serverMinutes >= 30) || // Jam 15:30 - 15:59
-      (serverHours > 16 && serverHours < 17) || // Jam 16:00 - 17:59
-      (serverHours === 17 && serverMinutes === 0); // Tepat jam 18:00
+      serverTime >= jamKeluarsMinus1 && serverTime <= jamKeluarsPlus2;
+
+    // Debugging: log hasil perbandingan
+    console.log(
+      "Is server time within pulang time window?",
+      isWithinPulangTime
+    );
 
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -433,7 +501,28 @@ const MainUsers = () => {
                                   <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
                                     <FaClock />
 
-                                    <h1>07:00 - 09:00</h1>
+                                    <h1>
+                                      <div className="flex items-center">
+                                        <div className="flex">
+                                          <p>
+                                            {jamMasukHours}:{jamMasukMinutes}
+                                          </p>
+                                          <p>
+                                            {new Date(jamMasuk).getMinutes()} - 
+                                          </p>
+                                        </div>
+                                        <div className="flex ml-1">
+                                          <p>
+                                            {new Date(jamMasuk).getHours() + 2}:
+                                          </p>
+                                          <p>
+                                            {new Date(jamMasuk).getMinutes()}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </h1>
+
+                                    <h1></h1>
                                   </div>
                                 </div>
 
@@ -464,10 +553,30 @@ const MainUsers = () => {
                                       )}
                                     </div>
                                   </button>
-                                  <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
+                                  <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
                                     <FaClock />
 
-                                    <h1>15:30 - 17:00</h1>
+                                    <h1>
+                                      <div className="flex items-center">
+                                        <div className="flex">
+                                          <p>
+                                            {new Date(jamKeluar).getHours()}:
+                                          </p>
+                                          <p>
+                                            {new Date(jamKeluar).getMinutes()} -{" "}
+                                          </p>
+                                        </div>
+                                        <div className="flex ml-1">
+                                          <p>
+                                            {new Date(jamKeluar).getHours() + 1}
+                                            :
+                                          </p>
+                                          <p>
+                                            {new Date(jamKeluar).getMinutes()}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </h1>
                                   </div>
                                 </div>
                               </div>
