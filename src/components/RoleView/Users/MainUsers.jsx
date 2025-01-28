@@ -348,7 +348,7 @@ const MainUsers = () => {
   const [showNavbar, setShowNavbar] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 150) {
+      if (window.scrollY > 100) {
         setShowNavbar(true);
       } else {
         setShowNavbar(false);
@@ -358,7 +358,7 @@ const MainUsers = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [window.scrollY]);
+  }, []);
 
   return (
     <div className="">
