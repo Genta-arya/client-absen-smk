@@ -179,7 +179,6 @@ const MainUsers = () => {
   // const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
   const serverDate = new Date(user?.DateIndonesia);
 
-  console.log("serverDate:", serverDate);
   const isMasukDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
@@ -199,25 +198,10 @@ const MainUsers = () => {
     jamMasuksPlus1.setHours(jamMasuksPlus1.getHours() + 2); // 1 jam setelah
 
     // Debugging: log jam masuk dan batas waktu yang sudah diatur
-    console.log(
-      "Jam Masuk:",
-      new Date(jamMasuks).toLocaleTimeString("en-GB", { hour12: false })
-    );
-    console.log(
-      "Buka Jam Masuk (1 jam sebelum):",
-      jamMasuksMinus1.toLocaleTimeString("en-GB", { hour12: false })
-    );
-    console.log(
-      "Tutup Jam Masuk (1 jam setelah):",
-      jamMasuksPlus1.toLocaleTimeString("en-GB", { hour12: false })
-    );
 
     // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamMasuk hingga 1 jam setelah jamMasuk
     const isWithinMasukTime =
       serverTime >= jamMasuksMinus1 && serverTime <= jamMasuksPlus1;
-
-    // Debugging: log hasil perbandingan
-    console.log("Is server time within masuk time window?", isWithinMasukTime);
 
     return !isWithinMasukTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -243,28 +227,12 @@ const MainUsers = () => {
     jamKeluarsPlus2.setHours(jamKeluarsPlus2.getHours() + 1); // 2 jam setelah
 
     // Debugging: log jam pulang dan batas waktu yang sudah diatur
-    console.log(
-      "Jam Pulang:",
-      new Date(jamKeluars).toLocaleTimeString("en-GB", { hour12: false })
-    );
-    console.log(
-      "Buka Jam Pulang (1 jam sebelum):",
-      jamKeluarsMinus1.toLocaleTimeString("en-GB", { hour12: false })
-    );
-    console.log(
-      "Tutup Jam Pulang (8 jam setelah):",
-      jamKeluarsPlus2.toLocaleTimeString("en-GB", { hour12: false })
-    );
 
     // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamKeluar hingga 2 jam setelah jamKeluar
     const isWithinPulangTime =
       serverTime >= jamKeluarsMinus1 && serverTime <= jamKeluarsPlus2;
 
     // Debugging: log hasil perbandingan
-    console.log(
-      "Is server time within pulang time window?",
-      isWithinPulangTime
-    );
 
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -377,6 +345,21 @@ const MainUsers = () => {
     }
   };
 
+  const [showNavbar, setShowNavbar] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 150) {
+        setShowNavbar(true);
+      } else {
+        setShowNavbar(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [window.scrollY]);
+
   return (
     <div className="">
       <div className="min-h-screen  bg-gray-100 pb-8">
@@ -384,7 +367,61 @@ const MainUsers = () => {
           <Tools title={"Dashboard"} role={role} />
           {!modal && (
             <div>
-              <div className="bg-[linear-gradient(to_bottom,_#1e3a8a,_#334e8c,_#4f6a92)] pb-40 py-16 rounded-bl-[35px] rounded-br-[35px]">
+              <div
+                className={`transform transition-transform duration-500 ease-in-out ${
+                  showNavbar ? "translate-y-0" : "-translate-y-full"
+                } bg-blue fixed top-0 left-0 right-0 z-20 border-b-4 border-orange-300`}
+              >
+                <div className=" py-2 px-4 flex justify-between items-center">
+                  <div className="flex gap-4 items-center">
+                    <img
+                      onClick={() => navigate(`/app/profil`)}
+                      src={user?.avatar}
+                      loading="lazy"
+                      alt=""
+                      className="border-2  w-12 h-12 hover:cursor-pointer border-white rounded-full"
+                    />
+                    <div>
+                      <h1 className="text-white font-bold text-base ">
+                        Hi, {user?.name}
+                      </h1>
+                      {user && user.Kelas && user.Kelas.length > 0 ? (
+                        <p className="text-white text-xs">
+                          {user.Kelas[0]?.nama} | {user.nim}
+                        </p>
+                      ) : (
+                        <p className="text-white text-sm">- | {user.nim}</p>
+                      )}
+                    </div>
+                  </div>
+                  <nav className="flex space-x-4">
+                    <button
+                      disabled={loadingLogout}
+                      title="Logout"
+                      onClick={() => logout()}
+                      className="bg-white text-xs text-blue py-2 px-4 rounded-md"
+                    >
+                      <div className="flex items-center gap-2">
+                        {loadingLogout ? (
+                          <>
+                            <BeatLoader color={"#1e3a8a"} size={8} margin={2} />
+                          </>
+                        ) : (
+                          <>
+                            <FaSignOutAlt />
+                          </>
+                        )}
+                      </div>
+                    </button>
+                  </nav>
+                </div>
+              </div>
+
+              <div
+                className={`bg-[linear-gradient(to_bottom,_#1e3a8a,_#334e8c,_#4f6a92)] pb-40 py-16 rounded-bl-[35px] rounded-br-[35px] ${
+                  showNavbar ? "opacity-0  " : "opacity-100  "
+                } `}
+              >
                 {/* <Headers user={user} /> */}
 
                 <div className="px-6 -mt-8">
@@ -406,9 +443,7 @@ const MainUsers = () => {
                             {user.Kelas[0]?.nama} | {user.nim}
                           </p>
                         ) : (
-                          <p className="text-white text-sm">
-                            Kelas tidak tersedia
-                          </p>
+                          <p className="text-white text-sm">- | {user.nim}</p>
                         )}
                       </div>
                     </div>
@@ -440,7 +475,8 @@ const MainUsers = () => {
                   </div>
                 </div>
               </div>
-              <div className="px-4 -mt-36">
+
+              <div className="px-4 -mt-36 ">
                 <div className=" px-4 bg-white p-4 mt-4 rounded-lg shadow">
                   <div className="flex-col flex">
                     <div className="flex gap-2 items-center text-sm">

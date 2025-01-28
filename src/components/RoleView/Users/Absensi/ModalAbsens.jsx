@@ -180,9 +180,7 @@ const ModalAbsens = ({ tanggal, id }) => {
     startCamera();
   }, []);
 
-  useEffect(() => {
-    console.log(cropData);
-  }, [cropData]);
+ 
 
   const takePhoto = () => {
     const video = videoRef.current;

@@ -43,7 +43,6 @@ const Pembimbing = ({
     setEditingField(null);
   };
 
-  console.log(selectData);
 
   const handlePasswordChange = async () => {
     try {

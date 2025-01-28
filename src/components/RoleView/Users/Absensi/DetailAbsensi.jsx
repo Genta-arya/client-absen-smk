@@ -186,7 +186,7 @@ const DetailAbsensi = () => {
   };
 
   const utcDate = new Date("2025-01-22T12:00:00Z");
-  console.log(toUTC7(utcDate));
+
 
   // Fungsi untuk scroll ke atas
   const scrollToTop = () => {

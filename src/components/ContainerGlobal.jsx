@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Footer from "./Footer";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 import HeaderBack from "./HeaderBack";
 
 const ContainerGlobal = ({ children, visible = false }) => {
   const { user } = useAuthStore();
+  // buat ketika pertama kali halaman dibuat langsung balik ke halaman paling atas
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div>
       <div
@@ -17,8 +21,7 @@ const ContainerGlobal = ({ children, visible = false }) => {
             <div className="px-6">{children}</div>
           </>
         ) : (
-
-        <div className="px-6 mt-4">{children}</div>
+          <div className="px-6 mt-4">{children}</div>
         )}
       </div>
     </div>

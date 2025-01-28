@@ -59,9 +59,7 @@ const Calendar = ({ data }) => {
           .toString()
           .padStart(2, "0")}:${minutesBatas.toString().padStart(2, "0")}`;
 
-        console.log("datang:", datangDate);
-
-        console.log("batas:", timeFormattedBatas);
+  
 
         if (datangDate > batasJamPlus2) {
           timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah jam 7:30
@@ -97,9 +95,7 @@ const Calendar = ({ data }) => {
           .toString()
           .padStart(2, "0")}:${minutesBatas.toString().padStart(2, "0")}`;
 
-        console.log("pulang:", jamPulang);
-
-        console.log("batas:", timeFormattedBatas);
+       
         if (jamPulang < batasJamPlus2) {
           timeFormattedPulang = `${timeFormattedPulang}`; // Jika pulang sebelum jam 16:00
           bgColorPulang = "orange"; // Set warna latar belakang kuning untuk Pulang Cepat
