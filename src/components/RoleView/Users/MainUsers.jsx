@@ -61,14 +61,14 @@ const MainUsers = () => {
   const dataShift = dataAbsen[0]?.shift;
   const jamKeluar = dataShift?.jamPulang;
   const jamMasuk = dataShift?.jamMasuk;
-  const nameShift = dataShift?.name;
-
+  
   // jamMasuk get hours dan menit
   const jamKeluarHours = new Date(jamKeluar).getHours();
   const jamKeluarMinutes = new Date(jamKeluar).getMinutes();
-
+  
   const jamMasukHours = new Date(jamMasuk).getHours();
   const jamMasukMinutes = new Date(jamMasuk).getMinutes();
+  const nameShift = dataShift?.name;
 
   // Fungsi untuk mengonversi ke UTC dari zona waktu Indonesia (UTC+7)
   const convertToUTC = (date) => {
@@ -173,17 +173,18 @@ const MainUsers = () => {
       setLoading(false);
     }
   };
-  // const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
+  const toUTC7 = (inputDate) => {
+    return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
+  };
+  const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
   const isMasukDisabled = () => {
-    const toUTC7 = (inputDate) => {
-      return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
-    };
+   
 
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
 
-    const serverDate = new Date(user?.DateIndonesia); // Waktu server
+    // const serverDate = new Date(user?.DateIndonesia); // Waktu server
     const serverTime = serverDate.getTime(); // Waktu server dalam milidetik
 
     const jamMasuks = new Date(jamMasuk).getTime(); // Waktu jamMasuk dalam milidetik
@@ -222,15 +223,13 @@ const MainUsers = () => {
 
   // Fungsi untuk memeriksa apakah tombol pulang harus dinonaktifkan
   const isPulangDisabled = () => {
-    const toUTC7 = (inputDate) => {
-      return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
-    };
+
 
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
 
-    const serverDate = new Date(user?.DateIndonesia); // Waktu server
+    // const serverDate = new Date(user?.DateIndonesia); // Waktu server
     const serverTime = serverDate.getTime(); // Waktu server dalam milidetik
 
     // Waktu jamKeluar dalam milidetik
