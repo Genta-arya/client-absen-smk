@@ -111,7 +111,7 @@ const Calendar = ({ data }) => {
         }
       } else {
         timeFormattedPulang = "..."; // Jika tidak ada waktu pulang
-        bgColorPulang = "gray"; // Set warna latar belakang gray jika belum ada pulang
+        bgColorPulang = absen.hadir !== "tidak_hadir" ? "gray" : "red"; // Set warna latar belakang gray jika belum ada pulang
         textColorPulang = "white"; // Set warna teks putih
       }
 
@@ -127,12 +127,12 @@ const Calendar = ({ data }) => {
           title: `${timeFormattedPulang}`, // Menampilkan waktu pulang
           date: absen.tanggal,
           groupId: absen.id,
-          backgroundColor: bgColorPulang, // Menggunakan warna latar belakang pulang
-          color: textColorPulang, // Menggunakan warna teks pulang
+          backgroundColor: bgColorPulang,
+          color: textColorPulang, 
         },
       ];
     })
-    .flat(); // Menggabungkan dua event (datang dan pulang) menjadi satu array
+    .flat(); 
 
   const maxDate = new Date(
     Math.max(...absensiFormatted.map((absen) => absen.dateObj))
@@ -244,6 +244,7 @@ const Calendar = ({ data }) => {
               <span className="text-center text-xs">
                 {eventInfo.event.title}
               </span>
+              
             </div>
           );
         }}

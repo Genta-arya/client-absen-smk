@@ -61,11 +61,11 @@ const MainUsers = () => {
   const dataShift = dataAbsen[0]?.shift;
   const jamKeluar = dataShift?.jamPulang;
   const jamMasuk = dataShift?.jamMasuk;
-  
+
   // jamMasuk get hours dan menit
   const jamKeluarHours = new Date(jamKeluar).getHours();
   const jamKeluarMinutes = new Date(jamKeluar).getMinutes();
-  
+
   const jamMasukHours = new Date(jamMasuk).getHours();
   const jamMasukMinutes = new Date(jamMasuk).getMinutes();
   const nameShift = dataShift?.name;
@@ -176,10 +176,11 @@ const MainUsers = () => {
   const toUTC7 = (inputDate) => {
     return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
   };
-  const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
-  const isMasukDisabled = () => {
-   
+  // const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
+  const serverDate = new Date(user?.DateIndonesia);
 
+  console.log("serverDate:", serverDate);
+  const isMasukDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
@@ -223,8 +224,6 @@ const MainUsers = () => {
 
   // Fungsi untuk memeriksa apakah tombol pulang harus dinonaktifkan
   const isPulangDisabled = () => {
-
-
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
@@ -507,7 +506,7 @@ const MainUsers = () => {
                                             {jamMasukHours}:{jamMasukMinutes}
                                           </p>
                                           <p>
-                                            {new Date(jamMasuk).getMinutes()} - 
+                                            {new Date(jamMasuk).getMinutes()} -
                                           </p>
                                         </div>
                                         <div className="flex ml-1">
