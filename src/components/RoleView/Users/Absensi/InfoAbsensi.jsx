@@ -15,7 +15,12 @@ const InfoAbsensi = () => {
   const [data, setData] = useState(null);
   const { user } = useAuthStore();
   const [status, setStatus] = useState(false);
-  const curentDate = user?.DateIndonesia;
+  const mapData = user?.Pkl?.map((item) => item);
+  const filterData = mapData?.filter((item) => item.isDelete === false);
+  const dataAbsen = filterData?.[0]?.absensi || [];
+  const dataShift = dataAbsen[0]?.shift;
+  const jamKeluar = dataShift?.jamPulang;
+  const jamMasuk = dataShift?.jamMasuk;
 
   const fetchData = async () => {
     setLoading(true);
@@ -55,17 +60,37 @@ const InfoAbsensi = () => {
   };
 
   const validateDatang = (datang) => {
-    const date = new Date(datang);
-    const datangJam = date.getHours();
-    const datangMenit = date.getMinutes();
+    // Ambil waktu hari ini
+    const tanggalHariIni = new Date();
+    const hariIni = new Date(
+      tanggalHariIni.getFullYear(),
+      tanggalHariIni.getMonth(),
+      tanggalHariIni.getDate()
+    ); // Hanya tanggal tanpa waktu (jam, menit, detik diset menjadi 00)
 
-    if (
-      (datangJam === 7 && datangMenit >= 0) ||
-      (datangJam === 8 && datangMenit === 0)
-    ) {
-      return "Hadir";
+    if (!datang) {
+      // Jika datang null, return "Tidak Hadir"
+      return "Tidak Hadir";
+    }
+
+    const date = new Date(datang); // Mengubah datang ke objek Date
+
+
+    // Set batas waktu jam masuk + 2 jam
+    const batasJamPlus2 = new Date(jamMasuk); // jamMasuk adalah waktu yang sudah ada sebelumnya
+    batasJamPlus2.setHours(batasJamPlus2.getHours() + 2); // Jam batas 2 jam setelah jam masuk
+    batasJamPlus2.setMinutes(0); // Set menit menjadi 0 untuk menghindari lebih dari jam batas
+
+    // Cek apakah datang sebelum tanggal hari ini
+    if (date < hariIni) {
+      return "Belum Hadir"; // Jika datang sebelum hari ini
+    }
+
+    // Cek apakah datang sebelum atau tepat jam batas
+    if (date <= batasJamPlus2) {
+      return "Hadir"; // Hadir jika datang dalam rentang waktu
     } else {
-      return "Telat Hadir";
+      return "Telat Hadir"; // Telat jika lebih dari jam batas
     }
   };
 

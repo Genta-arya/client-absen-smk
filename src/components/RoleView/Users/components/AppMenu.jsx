@@ -19,7 +19,7 @@ const AppMenu = () => {
       icon: (
         <FaClipboardList className="text-blue text-3xl dark:text-white " />
       ),
-      link: "/app/daftar/absensi",
+      link: "/app/daftar/pkl",
     },
     {
       title: "Laporan",

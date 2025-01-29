@@ -185,7 +185,6 @@ const DetailAbsensi = () => {
     return utc7Date.toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }); // Format lokal
   };
 
-  const utcDate = new Date("2025-01-22T12:00:00Z");
 
 
   // Fungsi untuk scroll ke atas

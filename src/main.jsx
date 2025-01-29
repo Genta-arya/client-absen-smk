@@ -105,7 +105,7 @@ const route = createBrowserRouter([
         element: <MainProfile />,
       },
       {
-        path: "/app/daftar/absensi",
+        path: "/app/daftar/pkl",
         element: <MainAbsensi />,
       },
       {

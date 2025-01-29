@@ -83,3 +83,12 @@ export const removeSingleUser = async (data) => {
     handleError(error);
   }
 };
+
+export const getAnggotaPkl = async (id) => {
+  try {
+    const response = await Axios.get("/pkl/anggota/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

@@ -59,16 +59,11 @@ const MainUsers = () => {
     : null;
 
   const dataShift = dataAbsen[0]?.shift;
+  const nameShift = dataShift?.name;
   const jamKeluar = dataShift?.jamPulang;
   const jamMasuk = dataShift?.jamMasuk;
-
-  // jamMasuk get hours dan menit
-  const jamKeluarHours = new Date(jamKeluar).getHours();
-  const jamKeluarMinutes = new Date(jamKeluar).getMinutes();
-
   const jamMasukHours = new Date(jamMasuk).getHours();
   const jamMasukMinutes = new Date(jamMasuk).getMinutes();
-  const nameShift = dataShift?.name;
 
   // Fungsi untuk mengonversi ke UTC dari zona waktu Indonesia (UTC+7)
   const convertToUTC = (date) => {
@@ -153,13 +148,24 @@ const MainUsers = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await updateDataUser({
-        id: user?.id,
-        name: user?.name,
-        nim: user?.nim,
-        email: data.email,
-        kelas: selectedKelas?.value, // Update dengan ID kelas yang dipilih
-      });
+      if (user?.Kelas?.length === 0) {
+        
+        await updateDataUser({
+          id: user?.id,
+          name: user?.name,
+          nim: user?.nim,
+          email: data.email,
+          kelas: selectedKelas?.value, // Update dengan ID kelas yang dipilih
+        });
+      } else {
+        await updateDataUser({
+          id: user?.id,
+          name: user?.name,
+          nim: user?.nim,
+          email: data.email,
+          kelas: user?.Kelas[0]?.id,
+        });
+      }
 
       toast.success("Data berhasil diperbarui");
 
@@ -185,38 +191,50 @@ const MainUsers = () => {
     }
 
     // const serverDate = new Date(user?.DateIndonesia); // Waktu server
-    const serverTime = serverDate.getTime(); // Waktu server dalam milidetik
 
-    const jamMasuks = new Date(jamMasuk).getTime(); // Waktu jamMasuk dalam milidetik
+    const jamMasuks = new Date(jamMasuk); // Waktu jamMasuk dalam milidetik
+    const jamMasukHours = jamMasuks.getHours();
+    const jamMasukMinutes = jamMasuks.getMinutes();
 
-    // Waktu 1 jam sebelum jamMasuk
-    const jamMasuksMinus1 = new Date(jamMasuks);
-    jamMasuksMinus1.setHours(jamMasuksMinus1.getHours()); // 1 jam sebelum
+    const jamTutup = new Date(jamMasuks);
+    jamTutup.setHours(jamMasukHours + 2, jamMasukMinutes); // Jam tutup 2 jam setelah jam masuk
 
-    // Waktu 1 jam setelah jamMasuk
-    const jamMasuksPlus1 = new Date(jamMasuks);
-    jamMasuksPlus1.setHours(jamMasuksPlus1.getHours() + 2); // 1 jam setelah
+    // Ambil hanya jam dan menit dari waktu server
+    const serverHours = serverDate.getHours();
+    const serverMinutes = serverDate.getMinutes();
 
-    // Debugging: log jam masuk dan batas waktu yang sudah diatur
+    console.log(
+      "Server Time (Hours:Minutes):",
+      `${serverHours}:${serverMinutes}`
+    );
+    console.log(
+      "Jam Masuk (Hours:Minutes):",
+      `${jamMasukHours}:${jamMasukMinutes}`
+    );
+    console.log(
+      "Jam Tutup (Hours:Minutes):",
+      `${jamTutup.getHours()}:${jamTutup.getMinutes()}`
+    );
 
-    // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamMasuk hingga 1 jam setelah jamMasuk
     const isWithinMasukTime =
-      serverTime >= jamMasuksMinus1 && serverTime <= jamMasuksPlus1;
-
-    return !isWithinMasukTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
+      (serverHours > jamMasukHours ||
+        (serverHours === jamMasukHours && serverMinutes >= jamMasukMinutes)) &&
+      (serverHours < jamTutup.getHours() ||
+        (serverHours === jamTutup.getHours() &&
+          serverMinutes <= jamTutup.getMinutes()));
+    console.log("Apakah dalam rentang waktu absen?", isWithinMasukTime);
+    return !isWithinMasukTime;
   };
 
-  // Fungsi untuk memeriksa apakah tombol pulang harus dinonaktifkan
   const isPulangDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
 
-    // const serverDate = new Date(user?.DateIndonesia); // Waktu server
-    const serverTime = serverDate.getTime(); // Waktu server dalam milidetik
+    const serverTimeMillis = serverDate.getTime(); // Waktu server dalam milidetik
 
     // Waktu jamKeluar dalam milidetik
-    const jamKeluars = new Date(jamKeluar).getTime();
+    const jamKeluars = new Date(jamKeluar); // Jam keluar yang diatur oleh admin
 
     // Waktu 1 jam sebelum jamKeluar
     const jamKeluarsMinus1 = new Date(jamKeluars);
@@ -224,15 +242,20 @@ const MainUsers = () => {
 
     // Waktu 2 jam setelah jamKeluar
     const jamKeluarsPlus2 = new Date(jamKeluars);
-    jamKeluarsPlus2.setHours(jamKeluarsPlus2.getHours() + 1); // 2 jam setelah
+    jamKeluarsPlus2.setHours(jamKeluarsPlus2.getHours() + 2); // 2 jam setelah
 
-    // Debugging: log jam pulang dan batas waktu yang sudah diatur
+    // Debugging: log jam keluar dan batas waktu yang sudah diatur
+    console.log("Jam Keluar:", jamKeluars);
+    console.log("Jam Keluar - 1 jam:", jamKeluarsMinus1);
+    console.log("Jam Keluar + 2 jam:", jamKeluarsPlus2);
+    console.log("Server Time:", serverDate);
 
     // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamKeluar hingga 2 jam setelah jamKeluar
     const isWithinPulangTime =
-      serverTime >= jamKeluarsMinus1 && serverTime <= jamKeluarsPlus2;
+      serverTimeMillis >= jamKeluarsMinus1.getTime() &&
+      serverTimeMillis <= jamKeluarsPlus2.getTime();
 
-    // Debugging: log hasil perbandingan
+    console.log("Apakah dalam rentang waktu pulang?", isWithinPulangTime);
 
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -492,9 +515,14 @@ const MainUsers = () => {
                             Tempat PKL
                           </h1>
                           {user?.Pkl?.length > 0 && (
-                            <h1 className="text-center font-extrabold text-blue">
-                              {user?.Pkl[0]?.name}
-                            </h1>
+                            <div>
+                              <h1 className="text-center font-extrabold text-blue">
+                                {user?.Pkl[0]?.name}
+                              </h1>
+                              <p className="text-center text-sm text-blue font-bold">
+                                Shift - {nameShift}
+                              </p>
+                            </div>
                           )}
                           {user?.Pkl[0]?.status !== true ? (
                             <>
@@ -532,7 +560,7 @@ const MainUsers = () => {
                                       </div>
                                     )}
                                   </button>
-                                  <div className="flex gap-2 items-center justify-center text-xs text-red-500 font-bold">
+                                  <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
                                     <FaClock />
 
                                     <h1>
@@ -758,21 +786,25 @@ const MainUsers = () => {
                     }
                     required
                   />
-                  <div className="mt-4">
-                    <label htmlFor="kelas" className="block font-bold mb-2">
-                      Pilih Kelas
-                    </label>
-                    <Select
-                      options={kelasOptions}
-                      value={kelasOptions.find(
-                        (option) => option.value === user?.kelas?.id
-                      )}
-                      onChange={setSelectedKelas}
-                      isLoading={loading1}
-                      required
-                      placeholder="Pilih kelas ..."
-                    />
-                  </div>
+                  {user?.Kelas?.length !== 1 && (
+                    <>
+                      <div className="mt-4">
+                        <label htmlFor="kelas" className="block font-bold mb-2">
+                          Pilih Kelas
+                        </label>
+                        <Select
+                          options={kelasOptions}
+                          value={kelasOptions.find(
+                            (option) => option.value === user?.kelas?.id
+                          )}
+                          onChange={setSelectedKelas}
+                          isLoading={loading1}
+                          required
+                          placeholder="Pilih kelas ..."
+                        />
+                      </div>
+                    </>
+                  )}
                   <button className="w-full bg-blue py-2 px-4 text-white rounded-lg hover:opacity-85 transition-all duration-300 ease-in mt-4">
                     <LoadingButton
                       text={"Simpan"}
