@@ -95,14 +95,14 @@ const Calendar = ({ data }) => {
 
         // Cek apakah waktu pulang lebih cepat dari batas jam keluar + 1 jam
         if (
-          hoursPulang < batasJam ||
-          (hoursPulang === batasJam && minutesPulang < batasMenit)
+          hoursPulang > batasJam ||
+          (hoursPulang === batasJam && minutesPulang > batasMenit)
         ) {
           timeFormattedPulang = ` ${timeFormattedPulang}`;
           bgColorPulang = "orange"; // Warna latar belakang oranye untuk Pulang Cepat
           textColorPulang = "white"; // Warna teks putih untuk Pulang Cepat
         } else {
-          timeFormattedPulang = ` ${timeFormattedPulang}`;
+          timeFormattedPulang = `${timeFormattedPulang}`;
           bgColorPulang = "sky"; // Warna latar belakang biru untuk Pulang Normal
           textColorPulang = "white"; // Warna teks putih untuk Pulang Normal
         }
