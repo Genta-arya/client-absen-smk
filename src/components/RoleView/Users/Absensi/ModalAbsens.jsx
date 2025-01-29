@@ -68,12 +68,11 @@ const ModalAbsens = ({ tanggal, id }) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: {
-            exact: 'user'  // Meminta hanya kamera depan, jika tidak ada maka akan ditolak
-        },
+          facingMode: "user",
           frameRate: { max: 30 },
           displaySurface: "monitor",
           aspectRatio: { min: 1, max: 1 },
+          backgroundBlur : true
         },
       });
 
