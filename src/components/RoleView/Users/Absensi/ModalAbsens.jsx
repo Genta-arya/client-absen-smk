@@ -37,9 +37,34 @@ const ModalAbsens = ({ tanggal, id }) => {
     "2c316c1b439147b2b42e794724c4edb5",
   ]);
 
+  // const startCamera = async () => {
+  //   try {
+  //     // Meminta izin kamera
+  //     const stream = await navigator.mediaDevices.getUserMedia({
+  //       video: {
+  //         facingMode: "user",
+  //         frameRate: { max: 30 },
+  //         displaySurface: "monitor",
+  //         aspectRatio: { min: 1, max: 1 },
+  //       },
+  //     });
+   
+  //     if (videoRef.current) {
+  //       videoRef.current.srcObject = stream;
+  //       setCameraError(null);
+  //     } else {
+  //       console.error("videoRef.current is null");
+  //       setCameraError("Elemen video tidak ditemukan.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error accessing camera:", error);
+  //     setCameraError(
+  //       "Kamera tidak diizinkan atau tidak tersedia. Periksa izin kamera dari browser."
+  //     );
+  //   }
+  // };
   const startCamera = async () => {
     try {
-      // Meminta izin kamera
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: "user",
@@ -48,13 +73,41 @@ const ModalAbsens = ({ tanggal, id }) => {
           aspectRatio: { min: 1, max: 1 },
         },
       });
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+  
+      // Pastikan kita memiliki videoRef dan canvasRef
+      if (videoRef.current && canvasRef.current) {
+        const videoElement = videoRef.current;
+        const canvasElement = canvasRef.current;
+        const context = canvasElement.getContext("2d");
+  
+        // Mengatur elemen video untuk menerima stream
+        videoElement.srcObject = stream;
+  
+        // Set up untuk menampilkan video pada canvas
+        const videoTrack = stream.getVideoTracks()[0];
+        const videoSettings = videoTrack.getSettings();
+  
+        // Menyesuaikan ukuran canvas dengan ukuran video
+        canvasElement.width = videoSettings.width;
+        canvasElement.height = videoSettings.height;
+  
+        // Menggambar video pada canvas dan menghilangkan efek mirror
+        videoElement.play();
+  
+        const draw = () => {
+          context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+          requestAnimationFrame(draw); // Menarik frame video
+        };
+  
+        draw(); // Mulai menggambar
+  
+        // Menampilkan video tanpa efek mirror
+        videoElement.style.transform = "scaleX(1)"; // Memastikan video tidak ter-mirror
+  
         setCameraError(null);
       } else {
-        console.error("videoRef.current is null");
-        setCameraError("Elemen video tidak ditemukan.");
+        console.error("videoRef.current atau canvasRef.current tidak ditemukan");
+        setCameraError("Elemen video atau canvas tidak ditemukan.");
       }
     } catch (error) {
       console.error("Error accessing camera:", error);
@@ -63,7 +116,7 @@ const ModalAbsens = ({ tanggal, id }) => {
       );
     }
   };
-
+  
   const handleCheckIn = async () => {
     if (!location.latitude || !location.longitude || !location.address) {
       toast.info("Lengkapi lokasi dan foto sebelum absen.");
@@ -208,8 +261,8 @@ const ModalAbsens = ({ tanggal, id }) => {
         <p className="text-red-500 text-center text-sm"> # {cameraError}</p>
       )}
 
-      <div className="camera mb-4">
-        <h1 className="flex justify-center"></h1>
+      <div className="camera mb-4 ">
+        <h1 className="flex justify-center "></h1>
         <video
           ref={videoRef}
           autoPlay
@@ -217,9 +270,9 @@ const ModalAbsens = ({ tanggal, id }) => {
           controls={false}
           playsInline
           onContextMenu={(e) => e.preventDefault()}
-          className={`w-full ${
+          className={`w-full camera_feed_flip ${
             cameraError || photo ? "hidden" : ""
-          } rounded-lg shadow-md`}
+          } rounded-lg shadow-md `}
         ></video>
       </div>
 

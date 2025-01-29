@@ -11,3 +11,13 @@ body {
   scrollbar-width: none;
   scrollbar-color: #feb47b #f3f3f3;
 }
+
+
+.camera_feed_flip {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  /* Safari and Chrome */
+  -moz-transform: rotateY(180deg);
+  /* Firefox */
+  transform: scale(1.0);
+}
