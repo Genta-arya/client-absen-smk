@@ -75,12 +75,12 @@ const Calendar = ({ data }) => {
       if (absen.pulang) {
         const pulangDate = new Date(absen.pulang); 
         const hoursPulang = pulangDate.getHours();
-        let timeFormattedPulang = `${hoursPulang.toString().padStart(2, "0")}:${minutesPulang.toString().padStart(2, "0")}`;
+     
       
         // Validasi waktu pulang
         const jamPulang = pulangDate.getHours();
         const minutesPulang = pulangDate.getMinutes();
-      
+        let timeFormattedPulang = `${hoursPulang.toString().padStart(2, "0")}:${minutesPulang.toString().padStart(2, "0")}`;
         // Set batas waktu jam keluar + 1 jam
         const batasJamPlus1 = new Date(jamKeluar);
         batasJamPlus1.setHours(batasJamPlus1.getHours() + 1); // Jam batas + 1 jam
