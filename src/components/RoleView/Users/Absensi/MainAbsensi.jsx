@@ -146,7 +146,7 @@ const MainAbsensi = () => {
                     <FaUser size={25} />
                     <p>Anggota PKL</p>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                     {data?.map((anggota) => (
                       <div
                         key={anggota.id}
