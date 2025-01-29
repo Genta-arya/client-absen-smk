@@ -29,8 +29,18 @@ const MainProfile = () => {
   const [croppedImage, setCroppedImage] = useState(null);
   const [statusCrop, setStatusCrop] = useState(false);
   const [email, setEmail] = useState(user?.email);
-  const [whatsapp, setWhatsapp] = useState(user?.noHp);
+
   const data = user;
+  const [whatsapp, setWhatsapp] = useState(
+    user?.noHp?.startsWith("628") ? user.noHp : `628${user?.noHp || ""}`
+  );
+  const handleWhatsappChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // Hanya angka
+    if (!value.startsWith("628")) {
+      value = "628" + value.replace(/^0+/, ""); // Hapus nol di awal jika ada
+    }
+    setWhatsapp(value);
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -278,7 +288,6 @@ const MainProfile = () => {
         <span className="text-white text-sm">Administrator</span>
       </a>
 
-      
       {modal1 && (
         <ActModal
           title={"Edit Profile"}
@@ -302,7 +311,7 @@ const MainProfile = () => {
               maxlength={15}
               label={"Whatsapp"}
               placeholder={"Lengkapi whatsapp"}
-              onChange={(e) => setWhatsapp(e.target.value)}
+              onChange={handleWhatsappChange}
               required={true}
             />
             <div className="flex justify-end">
