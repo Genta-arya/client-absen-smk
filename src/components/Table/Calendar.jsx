@@ -43,9 +43,9 @@ const Calendar = ({ data }) => {
 
       // Cek waktu datang
       if (absen.hadir === "hadir" && absen.datang) {
-        const datangDate = new Date(absen.datang); 
-        const hoursDatang = datangDate.getHours(); 
-        const minutesDatang = datangDate.getMinutes(); 
+        const datangDate = new Date(absen.datang);
+        const hoursDatang = datangDate.getHours();
+        const minutesDatang = datangDate.getMinutes();
         timeFormattedDatang = `${hoursDatang
           .toString()
           .padStart(2, "0")}:${minutesDatang.toString().padStart(2, "0")}`;
@@ -56,7 +56,10 @@ const Calendar = ({ data }) => {
         const batasJam = batasJamPlus2.getHours();
         const batasMenit = batasJamPlus2.getMinutes();
 
-        if (hoursDatang > batasJam || (hoursDatang === batasJam && minutesDatang > batasMenit)) {
+        if (
+          hoursDatang > batasJam ||
+          (hoursDatang === batasJam && minutesDatang > batasMenit)
+        ) {
           timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah jam 7:30
           bgColorDatang = "purple"; // Set background color oranye untuk Telat
           textColorDatang = "white"; // Set warna teks hitam untuk Telat
@@ -73,29 +76,33 @@ const Calendar = ({ data }) => {
 
       // Menambahkan waktu pulang jika ada
       if (absen.pulang) {
-        const pulangDate = new Date(absen.pulang); 
+        const pulangDate = new Date(absen.pulang);
         const hoursPulang = pulangDate.getHours();
-     
-      
-        // Validasi waktu pulang
-        const jamPulang = pulangDate.getHours();
         const minutesPulang = pulangDate.getMinutes();
-        let timeFormattedPulang = `${hoursPulang.toString().padStart(2, "0")}:${minutesPulang.toString().padStart(2, "0")}`;
+   
+
+        timeFormattedPulang = `${hoursPulang
+          .toString()
+          .padStart(2, "0")}:${minutesPulang.toString().padStart(2, "0")}`;
+
         // Set batas waktu jam keluar + 1 jam
         const batasJamPlus1 = new Date(jamKeluar);
         batasJamPlus1.setHours(batasJamPlus1.getHours() + 1); // Jam batas + 1 jam
         batasJamPlus1.setMinutes(0); // Set menit menjadi 0, jadi jam 8:00:00
-      
+
         const batasJam = batasJamPlus1.getHours();
         const batasMenit = batasJamPlus1.getMinutes();
-      
+
         // Cek apakah waktu pulang lebih cepat dari batas jam keluar + 1 jam
-        if (jamPulang < batasJam || (jamPulang === batasJam && minutesPulang < batasMenit)) {
-          timeFormattedPulang = `${timeFormattedPulang}`; 
+        if (
+          hoursPulang < batasJam ||
+          (hoursPulang === batasJam && minutesPulang < batasMenit)
+        ) {
+          timeFormattedPulang = ` ${timeFormattedPulang}`;
           bgColorPulang = "orange"; // Warna latar belakang oranye untuk Pulang Cepat
           textColorPulang = "white"; // Warna teks putih untuk Pulang Cepat
         } else {
-          timeFormattedPulang = `${timeFormattedPulang}`; 
+          timeFormattedPulang = ` ${timeFormattedPulang}`;
           bgColorPulang = "sky"; // Warna latar belakang biru untuk Pulang Normal
           textColorPulang = "white"; // Warna teks putih untuk Pulang Normal
         }
@@ -104,7 +111,7 @@ const Calendar = ({ data }) => {
         bgColorPulang = absen.hadir !== "tidak_hadir" ? "gray" : "red"; // Set warna latar belakang gray jika belum ada pulang
         textColorPulang = "white"; // Set warna teks putih
       }
-      
+
       return [
         {
           title: `${timeFormattedDatang}`, // Menampilkan waktu datang
@@ -128,6 +135,8 @@ const Calendar = ({ data }) => {
     Math.max(...absensiFormatted.map((absen) => absen.dateObj))
   );
   maxDate.setMonth(maxDate.getMonth() + 1);
+
+
 
   const handleDateClick = (info) => {
     // Mendapatkan ID dari event yang dipilih
