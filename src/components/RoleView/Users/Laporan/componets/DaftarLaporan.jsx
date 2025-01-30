@@ -11,6 +11,7 @@ const DaftarLaporan = () => {
   const id = user?.id;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [dataProgress, setDataProgress] = useState([]);
   const [selectedDate, setSelectedDate] = useState(""); // State untuk filter tanggal
   const [selectedStatus, setSelectedStatus] = useState("");
   const fetchDataLaporan = async () => {
@@ -22,6 +23,7 @@ const DaftarLaporan = () => {
         (a, b) => new Date(a.tanggal) - new Date(b.tanggal)
       );
       setData(sortedData);
+      setDataProgress(sortedData);
     } catch (error) {
       ResponseHandler(error.response);
     } finally {
@@ -75,8 +77,8 @@ const DaftarLaporan = () => {
     ? filteredData.filter((item) => item.status_selesai === selectedStatus)
     : filteredData;
 
-  const totalLaporan = filteredData.length;
-  const selesaiCount = filteredData.filter(
+  const totalLaporan = dataProgress.length;
+  const selesaiCount = dataProgress.filter(
     (item) => item.status_selesai === "Selesai"
   ).length;
   const belumCount = totalLaporan - selesaiCount;
@@ -89,22 +91,22 @@ const DaftarLaporan = () => {
 
   return (
     <div className="">
-     
-      <div className="flex justify-between items-center mb-6">
-        <div className=" text-xs md:w-96 lg:w-96 w-36">
+      <div className="flex justify-between items-center gap-2 mb-6">
+        <div className=" text-xs md:w-full lg:w-full w-36">
           <input
             type="date"
             value={selectedDate}
+            placeholder="Pilih Tanggal"
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full md:w-1/3 p-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
+            className="w-full md:w-full text-black p-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
           />
         </div>
 
-        <div className="text-xs md:w-72 lg:w-72 w-36">
+        <div className="text-xs md:w-full lg:w-full w-36">
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="w-full md:w-1/3 p-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
+            className="w-full md:w-full p-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
           >
             <option value="">Semua</option>
             <option value="Belum">Belum</option>
