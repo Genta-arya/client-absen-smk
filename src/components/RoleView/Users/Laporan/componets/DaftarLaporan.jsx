@@ -13,7 +13,7 @@ const DaftarLaporan = () => {
   const [data, setData] = useState([]);
   const [dataProgress, setDataProgress] = useState([]);
   const [selectedDate, setSelectedDate] = useState(""); // State untuk filter tanggal
-  const [selectedStatus, setSelectedStatus] = useState("Pilih Tanggal");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const fetchDataLaporan = async () => {
     setLoading(true);
     try {
