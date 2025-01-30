@@ -22,6 +22,7 @@ import DetailAbsensi from "./components/RoleView/Users/Absensi/DetailAbsensi.jsx
 import MainKelas from "./View/Kelas/MainKelas.jsx";
 import InfoAbsensi from "./components/RoleView/Users/Absensi/InfoAbsensi.jsx";
 import MainCalendar from "./components/RoleView/Users/Calendar/MainCalendar.jsx";
+import MainLaporan from "./components/RoleView/Users/Laporan/MainLaporan.jsx";
 
 const route = createBrowserRouter([
   {
@@ -115,6 +116,10 @@ const route = createBrowserRouter([
       {
         path: "/app/kalender",
         element: <MainCalendar />,
+      },
+      {
+        path: "/app/daftar/laporan",
+        element: <MainLaporan />,
       },
     ],
   },

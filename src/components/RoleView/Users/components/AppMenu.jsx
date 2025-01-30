@@ -26,7 +26,7 @@ const AppMenu = () => {
       icon: (
         <FaRegClipboard className="text-blue text-3xl dark:text-white " />
       ),
-      link: "#",
+      link: "/app/daftar/laporan",
     },
     {
       title: "Kalender",

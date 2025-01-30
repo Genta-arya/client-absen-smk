@@ -203,18 +203,7 @@ const MainUsers = () => {
     const serverHours = serverDate.getHours();
     const serverMinutes = serverDate.getMinutes();
 
-    console.log(
-      "Server Time (Hours:Minutes):",
-      `${serverHours}:${serverMinutes}`
-    );
-    console.log(
-      "Jam Masuk (Hours:Minutes):",
-      `${jamMasukHours}:${jamMasukMinutes}`
-    );
-    console.log(
-      "Jam Tutup (Hours:Minutes):",
-      `${jamTutup.getHours()}:${jamTutup.getMinutes()}`
-    );
+  
 
     const isWithinMasukTime =
       (serverHours > jamMasukHours ||
@@ -244,18 +233,14 @@ const MainUsers = () => {
     const jamKeluarsPlus2 = new Date(jamKeluars);
     jamKeluarsPlus2.setHours(jamKeluarsPlus2.getHours() + 2); // 2 jam setelah
 
-    // Debugging: log jam keluar dan batas waktu yang sudah diatur
-    console.log("Jam Keluar:", jamKeluars);
-    console.log("Jam Keluar - 1 jam:", jamKeluarsMinus1);
-    console.log("Jam Keluar + 2 jam:", jamKeluarsPlus2);
-    console.log("Server Time:", serverDate);
+ 
 
     // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamKeluar hingga 2 jam setelah jamKeluar
     const isWithinPulangTime =
       serverTimeMillis >= jamKeluarsMinus1.getTime() &&
       serverTimeMillis <= jamKeluarsPlus2.getTime();
 
-    console.log("Apakah dalam rentang waktu pulang?", isWithinPulangTime);
+
 
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
