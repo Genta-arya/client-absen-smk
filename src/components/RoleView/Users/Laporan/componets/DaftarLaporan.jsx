@@ -5,7 +5,7 @@ import useAuthStore from "../../../../../Lib/Zustand/AuthStore";
 import Loading from "../../../../Loading";
 import NotfoundData from "../../../../NotfoundData";
 import { FaCalendar, FaCircle, FaClipboardList } from "react-icons/fa";
-
+import dayjs from "dayjs";
 const DaftarLaporan = () => {
   const { user } = useAuthStore();
   const id = user?.id;
@@ -13,7 +13,7 @@ const DaftarLaporan = () => {
   const [data, setData] = useState([]);
   const [dataProgress, setDataProgress] = useState([]);
   const [selectedDate, setSelectedDate] = useState(""); // State untuk filter tanggal
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("Pilih Tanggal");
   const fetchDataLaporan = async () => {
     setLoading(true);
     try {
@@ -32,6 +32,7 @@ const DaftarLaporan = () => {
   };
 
   useEffect(() => {
+
     fetchDataLaporan();
   }, []);
 
@@ -93,6 +94,7 @@ const DaftarLaporan = () => {
     <div className="">
       <div className="flex justify-between items-center gap-2 mb-6">
         <div className=" text-xs md:w-full lg:w-full w-36">
+          <label className="block mb-2">Tanggal:</label>
           <input
             type="date"
             value={selectedDate}
@@ -103,6 +105,7 @@ const DaftarLaporan = () => {
         </div>
 
         <div className="text-xs md:w-full lg:w-full w-36">
+          <label className="block mb-2">Status:</label>
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
