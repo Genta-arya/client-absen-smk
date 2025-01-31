@@ -206,7 +206,7 @@ const MainUsers = () => {
       (serverHours < jamTutup.getHours() ||
         (serverHours === jamTutup.getHours() &&
           serverMinutes <= jamTutup.getMinutes()));
-    console.log("Apakah dalam rentang waktu absen?", isWithinMasukTime);
+   
     return !isWithinMasukTime;
   };
 
@@ -225,9 +225,7 @@ const MainUsers = () => {
     const jamKeluarsEnd = new Date(jamKeluars);
     jamKeluarsEnd.setHours(jamKeluarsEnd.getHours() + 1); // Ditambah 1 jam
   
-    console.log("Waktu server:", serverDate);
-    console.log("Waktu mulai pulang (ontime):", jamKeluarsStart);
-    console.log("Batas akhir pulang:", jamKeluarsEnd);
+    
   
     const isWithinPulangTime =
       serverTimeMillis >= jamKeluarsStart.getTime() &&

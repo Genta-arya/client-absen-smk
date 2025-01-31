@@ -81,7 +81,7 @@ const DetailPkl = () => {
     }
   };
 
-  console.log(data?.users?.length);
+
   const RemoveSiswa = async () => {
     setLoading(true);
 

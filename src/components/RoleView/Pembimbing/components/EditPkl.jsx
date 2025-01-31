@@ -29,7 +29,7 @@ const EditPkl = ({ datas, setStatusEdit, refresh }) => {
   }, [datas]);
 
   const [loading, setLoading] = React.useState(false);
-  console.log(data);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
