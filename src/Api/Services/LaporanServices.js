@@ -9,3 +9,12 @@ export const getLaporanUser = async (id) => {
     handleError(error);
   }
 };
+
+export const getSingleLaporan= async (id) => {
+  try {
+    const response = await Axios.get("/report/data/laporan/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

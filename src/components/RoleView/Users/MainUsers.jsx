@@ -104,8 +104,6 @@ const MainUsers = () => {
     }
   };
 
-  const socket = io(SOCKET);
-
   // useEffect(() => {
   //   const socket = io(SOCKET, {
   //     withCredentials: true,
@@ -149,7 +147,6 @@ const MainUsers = () => {
     setLoading(true);
     try {
       if (user?.Kelas?.length === 0) {
-        
         await updateDataUser({
           id: user?.id,
           name: user?.name,
@@ -203,8 +200,6 @@ const MainUsers = () => {
     const serverHours = serverDate.getHours();
     const serverMinutes = serverDate.getMinutes();
 
-  
-
     const isWithinMasukTime =
       (serverHours > jamMasukHours ||
         (serverHours === jamMasukHours && serverMinutes >= jamMasukMinutes)) &&
@@ -233,14 +228,10 @@ const MainUsers = () => {
     const jamKeluarsPlus2 = new Date(jamKeluars);
     jamKeluarsPlus2.setHours(jamKeluarsPlus2.getHours() + 2); // 2 jam setelah
 
- 
-
     // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamKeluar hingga 2 jam setelah jamKeluar
     const isWithinPulangTime =
       serverTimeMillis >= jamKeluarsMinus1.getTime() &&
       serverTimeMillis <= jamKeluarsPlus2.getTime();
-
-
 
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
@@ -287,6 +278,15 @@ const MainUsers = () => {
 
   useEffect(() => {
     const measurePing = () => {
+      const socket = io(SOCKET , {
+        protocols: ["websocket"],
+        upgrade: false,
+        secure:true,
+        autoConnect: true,
+        transports: ["websocket"],
+        agent: false,
+        rejectUnauthorized: false,
+      });
       const startTime = Date.now();
 
       socket.emit("ping", startTime);

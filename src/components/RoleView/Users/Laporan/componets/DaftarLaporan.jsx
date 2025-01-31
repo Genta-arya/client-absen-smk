@@ -6,6 +6,7 @@ import Loading from "../../../../Loading";
 import NotfoundData from "../../../../NotfoundData";
 import { FaCalendar, FaCircle, FaClipboardList } from "react-icons/fa";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 const DaftarLaporan = () => {
   const { user } = useAuthStore();
   const id = user?.id;
@@ -160,10 +161,10 @@ const DaftarLaporan = () => {
                         <p className="text-sm">{formatDate(item.tanggal)}</p>
                       </div>
                     </li>
-                    <div className="flex hover:opacity-85 transition-all cursor-pointer items-center gap-2 bg-blue px-4 rounded-md text-white text-xs">
+                    <Link to={`/app/laporan/${item.id}`} className="flex hover:opacity-85 transition-all cursor-pointer items-center gap-2 bg-blue px-4 rounded-md text-white text-xs">
                       <FaClipboardList />
                       <p>Laporan</p>
-                    </div>
+                    </Link>
                   </div>
                 ))}
               </ul>

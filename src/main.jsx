@@ -23,6 +23,7 @@ import MainKelas from "./View/Kelas/MainKelas.jsx";
 import InfoAbsensi from "./components/RoleView/Users/Absensi/InfoAbsensi.jsx";
 import MainCalendar from "./components/RoleView/Users/Calendar/MainCalendar.jsx";
 import MainLaporan from "./components/RoleView/Users/Laporan/MainLaporan.jsx";
+import MainFormLaporan from "./components/RoleView/Users/Laporan/MainFormLaporan.jsx";
 
 const route = createBrowserRouter([
   {
@@ -84,7 +85,10 @@ const route = createBrowserRouter([
         path: "",
         element: <App />,
       },
-
+      {
+        path: "/app/laporan/:id",
+        element: <MainFormLaporan />,
+      },
       {
         path: "/app/setting",
         element: <MainSetting />,
