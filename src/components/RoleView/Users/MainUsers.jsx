@@ -23,7 +23,7 @@ import { updateDataUser, getKelas } from "../../../Api/Services/LoginServices";
 import { ResponseHandler } from "../../../Utils/ResponseHandler";
 import { toast } from "sonner";
 import { io } from "socket.io-client";
-import { formatTanggal, SOCKET } from "../../../constants/Constants";
+import { API_URL, formatTanggal, SOCKET } from "../../../constants/Constants";
 
 import { useNavigate } from "react-router-dom";
 import useLocationStore from "../../../Lib/Zustand/useLocationStore";
@@ -276,36 +276,57 @@ const MainUsers = () => {
       });
   }, []);
 
+  // useEffect(() => {
+  //   const measurePing = () => {
+  //     const socket = io(SOCKET , {
+  //       protocols: ["websocket"],
+  //       upgrade: false,
+  //       secure:true,
+  //       autoConnect: true,
+  //       transports: ["websocket"],
+  //       agent: false,
+  //       rejectUnauthorized: false,
+  //     });
+  //     const startTime = Date.now();
+
+  //     socket.emit("ping", startTime);
+
+  //     // Menunggu respons "pong" dan hitung latensi
+  //     socket.on("pong", (timestamp) => {
+  //       const endTime = Date.now();
+  //       const pingLatency = endTime - timestamp;
+  //       setPing(pingLatency); // Set nilai ping ke state
+  //     });
+  //   };
+
+  //   // Set interval untuk mengukur ping setiap detik (1000 ms)
+  //   const pingInterval = setInterval(measurePing, 60000);
+
+  //   // Bersihkan interval ketika komponen unmount
+  //   return () => {
+  //     clearInterval(pingInterval);
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const measurePing = () => {
-      const socket = io(SOCKET , {
-        protocols: ["websocket"],
-        upgrade: false,
-        secure:true,
-        autoConnect: true,
-        transports: ["websocket"],
-        agent: false,
-        rejectUnauthorized: false,
-      });
-      const startTime = Date.now();
+    const measurePing = async () => {
+      const startTime = Date.now(); // Catat waktu awal
 
-      socket.emit("ping", startTime);
-
-      // Menunggu respons "pong" dan hitung latensi
-      socket.on("pong", (timestamp) => {
-        const endTime = Date.now();
-        const pingLatency = endTime - timestamp;
-        setPing(pingLatency); // Set nilai ping ke state
-      });
+      try {
+        await fetch(API_URL + "/connection", { method: "HEAD" }); // Kirim request
+        const endTime = Date.now(); // Catat waktu akhir
+        setPing(endTime - startTime); // Hitung latensi
+      } catch (error) {
+  
+        setPing(30);
+      }
     };
 
-    // Set interval untuk mengukur ping setiap detik (1000 ms)
+    // Jalankan setiap 60 detik (60000 ms)
     const pingInterval = setInterval(measurePing, 60000);
+    measurePing(); // Jalankan pertama kali saat komponen mount
 
-    // Bersihkan interval ketika komponen unmount
-    return () => {
-      clearInterval(pingInterval);
-    };
+    return () => clearInterval(pingInterval); // Bersihkan interval saat komponen unmount
   }, []);
 
   const getPingClass = () => {
