@@ -23,6 +23,7 @@ import ModalAddsiswa from "./ModalAddsiswa";
 const DetailPkl = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  
   const [data, setData] = useState(null);
   const [modal1, setModal1] = useState(false);
   const [modal, setModal] = useState(false);
@@ -66,14 +67,17 @@ const DetailPkl = () => {
   };
 
   const handleDelete = async (id) => {
+    setLoading(true);
     try {
       await DeletePkl(id);
       setModal(false);
-      fetchData();
+    
       toast.success("Data PKL Berhasil dihapus");
       navigate("/admin/management/pkl");
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
