@@ -214,28 +214,27 @@ const MainUsers = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
-
+  
     const serverTimeMillis = serverDate.getTime(); // Waktu server dalam milidetik
-
-    // Waktu jamKeluar dalam milidetik
-    const jamKeluars = new Date(jamKeluar); // Jam keluar yang diatur oleh admin
-
-    // Waktu 1 jam sebelum jamKeluar
-    const jamKeluarsMinus1 = new Date(jamKeluars);
-    jamKeluarsMinus1.setHours(jamKeluarsMinus1.getHours()); // 1 jam sebelum
-
-    // Waktu 2 jam setelah jamKeluar
-    const jamKeluarsPlus2 = new Date(jamKeluars);
-    jamKeluarsPlus2.setHours(jamKeluarsPlus2.getHours() + 2); // 2 jam setelah
-
-    // Periksa apakah waktu server berada dalam rentang 1 jam sebelum jamKeluar hingga 2 jam setelah jamKeluar
+  
+    // Pastikan jamKeluars memiliki tanggal yang sama dengan serverDate
+    const jamKeluars = new Date(serverDate);
+    jamKeluars.setHours(new Date(jamKeluar).getHours(), new Date(jamKeluar).getMinutes(), 0, 0);
+  
+    const jamKeluarsStart = new Date(jamKeluars);
+    const jamKeluarsEnd = new Date(jamKeluars);
+    jamKeluarsEnd.setHours(jamKeluarsEnd.getHours() + 1); // Ditambah 1 jam
+  
+    console.log("Waktu server:", serverDate);
+    console.log("Waktu mulai pulang (ontime):", jamKeluarsStart);
+    console.log("Batas akhir pulang:", jamKeluarsEnd);
+  
     const isWithinPulangTime =
-      serverTimeMillis >= jamKeluarsMinus1.getTime() &&
-      serverTimeMillis <= jamKeluarsPlus2.getTime();
-
+      serverTimeMillis >= jamKeluarsStart.getTime() &&
+      serverTimeMillis <= jamKeluarsEnd.getTime();
+  
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
-
   const fetchLocalIPAddress = () => {
     return new Promise((resolve, reject) => {
       const localIPs = new Set();
