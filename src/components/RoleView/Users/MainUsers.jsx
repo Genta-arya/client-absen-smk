@@ -62,8 +62,10 @@ const MainUsers = () => {
   const nameShift = dataShift?.name;
   const jamKeluar = dataShift?.jamPulang;
   const jamMasuk = dataShift?.jamMasuk;
-  const jamMasukHours = new Date(jamMasuk).getHours();
-  const jamMasukMinutes = new Date(jamMasuk).getMinutes();
+  const date = new Date(jamMasuk); // Hanya panggil sekali
+  const jamMasukHours = date.getHours().toString().padStart(2, '0');
+  const jamMasukMinutes = date.getMinutes().toString().padStart(2, '0');
+  
 
   // Fungsi untuk mengonversi ke UTC dari zona waktu Indonesia (UTC+7)
   const convertToUTC = (date) => {
@@ -177,10 +179,12 @@ const MainUsers = () => {
     }
   };
   const toUTC7 = (inputDate) => {
-    return new Date(inputDate.getTime() + 7 * 60 * 60 * 1000); // Konversi ke UTC+7
+    return new Date(inputDate.getTime() - 7 * 60 * 60 * 1000); // Konversi ke UTC+7
   };
-  // const serverDate = toUTC7(new Date(user?.DateIndonesia)); // Tanggal server dikonversi ke UTC+7
+  // const serverDate = toUTC7(new Date(user?.DateIndonesia)); 
   const serverDate = new Date(user?.DateIndonesia);
+
+  console.log("serverDate:", serverDate);
 
   const isMasukDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
@@ -200,13 +204,17 @@ const MainUsers = () => {
     const serverHours = serverDate.getHours();
     const serverMinutes = serverDate.getMinutes();
 
+
+
+
+
     const isWithinMasukTime =
       (serverHours > jamMasukHours ||
         (serverHours === jamMasukHours && serverMinutes >= jamMasukMinutes)) &&
       (serverHours < jamTutup.getHours() ||
         (serverHours === jamTutup.getHours() &&
           serverMinutes <= jamTutup.getMinutes()));
-   
+
     return !isWithinMasukTime;
   };
 
@@ -214,23 +222,26 @@ const MainUsers = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
-  
+
     const serverTimeMillis = serverDate.getTime(); // Waktu server dalam milidetik
-  
+
     // Pastikan jamKeluars memiliki tanggal yang sama dengan serverDate
     const jamKeluars = new Date(serverDate);
-    jamKeluars.setHours(new Date(jamKeluar).getHours(), new Date(jamKeluar).getMinutes(), 0, 0);
-  
+    jamKeluars.setHours(
+      new Date(jamKeluar).getHours(),
+      new Date(jamKeluar).getMinutes(),
+      0,
+      0
+    );
+
     const jamKeluarsStart = new Date(jamKeluars);
     const jamKeluarsEnd = new Date(jamKeluars);
     jamKeluarsEnd.setHours(jamKeluarsEnd.getHours() + 1); // Ditambah 1 jam
-  
-    
-  
+
     const isWithinPulangTime =
       serverTimeMillis >= jamKeluarsStart.getTime() &&
       serverTimeMillis <= jamKeluarsEnd.getTime();
-  
+
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
   const fetchLocalIPAddress = () => {
@@ -314,7 +325,6 @@ const MainUsers = () => {
         const endTime = Date.now(); // Catat waktu akhir
         setPing(endTime - startTime); // Hitung latensi
       } catch (error) {
-  
         setPing(30);
       }
     };
@@ -385,6 +395,8 @@ const MainUsers = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+
 
   return (
     <div className="">
@@ -570,10 +582,19 @@ const MainUsers = () => {
                                       <div className="flex items-center">
                                         <div className="flex">
                                           <p>
-                                            {jamMasukHours}:{jamMasukMinutes}
+                                            {jamMasukHours
+                                              .toString()
+                                              .padStart(2, "0")}
+                                            :
+                                            {jamMasukMinutes
+                                              .toString()
+                                              .padStart(2, "0")}
                                           </p>
                                           <p>
-                                            {new Date(jamMasuk).getMinutes()} -
+                                            {String(
+                                              new Date(jamMasuk).getMinutes()
+                                            ).padStart(2, "0")}{" "}
+                                            -
                                           </p>
                                         </div>
                                         <div className="flex ml-1">
