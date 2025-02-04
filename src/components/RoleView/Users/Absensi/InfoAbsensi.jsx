@@ -14,7 +14,7 @@ import {
   FaTag,
 } from "react-icons/fa";
 import { FaLocationPin, FaLocationPinLock } from "react-icons/fa6";
-
+import { DateTime } from "luxon";
 const InfoAbsensi = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -66,58 +66,73 @@ const InfoAbsensi = () => {
   };
 
   const validateDatang = (datang) => {
-    if (!datang) {
-      return "-"; // Jika datang null, return "-"
+    if (!datang) return "-";
+  
+    // Pastikan waktu datang diparse dengan benar
+    const datangDate = DateTime.fromISO(datang).setZone("Asia/Jakarta");
+    const jamMasukDate = DateTime.fromISO(jamMasuk).setZone("Asia/Jakarta");
+  
+    // Periksa apakah parsing berhasil
+    if (!datangDate.isValid || !jamMasukDate.isValid) {
+      console.log("Invalid DateTime");
+      return "-";
     }
-
-    const date = new Date(datang);
-    const datangJam = date.getHours();
-    const datangMenit = date.getMinutes();
-
-    const jamMasukDate = new Date(jamMasuk);
-    const jamMasukJam = jamMasukDate.getHours();
-    const jamMasukMenit = jamMasukDate.getMinutes();
-
-    // Batas keterlambatan: 2 jam setelah jamMasuk
-    const batasJam = jamMasukJam + 2;
-    const batasMenit = jamMasukMenit;
-
+  
+    // Ambil jam dan menit saja (abaikan tanggal)
+    const datangJamMenit = datangDate.toFormat("HH:mm");
+    const jamMasukJamMenit = jamMasukDate.toFormat("HH:mm");
+  
+   
+  
+    // Batas keterlambatan: 2 jam setelah jam masuk
+    const batasKeterlambatan = jamMasukDate.plus({ hours: 2 });
+    const batasKeterlambatanJamMenit = batasKeterlambatan.toFormat("HH:mm");
+  
+    console.log("Batas Keterlambatan:", batasKeterlambatanJamMenit);
+  
     // Bandingkan hanya jam dan menit
-    if (
-      datangJam < batasJam ||
-      (datangJam === batasJam && datangMenit <= batasMenit)
-    ) {
-      return "Hadir"; // Hadir jika datang dalam rentang waktu
+    if (datangJamMenit <= batasKeterlambatanJamMenit) {
+      return "Hadir"; // Jika datang sebelum atau tepat batas
     } else {
-      return "Telat Hadir"; // Telat jika lebih dari batas
+      return "Telat Hadir"; // Jika datang setelah batas
     }
   };
 
+  // Validasi Waktu Pulang
   const validatePulang = (pulang) => {
-    if (!pulang) return "-";
-
-    const date = new Date(pulang);
-    const pulangJam = date.getHours();
-    const pulangMenit = date.getMinutes();
-
-    const jamKeluarDate = new Date(jamKeluar);
-    const jamKeluarJam = jamKeluarDate.getHours();
-    const jamKeluarMenit = jamKeluarDate.getMinutes();
-
-    // Batas pulang lebih cepat: 1 jam sebelum jamKeluar
-    const batasJam = jamKeluarJam - 1;
-    const batasMenit = jamKeluarMenit;
-
+    if (!pulang ) return "-";
+  
+    // Pastikan waktu pulang diparse dengan benar
+    const pulangDate = DateTime.fromISO(pulang).setZone("Asia/Jakarta");
+    const jamKeluarDate = DateTime.fromISO(jamKeluar).setZone("Asia/Jakarta");
+  
+    // Periksa apakah parsing berhasil
+    if (!pulangDate.isValid || !jamKeluarDate.isValid) {
+      console.log("Invalid DateTime");
+      return "-";
+    }
+  
+    // Ambil jam dan menit saja (abaikan tanggal)
+    const pulangJamMenit = pulangDate.toFormat("HH:mm");
+    const jamKeluarJamMenit = jamKeluarDate.toFormat("HH:mm");
+  
+  
+    // Batas pulang cepat: 1 jam sebelum jam keluar
+    const batasPulangCepat = jamKeluarDate.minus({ hours: 1 });
+    const batasPulangCepatJamMenit = batasPulangCepat.toFormat("HH:mm");
+  
+    console.log("Batas Pulang Cepat:", batasPulangCepatJamMenit);
+  
     // Bandingkan hanya jam dan menit
-    if (
-      pulangJam > batasJam ||
-      (pulangJam === batasJam && pulangMenit >= batasMenit)
-    ) {
-      return "Pulang";
+    if (pulangJamMenit >= batasPulangCepatJamMenit) {
+      return "Pulang"; // Jika pulang sesuai atau lebih lambat dari batas
     } else {
-      return "Pulang Cepat";
+      return "Pulang Cepat"; // Jika pulang lebih cepat dari batas
     }
   };
+  
+
+
 
   if (loading) return <Loading />;
 

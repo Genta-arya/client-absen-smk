@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import { useNavigate } from "react-router-dom";
-
+import { DateTime } from "luxon";
 const Calendar = ({ data }) => {
   const { user } = useAuthStore();
   const mapData = user?.Pkl?.map((item) => item);
@@ -24,8 +24,8 @@ const Calendar = ({ data }) => {
   const [monthName, setMonthName] = useState("");
   const absensiFormatted = data.map((absen) => ({
     ...absen,
-    tanggal: new Date(absen.tanggal).toISOString().split("T")[0],
-    dateObj: new Date(absen.tanggal),
+    tanggal: DateTime.fromISO(absen.tanggal).toISODate(), // Menggunakan Luxon untuk format tanggal
+    dateObj: DateTime.fromISO(absen.tanggal).toJSDate(), // Menggunakan Luxon untuk mengonversi ke JavaScript Date
   }));
 
   const minDate =
@@ -41,87 +41,67 @@ const Calendar = ({ data }) => {
       let bgColorPulang = "gray";
       let textColorPulang = "";
 
-      // Cek waktu datang
+      // Cek waktu datang menggunakan Luxon
       if (absen.hadir === "hadir" && absen.datang) {
-        const datangDate = new Date(absen.datang);
-        const hoursDatang = datangDate.getHours();
-        const minutesDatang = datangDate.getMinutes();
-        timeFormattedDatang = `${hoursDatang
-          .toString()
-          .padStart(2, "0")}:${minutesDatang.toString().padStart(2, "0")}`;
-        const batasJamPlus2 = new Date(jamMasuk);
-        batasJamPlus2.setHours(batasJamPlus2.getHours() + 2);
-        batasJamPlus2.setMinutes(0);
+        const datangDate = DateTime.fromISO(absen.datang, { zone: "UTC" })
+          .setZone("Asia/Jakarta");
 
-        const batasJam = batasJamPlus2.getHours();
-        const batasMenit = batasJamPlus2.getMinutes();
+        timeFormattedDatang = datangDate.toFormat("HH:mm");
 
-        if (
-          hoursDatang > batasJam ||
-          (hoursDatang === batasJam && minutesDatang > batasMenit)
-        ) {
-          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah jam 7:30
-          bgColorDatang = "purple"; // Set background color oranye untuk Telat
-          textColorDatang = "white"; // Set warna teks hitam untuk Telat
+  
+       
+
+        const batasJamPlus2 = DateTime.fromISO(jamMasuk, { zone: "Asia/Jakarta" }).plus({ hours: 2 });
+       
+
+        if (timeFormattedDatang > batasJamPlus2) {
+          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah batas
+          bgColorDatang = "purple";
+          textColorDatang = "white";
         } else {
-          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang sebelum atau tepat jam 7:30
-          bgColorDatang = "green"; // Set background color hijau untuk Hadir
-          textColorDatang = "white"; // Set warna teks putih untuk Hadir
+          timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang sebelum atau tepat batas
+          bgColorDatang = "green";
+          textColorDatang = "white";
         }
       } else {
-        timeFormattedDatang = "..."; // Jika tidak hadir atau tidak ada waktu
-        bgColorDatang = absen.hadir === null ? "gray" : "red"; // Set warna untuk yang tidak hadir
-        textColorDatang = "white"; // Set warna teks putih untuk yang tidak hadir
+        timeFormattedDatang = "...";
+        bgColorDatang = absen.hadir === null ? "gray" : "red";
+        textColorDatang = "white";
       }
 
-      // Menambahkan waktu pulang jika ada
+      // Menambahkan waktu pulang menggunakan Luxon
       if (absen.pulang) {
-        const pulangDate = new Date(absen.pulang);
-        const hoursPulang = pulangDate.getHours();
-        const minutesPulang = pulangDate.getMinutes();
-   
+        const pulangDate = DateTime.fromISO(absen.pulang); // Menggunakan Luxon
 
-        timeFormattedPulang = `${hoursPulang
-          .toString()
-          .padStart(2, "0")}:${minutesPulang.toString().padStart(2, "0")}`;
+        timeFormattedPulang = pulangDate.toFormat("HH:mm"); // Format waktu pulang menggunakan Luxon
 
-        // Set batas waktu jam keluar + 1 jam
-        const batasJamPlus1 = new Date(jamKeluar);
-        batasJamPlus1.setHours(batasJamPlus1.getHours() + 1); // Jam batas + 1 jam
-        batasJamPlus1.setMinutes(0); // Set menit menjadi 0, jadi jam 8:00:00
+        const batasJamPlus1 = DateTime.fromISO(jamKeluar, { zone: "Asia/Jakarta" }).plus({ hours: 1 });
 
-        const batasJam = batasJamPlus1.getHours();
-        const batasMenit = batasJamPlus1.getMinutes();
-
-        // Cek apakah waktu pulang lebih cepat dari batas jam keluar + 1 jam
-        if (
-          hoursPulang > batasJam ||
-          (hoursPulang === batasJam && minutesPulang > batasMenit)
-        ) {
+        if (timeFormattedDatang > batasJamPlus1) {
           timeFormattedPulang = ` ${timeFormattedPulang}`;
-          bgColorPulang = "orange"; // Warna latar belakang oranye untuk Pulang Cepat
-          textColorPulang = "white"; // Warna teks putih untuk Pulang Cepat
+          bgColorPulang = "orange";
+          textColorPulang = "white";
         } else {
           timeFormattedPulang = `${timeFormattedPulang}`;
-          bgColorPulang = "sky"; // Warna latar belakang biru untuk Pulang Normal
-          textColorPulang = "white"; // Warna teks putih untuk Pulang Normal
+          bgColorPulang = "sky";
+          textColorPulang = "white";
         }
       } else {
-        timeFormattedPulang = "..."; // Jika tidak ada waktu pulang
-        bgColorPulang = absen.hadir !== "tidak_hadir" ? "gray" : "red"; // Set warna latar belakang gray jika belum ada pulang
-        textColorPulang = "white"; // Set warna teks putih
+        timeFormattedPulang = "...";
+        bgColorPulang = absen.hadir !== "tidak_hadir" ? "gray" : "red";
+        textColorPulang = "white";
       }
 
       return [
         {
-          title: `${timeFormattedDatang}`, // Menampilkan waktu datang
+          title: `${timeFormattedDatang}`,
           date: absen.tanggal,
           groupId: absen.id,
-          backgroundColor: bgColorDatang, // Menggunakan warna latar belakang datang
-          color: textColorDatang, // Menggunakan warna teks datang
+          backgroundColor: bgColorDatang,
+          color: textColorDatang,
         },
         {
-          title: `${timeFormattedPulang}`, // Menampilkan waktu pulang
+          title: `${timeFormattedPulang}`,
           date: absen.tanggal,
           groupId: absen.id,
           backgroundColor: bgColorPulang,
@@ -135,8 +115,6 @@ const Calendar = ({ data }) => {
     Math.max(...absensiFormatted.map((absen) => absen.dateObj))
   );
   maxDate.setMonth(maxDate.getMonth() + 1);
-
-
 
   const handleDateClick = (info) => {
     // Mendapatkan ID dari event yang dipilih
