@@ -250,7 +250,7 @@ const ModalAbsens = ({ tanggal, id }) => {
     fetchLocation();
     startCamera();
   }, []);
-  console.log(isFrontCamera)
+
 
   const takePhoto = () => {
     const video = videoRef.current;

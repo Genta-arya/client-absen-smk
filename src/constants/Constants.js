@@ -47,7 +47,7 @@ export const API_URL = "https://pkl.apiservices.my.id/api";
 export const SOCKET = "https://pkl.apiservices.my.id";
 
 export const API_URL_IMAGE = "https://pkl.apiservices.my.id/uploads/";
-export const UPLOAD_URL = "https://mystorages.cloud/uploads.php";
+export const UPLOAD_URL = "https://cloud.mystorages.my.id/uploads.php";
 
 export const formatTanggal = (dateString) => {
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
