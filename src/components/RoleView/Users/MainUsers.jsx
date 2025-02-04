@@ -32,7 +32,7 @@ import UseLogout from "../../../Lib/Hook/UseLogout";
 import ModalAbsens from "./Absensi/ModalAbsens";
 import { FaMapLocation } from "react-icons/fa6";
 import { handlePulangs } from "../../../Api/Services/AbsensiServices";
-
+import { DateTime } from 'luxon';
 const MainUsers = () => {
   const { user } = useAuthStore();
   const mapData = user?.Pkl?.map((item) => item);
@@ -63,9 +63,8 @@ const MainUsers = () => {
   const jamKeluar = dataShift?.jamPulang;
   const jamMasuk = dataShift?.jamMasuk;
   const date = new Date(jamMasuk); // Hanya panggil sekali
-  const jamMasukHours = date.getHours().toString().padStart(2, '0');
-  const jamMasukMinutes = date.getMinutes().toString().padStart(2, '0');
-  
+  const jamMasukHours = date.getHours().toString().padStart(2, "0");
+  const jamMasukMinutes = date.getMinutes().toString().padStart(2, "0");
 
   // Fungsi untuk mengonversi ke UTC dari zona waktu Indonesia (UTC+7)
   const convertToUTC = (date) => {
@@ -106,33 +105,6 @@ const MainUsers = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const socket = io(SOCKET, {
-  //     withCredentials: true,
-  //   });
-
-  //   const userId = user?.id;
-  //   socket.emit("joinRoom", userId);
-
-  //   socket.on("new-pkl-notification", (data) => {
-  //     if (Notification.permission === "granted") {
-  //       new Notification("PKL Notification", {
-  //         body: data.message,
-  //         icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfqgzc3z4pYYehdJbSmuMT8Gp7abIEiE-zw&s", // Ganti dengan ikon yang sesuai
-  //       });
-  //     }
-
-  //     toast.info(data.message);
-  //   });
-
-  //   if (Notification.permission !== "granted") {
-  //     Notification.requestPermission();
-  //   }
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, [user?.id]);
 
   useEffect(() => {
     if (user?.email === null || user?.Kelas?.length === 0) {
@@ -181,69 +153,60 @@ const MainUsers = () => {
   const toUTC7 = (inputDate) => {
     return new Date(inputDate.getTime() - 7 * 60 * 60 * 1000); // Konversi ke UTC+7
   };
-  // const serverDate = toUTC7(new Date(user?.DateIndonesia)); 
-  const serverDate = new Date(user?.DateIndonesia);
+  // const serverDate = toUTC7(new Date(user?.DateIndonesia));
+  const serverDate = DateTime.fromISO(user?.DateIndonesia);
 
-  console.log("serverDate:", serverDate);
-
+ 
+  
   const isMasukDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
-
-    // const serverDate = new Date(user?.DateIndonesia); // Waktu server
-
-    const jamMasuks = new Date(jamMasuk); // Waktu jamMasuk dalam milidetik
-    const jamMasukHours = jamMasuks.getHours();
-    const jamMasukMinutes = jamMasuks.getMinutes();
-
-    const jamTutup = new Date(jamMasuks);
-    jamTutup.setHours(jamMasukHours + 2, jamMasukMinutes); // Jam tutup 2 jam setelah jam masuk
-
-    // Ambil hanya jam dan menit dari waktu server
-    const serverHours = serverDate.getHours();
-    const serverMinutes = serverDate.getMinutes();
-
-
-
-
-
+  
+    const jamMasuks = DateTime.fromISO(jamMasuk); // Menggunakan Luxon untuk jamMasuk
+    const jamMasukHours = jamMasuks.hour;
+    const jamMasukMinutes = jamMasuks.minute;
+  
+    const jamTutup = jamMasuks.plus({ hours: 2 }); // Jam tutup 2 jam setelah jam masuk
+  
+    const serverHours = serverDate.hour;
+    const serverMinutes = serverDate.minute;
+  
     const isWithinMasukTime =
       (serverHours > jamMasukHours ||
         (serverHours === jamMasukHours && serverMinutes >= jamMasukMinutes)) &&
-      (serverHours < jamTutup.getHours() ||
-        (serverHours === jamTutup.getHours() &&
-          serverMinutes <= jamTutup.getMinutes()));
-
+      (serverHours < jamTutup.hour ||
+        (serverHours === jamTutup.hour &&
+          serverMinutes <= jamTutup.minute));
+  
     return !isWithinMasukTime;
   };
-
+  
   const isPulangDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
-
-    const serverTimeMillis = serverDate.getTime(); // Waktu server dalam milidetik
-
+  
+    const serverTimeMillis = serverDate.toMillis(); // Waktu server dalam milidetik
+  
     // Pastikan jamKeluars memiliki tanggal yang sama dengan serverDate
-    const jamKeluars = new Date(serverDate);
-    jamKeluars.setHours(
-      new Date(jamKeluar).getHours(),
-      new Date(jamKeluar).getMinutes(),
-      0,
-      0
-    );
-
-    const jamKeluarsStart = new Date(jamKeluars);
-    const jamKeluarsEnd = new Date(jamKeluars);
-    jamKeluarsEnd.setHours(jamKeluarsEnd.getHours() + 1); // Ditambah 1 jam
-
+    const jamKeluars = serverDate.set({
+      hour: new Date(jamKeluar).getHours(),
+      minute: new Date(jamKeluar).getMinutes(),
+      second: 0,
+      millisecond: 0
+    });
+  
+    const jamKeluarsStart = jamKeluars;
+    const jamKeluarsEnd = jamKeluars.plus({ hours: 1 }); // Ditambah 1 jam
+  
     const isWithinPulangTime =
-      serverTimeMillis >= jamKeluarsStart.getTime() &&
-      serverTimeMillis <= jamKeluarsEnd.getTime();
-
+      serverTimeMillis >= jamKeluarsStart.toMillis() &&
+      serverTimeMillis <= jamKeluarsEnd.toMillis();
+  
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
+
   const fetchLocalIPAddress = () => {
     return new Promise((resolve, reject) => {
       const localIPs = new Set();
@@ -284,37 +247,6 @@ const MainUsers = () => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   const measurePing = () => {
-  //     const socket = io(SOCKET , {
-  //       protocols: ["websocket"],
-  //       upgrade: false,
-  //       secure:true,
-  //       autoConnect: true,
-  //       transports: ["websocket"],
-  //       agent: false,
-  //       rejectUnauthorized: false,
-  //     });
-  //     const startTime = Date.now();
-
-  //     socket.emit("ping", startTime);
-
-  //     // Menunggu respons "pong" dan hitung latensi
-  //     socket.on("pong", (timestamp) => {
-  //       const endTime = Date.now();
-  //       const pingLatency = endTime - timestamp;
-  //       setPing(pingLatency); // Set nilai ping ke state
-  //     });
-  //   };
-
-  //   // Set interval untuk mengukur ping setiap detik (1000 ms)
-  //   const pingInterval = setInterval(measurePing, 60000);
-
-  //   // Bersihkan interval ketika komponen unmount
-  //   return () => {
-  //     clearInterval(pingInterval);
-  //   };
-  // }, []);
 
   useEffect(() => {
     const measurePing = async () => {
@@ -395,8 +327,6 @@ const MainUsers = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-
 
   return (
     <div className="">
@@ -588,14 +518,9 @@ const MainUsers = () => {
                                             :
                                             {jamMasukMinutes
                                               .toString()
-                                              .padStart(2, "0")}
+                                              .padStart(2, "0")} -
                                           </p>
-                                          <p>
-                                            {String(
-                                              new Date(jamMasuk).getMinutes()
-                                            ).padStart(2, "0")}{" "}
-                                            -
-                                          </p>
+                                         
                                         </div>
                                         <div className="flex ml-1">
                                           <p>
@@ -646,15 +571,15 @@ const MainUsers = () => {
                                       <div className="flex items-center">
                                         <div className="flex">
                                           <p>
-                                            {new Date(jamKeluar).getHours()}:
+                                            {new Date(jamKeluar).getHours().toString().padStart(2, "0")}:
                                           </p>
                                           <p>
-                                            {new Date(jamKeluar).getMinutes()} -{" "}
+                                            {new Date(jamKeluar).getMinutes().toString().padStart(2, "0")} -{" "}
                                           </p>
                                         </div>
                                         <div className="flex ml-1">
                                           <p>
-                                            {new Date(jamKeluar).getHours() + 1}
+                                            {new Date(jamKeluar).getHours()+ 1}
                                             :
                                           </p>
                                           <p>

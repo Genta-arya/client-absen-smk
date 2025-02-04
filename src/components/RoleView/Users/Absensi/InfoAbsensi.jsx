@@ -74,7 +74,7 @@ const InfoAbsensi = () => {
   
     // Periksa apakah parsing berhasil
     if (!datangDate.isValid || !jamMasukDate.isValid) {
-      console.log("Invalid DateTime");
+
       return "-";
     }
   
@@ -88,7 +88,7 @@ const InfoAbsensi = () => {
     const batasKeterlambatan = jamMasukDate.plus({ hours: 2 });
     const batasKeterlambatanJamMenit = batasKeterlambatan.toFormat("HH:mm");
   
-    console.log("Batas Keterlambatan:", batasKeterlambatanJamMenit);
+   
   
     // Bandingkan hanya jam dan menit
     if (datangJamMenit <= batasKeterlambatanJamMenit) {
@@ -108,7 +108,7 @@ const InfoAbsensi = () => {
   
     // Periksa apakah parsing berhasil
     if (!pulangDate.isValid || !jamKeluarDate.isValid) {
-      console.log("Invalid DateTime");
+
       return "-";
     }
   
@@ -121,7 +121,7 @@ const InfoAbsensi = () => {
     const batasPulangCepat = jamKeluarDate.minus({ hours: 1 });
     const batasPulangCepatJamMenit = batasPulangCepat.toFormat("HH:mm");
   
-    console.log("Batas Pulang Cepat:", batasPulangCepatJamMenit);
+
   
     // Bandingkan hanya jam dan menit
     if (pulangJamMenit >= batasPulangCepatJamMenit) {
