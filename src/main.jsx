@@ -25,6 +25,7 @@ import MainCalendar from "./components/RoleView/Users/Calendar/MainCalendar.jsx"
 import MainLaporan from "./components/RoleView/Users/Laporan/MainLaporan.jsx";
 import MainFormLaporan from "./components/RoleView/Users/Laporan/MainFormLaporan.jsx";
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 const route = createBrowserRouter([
   {
     path: "/admin",
@@ -148,6 +149,7 @@ createRoot(document.getElementById("root")).render(
       toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
     />
     <SpeedInsights />
+    <Analytics />
     <RouterProvider router={route} />
   </>
 );
