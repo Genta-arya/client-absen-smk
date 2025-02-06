@@ -17,7 +17,7 @@ const HeaderBack = ({ title }) => {
 
   return (
     <div className="fixed top-0 z-10 border-t-4  border-oren w-full bg-blue text-white  dark:bg-dark-bg ">
-      <div className="border-b py-5  px-6 w-full flex justify-between items-center">
+      <div className="border-b py-4  px-6 w-full flex justify-between items-center">
         <button className="flex items-center gap-3" onClick={handleBack}>
           <FaArrowLeft />
           <p className="font-bold md:text-lg lg:text-lg text-sm">{title}</p>
