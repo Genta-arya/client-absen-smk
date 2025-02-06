@@ -315,7 +315,7 @@ const MainUsers = () => {
 
   const [showNavbar, setShowNavbar] = useState(false);
   useEffect(() => {
-    window.scrollTo(0, 0);
+   
     const handleScroll = () => {
       if (window.scrollY > 100) {
         setShowNavbar(true);
