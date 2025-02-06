@@ -386,7 +386,7 @@ const MainUsers = () => {
               </div>
 
               <div
-                className={`bg-blue pb-40 py-16 rounded-bl-[35px] rounded-br-[35px] ${
+                className={`bg-blue pb-40 border-b-8 border-oren py-16 rounded-bl-[35px] rounded-br-[35px] ${
                   showNavbar ? "opacity-0  " : "opacity-100  "
                 } `}
               >

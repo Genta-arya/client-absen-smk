@@ -3,7 +3,7 @@ import Footer from "./Footer";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 import HeaderBack from "./HeaderBack";
 
-const ContainerGlobal = ({ children, visible = false }) => {
+const ContainerGlobal = ({ children, visible = false , title }) => {
   const { user } = useAuthStore();
   // buat ketika pertama kali halaman dibuat langsung balik ke halaman paling atas
   useEffect(() => {
@@ -17,8 +17,8 @@ const ContainerGlobal = ({ children, visible = false }) => {
       >
         {!visible ? (
           <>
-            <HeaderBack />
-            <div className="px-6">{children}</div>
+            <HeaderBack title={title} />
+            <div className="px-6 mt-20">{children}</div>
           </>
         ) : (
           <div className="px-6 mt-4">{children}</div>

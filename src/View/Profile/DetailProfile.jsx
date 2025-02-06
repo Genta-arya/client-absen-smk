@@ -47,7 +47,7 @@ const DetailProfile = () => {
   }
 
   return (
-    <ContainerGlobal>
+    <ContainerGlobal title={"Kembali"}>
       <div className="w-full">
         <div className="flex justify-center mb-6">
           <img

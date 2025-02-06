@@ -5,11 +5,11 @@ import Tabs from "./componets/Tabs";
 import DaftarLaporanMingguan from "./componets/DaftarLaporanMingguan";
 
 const MainLaporan = () => {
-  const tabList = ["harian", "mingguan"]; // Daftar tab
+  const tabList = ["harian", "mingguan"]; 
   const [tabsState, setTabsState] = useState(tabList[0]);
 
   return (
-    <ContainerGlobal>
+    <ContainerGlobal title={"Laporan"}>
       <div className="flex flex-col gap-14">
         <Tabs
           tabsState={tabsState}

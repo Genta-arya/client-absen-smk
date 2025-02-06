@@ -42,7 +42,7 @@ const GantiPassword = () => {
     }
   };
   return (
-    <ContainerGlobal>
+    <ContainerGlobal title={"Kembali"}>
       <h1 className="font-bold">
         <div className="flex gap-2 items-center">
           <FaLock /> <h1>Ganti Password</h1>

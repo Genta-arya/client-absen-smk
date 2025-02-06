@@ -47,7 +47,7 @@ const DaftarLaporanMingguan = () => {
     }).format(date);
   };
 
-let filteredData = dataProgress;
+  let filteredData = dataProgress;
 
   filteredData = selectedStatus
     ? filteredData.filter((item) => item.status_selesai === selectedStatus)
@@ -65,37 +65,39 @@ let filteredData = dataProgress;
 
   return (
     <div className="">
-      <div className="flex justify-between items-center gap-2 mb-6">
-        <div className="text-xs md:w-full lg:w-full w-full">
-          <label className="block mb-2">Status:</label>
-          <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="w-full md:w-full p-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
-          >
-            <option value="">Semua</option>
-            <option value="Belum">Belum</option>
-            <option value="Selesai">Selesai</option>
-          </select>
-        </div>
-      </div>
-
       {totalLaporan > 0 && (
-        <div className="mb-6">
-          <p className="text-sm font-semibold text-gray-700 mb-2">
-            Progres Laporan: {progress.toFixed(1)}%
-          </p>
-          <div className="w-full bg-gray-200 rounded-full h-4 relative">
-            <div
-              className="bg-green-500 h-4 rounded-full"
-              style={{ width: `${progress}%` }}
-            ></div>
+        <>
+          <div className="flex justify-between items-center gap-2 mb-6">
+            <div className="text-xs md:w-full lg:w-full w-full">
+              <label className="block mb-2">Status:</label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full md:w-full p-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
+              >
+                <option value="">Semua</option>
+                <option value="Belum">Belum</option>
+                <option value="Selesai">Selesai</option>
+              </select>
+            </div>
           </div>
-          <div className="flex justify-between text-xs mt-2">
-            <p className="text-red-500">Belum: {belumCount}</p>
-            <p className="text-green-500">Selesai: {selesaiCount}</p>
+
+          <div className="mb-6">
+            <p className="text-sm font-semibold text-gray-700 mb-2">
+              Progres Laporan: {progress.toFixed(1)}%
+            </p>
+            <div className="w-full bg-gray-200 rounded-full h-4 relative">
+              <div
+                className="bg-green-500 h-4 rounded-full"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between text-xs mt-2">
+              <p className="text-red-500">Belum: {belumCount}</p>
+              <p className="text-green-500">Selesai: {selesaiCount}</p>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {filteredData.length === 0 ? (
@@ -110,9 +112,9 @@ let filteredData = dataProgress;
                     <div className="flex items-center gap-2 text-blue">
                       <FaCircle size={10} color="red" />
                       <div>
-                        <p className="text-sm font-bold">Minggu ke - {idx + 1}</p>
-
-                     
+                        <p className="text-sm font-bold">
+                          Minggu ke - {idx + 1}
+                        </p>
                       </div>
                     </div>
                   </li>

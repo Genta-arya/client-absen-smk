@@ -17,11 +17,11 @@ const MenuSetting = () => {
 
   if (loading) return <Loading />;
   return (
-    <div className=" bg-white  rounded-lg p-0 md:p-0 lg:p-4">
+    <div className=" bg-white text-blue  rounded-lg p-0 md:p-0 lg:p-4">
       <ul className="space-y-1">
         <Link to={user?.role !== "user" ? "/admin/profil" : "/app/profil"} className="">
-          <div className="flex items-center border-b border-gray-300 hover:bg-gray-100 px-2">
-            <FaUserAlt />
+          <div className="flex  items-center border-b border-gray-300 hover:bg-gray-100 px-2">
+            <FaUserAlt  />
 
             <button className="w-full text-left px-4 py-2 text-gray-700 ">
               Profil

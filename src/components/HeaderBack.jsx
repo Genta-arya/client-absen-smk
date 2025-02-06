@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { Text } from "../constants/Constants";
 import { FaArrowLeft } from "react-icons/fa";
 import useAuthStore from "../Lib/Zustand/AuthStore";
+import ScrollTop from "./ScrollTop";
 
-const HeaderBack = ({ children }) => {
+const HeaderBack = ({ title }) => {
   const navigate = useNavigate();
   const [dateTime, setDateTime] = useState("");
   const { user } = useAuthStore();
+  const [visible, setVisible] = useState(false);
   const handleBack = () => {
     if (window.history.length > 1) {
       navigate(-1);
@@ -44,15 +46,38 @@ const HeaderBack = ({ children }) => {
     return () => clearInterval(interval); // Bersihkan interval saat komponen unmount
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Smooth scroll dengan efek transisi
+    });
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setVisible(true);
+      } else {
+        setVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="bg-white text-black dark:bg-dark-bg dark:text-white ">
+    <div className="fixed top-0 z-10 border-t-4  border-oren w-full bg-blue text-white  dark:bg-dark-bg ">
       <div className="border-b py-5  px-6 w-full flex justify-between items-center">
         <button className="flex items-center gap-3" onClick={handleBack}>
           <FaArrowLeft />
+          <p className="font-bold text-lg">{title}</p>
         </button>
-
-      
       </div>
+      {visible && <ScrollTop scrollToTop={scrollToTop} />}
     </div>
   );
 };

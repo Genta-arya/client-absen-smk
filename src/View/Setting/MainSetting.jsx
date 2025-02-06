@@ -19,7 +19,7 @@ const MainSetting = () => {
       ) : (
         <>
        
-          <ContainerGlobal>
+          <ContainerGlobal title={"Setting"}>
             <MenuSetting />
           </ContainerGlobal>
         </>

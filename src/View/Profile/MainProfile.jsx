@@ -134,7 +134,7 @@ const MainProfile = () => {
   };
 
   return (
-    <ContainerGlobal>
+    <ContainerGlobal title={"Profile"}>
       <div className="flex flex-col items-center justify-center">
         <div className="relative">
           <img

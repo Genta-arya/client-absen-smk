@@ -15,7 +15,7 @@ const MainCalendar = () => {
   }, []);
 
   return (
-    <ContainerGlobal>
+    <ContainerGlobal title={"Kalender"}>
       {dataAbsen.length === 0 ? (
         <NotfoundData />
       ) : (
