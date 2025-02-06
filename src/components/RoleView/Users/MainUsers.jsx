@@ -328,6 +328,11 @@ const MainUsers = () => {
     };
   }, []);
 
+  useEffect(() => {
+   
+    window.scrollTo(0, 0);
+   }, []);
+
   return (
     <div className="">
       <div className="min-h-screen  bg-gray-100 pb-8">
