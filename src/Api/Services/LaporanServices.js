@@ -18,3 +18,23 @@ export const getSingleLaporan= async (id) => {
     handleError(error);
   }
 };
+
+
+
+export const getLaporanUserMingguan = async (id) => {
+  try {
+    const response = await Axios.get("/report/laporan/mingguan/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getSingleLaporanMingguan= async (id) => {
+  try {
+    const response = await Axios.get("/report/data/laporan/mingguan/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

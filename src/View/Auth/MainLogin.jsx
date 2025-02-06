@@ -21,10 +21,30 @@ const MainLogin = () => {
   const navigate = useNavigate();
   const { setUser, user } = useAuthStore();
   const [recaptchaToken, setRecaptchaToken] = useState(null);
-
+  const [capslock, setCapslock] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+
+  const handleKeyUp = (event) => {
+    if (event.getModifierState("CapsLock")) {
+      setCapslock(true);
+    } else {
+      setCapslock(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyUp);
+
+    
+    if (capslock) {
+      toast.info("CapsLock aktif");
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyUp);
+    };
+  }, [capslock]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");

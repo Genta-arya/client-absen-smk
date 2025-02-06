@@ -14,7 +14,7 @@ export const addSiswaToPkl = async (data) => {
   try {
     const response = await Axios.put("/pkl/add/siswa", {
       pkl_id:data.pkl_id,
-      shift_data: data.shift_data, // Mengirimkan data shift yang lebih dinamis
+      shift_data: data.shift_data,
     });
     return response.data;
   } catch (error) {

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ContainerGlobal from "../../../ContainerGlobal";
-import { getSingleLaporan } from "../../../../Api/Services/LaporanServices";
+import {
+  getSingleLaporan,
+  getSingleLaporanMingguan,
+} from "../../../../Api/Services/LaporanServices";
 import { uploadProfile } from "../../../../Api/Services/LoginServices";
 import Loading from "../../../Loading";
 import NotfoundData from "../../../NotfoundData";
 
-const MainFormLaporan = () => {
+const MainFormLaporanMingguan = () => {
   const { id } = useParams();
   const [laporan, setLaporan] = useState({
     pembimbingId: "",
@@ -27,7 +30,7 @@ const MainFormLaporan = () => {
   useEffect(() => {
     const fetchLaporan = async () => {
       try {
-        const response = await getSingleLaporan(id);
+        const response = await getSingleLaporanMingguan(id);
         setLaporan(response.data);
       } catch (error) {
         console.error("Error fetching laporan:", error);
@@ -109,7 +112,7 @@ const MainFormLaporan = () => {
   return (
     <ContainerGlobal>
       <div className="">
-        <h1 className="text-2xl font-bold mb-12">Laporan Harian</h1>
+        <h1 className="text-2xl font-bold mb-12">Laporan Mingguan</h1>
         {!laporan.pembimbingId ? (
           <NotfoundData />
         ) : (
@@ -123,7 +126,7 @@ const MainFormLaporan = () => {
                 <input
                   type="text"
                   className="w-full border rounded p-2"
-                  value={laporan.nama_instruktur}
+                  value={laporan?.nama_instruktur}
                   required
                 />
               </div>
@@ -134,7 +137,7 @@ const MainFormLaporan = () => {
                 <input
                   type="text"
                   className="w-full border rounded p-2"
-                  value={laporan.nama_pembimbing}
+                  value={laporan?.nama_pembimbing}
                   required
                 />
               </div>
@@ -149,17 +152,8 @@ const MainFormLaporan = () => {
                 <input
                   type="text"
                   className="w-full border rounded p-2"
-                  value={laporan.nama_pekerjaan}
+                  value={laporan?.nama_pekerjaan}
                   required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Tanggal</label>
-                <input
-                  type="date"
-                  className="w-full border rounded p-2"
-                  value={laporan.tanggal.split("T")[0]}
-                  disabled
                 />
               </div>
             </div>
@@ -258,4 +252,4 @@ const MainFormLaporan = () => {
   );
 };
 
-export default MainFormLaporan;
+export default MainFormLaporanMingguan;
