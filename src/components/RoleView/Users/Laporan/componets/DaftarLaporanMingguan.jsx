@@ -4,7 +4,12 @@ import { getLaporanUserMingguan } from "../../../../../Api/Services/LaporanServi
 import useAuthStore from "../../../../../Lib/Zustand/AuthStore";
 import Loading from "../../../../Loading";
 import NotfoundData from "../../../../NotfoundData";
-import { FaCalendar, FaCircle, FaClipboardList } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaCalendar,
+  FaCircle,
+  FaClipboardList,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const DaftarLaporanMingguan = () => {
@@ -105,9 +110,13 @@ const DaftarLaporanMingguan = () => {
       ) : (
         <div className="space-y-6">
           {filteredData.map((item, idx) => (
-            <div key={idx} className="bg-white py-2 px-3 rounded-lg shadow-md">
-              <ul className="space-y-2">
-                <div className="flex py-4 justify-between">
+            <Link
+              to={`/app/laporan/mingguan/${item.id}`}
+              key={idx}
+              className=" flex border-b hover:bg-gray-50 transition-all ease-in-out duration-300 py-2 px-3 justify-between"
+            >
+              <ul className="space-y-2 flex justify-between w-full">
+                <div className="flex py-1 justify-between">
                   <li className="text-blue-600 text-lg font-medium ">
                     <div className="flex items-center gap-2 text-blue">
                       <FaCircle size={10} color="red" />
@@ -118,16 +127,10 @@ const DaftarLaporanMingguan = () => {
                       </div>
                     </div>
                   </li>
-                  <Link
-                    to={`/app/laporan/mingguan/${item.id}`}
-                    className="flex hover:opacity-85 transition-all cursor-pointer items-center gap-2 bg-blue px-4 rounded-md text-white text-xs"
-                  >
-                    <FaClipboardList />
-                    <p>Laporan</p>
-                  </Link>
                 </div>
+                <FaArrowRight />
               </ul>
-            </div>
+            </Link>
           ))}
         </div>
       )}

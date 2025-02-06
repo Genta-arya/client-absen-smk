@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import Footer from "./Footer";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 import HeaderBack from "./HeaderBack";
 
 const ContainerGlobal = ({ children, visible = false , title }) => {
   const { user } = useAuthStore();
-  // buat ketika pertama kali halaman dibuat langsung balik ke halaman paling atas
+ 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

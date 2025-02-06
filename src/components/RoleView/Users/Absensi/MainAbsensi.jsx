@@ -169,31 +169,7 @@ const MainAbsensi = () => {
                             </h2>
                           </div>
                         </div>
-                        {/* <div className="text-xs p-1">
-                          {anggota.shifts?.map((shift) => (
-                            <>
-                              <div className="py-1">
-                                <h1 className="text-center font-bold text-sm">
-                                  Shift - {shift.name}
-                                </h1>
-                              </div>
-                              <div
-                                key={shift.id}
-                                className="flex gap-2 items-center justify-center"
-                              >
-                                <p className="text-gray-700 text-xs">
-                                  <strong>Masuk: </strong>{" "}
-                                  {formatJamMenit(shift.jamMasuk)}
-                                </p>
-                                <p>-</p>
-                                <p className="text-gray-700">
-                                  <strong>Pulang: </strong>{" "}
-                                  {formatJamMenit(shift.jamPulang)}
-                                </p>
-                              </div>
-                            </>
-                          ))}
-                        </div> */}
+                      
                         <div className="flex justify-end mt-4">
                           <h2 className="text-xs font-semibold text-blue-500">
                             {anggota.noHp ? (

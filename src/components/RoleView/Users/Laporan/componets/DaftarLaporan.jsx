@@ -4,7 +4,12 @@ import { getLaporanUser } from "../../../../../Api/Services/LaporanServices";
 import useAuthStore from "../../../../../Lib/Zustand/AuthStore";
 import Loading from "../../../../Loading";
 import NotfoundData from "../../../../NotfoundData";
-import { FaCalendar, FaCircle, FaClipboardList } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaCalendar,
+  FaCircle,
+  FaClipboardList,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 const DaftarLaporan = () => {
   const { user } = useAuthStore();
@@ -141,10 +146,7 @@ const DaftarLaporan = () => {
       ) : (
         <div className="space-y-6">
           {Object.keys(groupedData).map((monthYear, index) => (
-            <div
-              key={index}
-              className="bg-white py-2 px-3 rounded-lg shadow-md"
-            >
+            <div key={index} className="">
               <h2 className="text-xl font-bold text-gray-700 border-b pb-2 mb-4">
                 <div className="flex items-center gap-2 text-blue">
                   <FaCalendar />
@@ -153,21 +155,19 @@ const DaftarLaporan = () => {
               </h2>
               <ul className="space-y-2">
                 {groupedData[monthYear].map((item, idx) => (
-                  <div className="flex border-b py-2 justify-between" key={idx}>
+                  <Link
+                    to={`/app/laporan/${item.id}`}
+                    className="flex border-b hover:bg-gray-50 transition-all ease-in-out duration-300 py-2 px-3 justify-between"
+                    key={idx}
+                  >
                     <li className="text-blue-600 text-lg font-medium ">
                       <div className="flex items-center gap-2 text-blue">
                         <FaCircle size={10} color="red" />
                         <p className="text-sm">{formatDate(item.tanggal)}</p>
                       </div>
                     </li>
-                    <Link
-                      to={`/app/laporan/${item.id}`}
-                      className="flex hover:opacity-85 transition-all cursor-pointer items-center gap-2 bg-blue px-4 rounded-md text-white text-xs"
-                    >
-                      <FaClipboardList />
-                      <p>Laporan</p>
-                    </Link>
-                  </div>
+                    <FaArrowRight className="text-blue" />
+                  </Link>
                 ))}
               </ul>
             </div>
