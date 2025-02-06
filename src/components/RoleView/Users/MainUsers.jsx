@@ -317,7 +317,7 @@ const MainUsers = () => {
   useEffect(() => {
    
     const handleScroll = () => {
-      if (window.scrollY > 100) {
+      if (window.scrollY > 70) {
         setShowNavbar(true);
       } else {
         setShowNavbar(false);
