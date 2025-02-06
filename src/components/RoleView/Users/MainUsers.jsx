@@ -32,7 +32,7 @@ import UseLogout from "../../../Lib/Hook/UseLogout";
 import ModalAbsens from "./Absensi/ModalAbsens";
 import { FaMapLocation } from "react-icons/fa6";
 import { handlePulangs } from "../../../Api/Services/AbsensiServices";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 const MainUsers = () => {
   const { user } = useAuthStore();
   const mapData = user?.Pkl?.map((item) => item);
@@ -41,6 +41,7 @@ const MainUsers = () => {
   const role = user?.role;
   const [modal, setModal] = useState(false);
   const [modal1, setModal1] = useState(false);
+  const [modalMaps, setModalMaps] = useState(false);
   const [next, setNext] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loading1, setLoading1] = useState(false);
@@ -105,7 +106,6 @@ const MainUsers = () => {
     }
   };
 
-
   useEffect(() => {
     if (user?.email === null || user?.Kelas?.length === 0) {
       setModal(true);
@@ -156,54 +156,51 @@ const MainUsers = () => {
   // const serverDate = toUTC7(new Date(user?.DateIndonesia));
   const serverDate = DateTime.fromISO(user?.DateIndonesia);
 
- 
-  
   const isMasukDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
-  
+
     const jamMasuks = DateTime.fromISO(jamMasuk); // Menggunakan Luxon untuk jamMasuk
     const jamMasukHours = jamMasuks.hour;
     const jamMasukMinutes = jamMasuks.minute;
-  
+
     const jamTutup = jamMasuks.plus({ hours: 2 }); // Jam tutup 2 jam setelah jam masuk
-  
+
     const serverHours = serverDate.hour;
     const serverMinutes = serverDate.minute;
-  
+
     const isWithinMasukTime =
       (serverHours > jamMasukHours ||
         (serverHours === jamMasukHours && serverMinutes >= jamMasukMinutes)) &&
       (serverHours < jamTutup.hour ||
-        (serverHours === jamTutup.hour &&
-          serverMinutes <= jamTutup.minute));
-  
+        (serverHours === jamTutup.hour && serverMinutes <= jamTutup.minute));
+
     return !isWithinMasukTime;
   };
-  
+
   const isPulangDisabled = () => {
     if (!dataShift || !jamKeluar || !jamMasuk) {
       return true; // Nonaktifkan jika data shift tidak tersedia
     }
-  
+
     const serverTimeMillis = serverDate.toMillis(); // Waktu server dalam milidetik
-  
+
     // Pastikan jamKeluars memiliki tanggal yang sama dengan serverDate
     const jamKeluars = serverDate.set({
       hour: new Date(jamKeluar).getHours(),
       minute: new Date(jamKeluar).getMinutes(),
       second: 0,
-      millisecond: 0
+      millisecond: 0,
     });
-  
+
     const jamKeluarsStart = jamKeluars;
     const jamKeluarsEnd = jamKeluars.plus({ hours: 1 }); // Ditambah 1 jam
-  
+
     const isWithinPulangTime =
       serverTimeMillis >= jamKeluarsStart.toMillis() &&
       serverTimeMillis <= jamKeluarsEnd.toMillis();
-  
+
     return !isWithinPulangTime; // Tombol dinonaktifkan jika tidak dalam rentang waktu
   };
 
@@ -246,7 +243,6 @@ const MainUsers = () => {
         console.error("Gagal mendapatkan IP lokal:", error);
       });
   }, []);
-
 
   useEffect(() => {
     const measurePing = async () => {
@@ -315,7 +311,6 @@ const MainUsers = () => {
 
   const [showNavbar, setShowNavbar] = useState(false);
   useEffect(() => {
-   
     const handleScroll = () => {
       if (window.scrollY > 70) {
         setShowNavbar(true);
@@ -329,7 +324,6 @@ const MainUsers = () => {
     };
   }, []);
 
- 
   return (
     <div className="">
       <div className="min-h-screen  bg-gray-100 pb-8">
@@ -520,9 +514,9 @@ const MainUsers = () => {
                                             :
                                             {jamMasukMinutes
                                               .toString()
-                                              .padStart(2, "0")} -
+                                              .padStart(2, "0")}{" "}
+                                            -
                                           </p>
-                                         
                                         </div>
                                         <div className="flex ml-1">
                                           <p>
@@ -573,15 +567,23 @@ const MainUsers = () => {
                                       <div className="flex items-center">
                                         <div className="flex">
                                           <p>
-                                            {new Date(jamKeluar).getHours().toString().padStart(2, "0")}:
+                                            {new Date(jamKeluar)
+                                              .getHours()
+                                              .toString()
+                                              .padStart(2, "0")}
+                                            :
                                           </p>
                                           <p>
-                                            {new Date(jamKeluar).getMinutes().toString().padStart(2, "0")} -{" "}
+                                            {new Date(jamKeluar)
+                                              .getMinutes()
+                                              .toString()
+                                              .padStart(2, "0")}{" "}
+                                            -{" "}
                                           </p>
                                         </div>
                                         <div className="flex ml-1">
                                           <p>
-                                            {new Date(jamKeluar).getHours()+ 1}
+                                            {new Date(jamKeluar).getHours() + 1}
                                             :
                                           </p>
                                           <p>
@@ -672,8 +674,9 @@ const MainUsers = () => {
                                 </div>
                                 <p
                                   onClick={() => {
-                                    const gmapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
-                                    window.open(gmapsUrl, "_blank");
+                                    // const gmapsUrl = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+                                    // window.open(gmapsUrl, "_blank");
+                                    setModalMaps(true);
                                   }}
                                   className="text-xs border-dashed border-t border-gray-400 w-full text-center pt-3 cursor-pointer hover:underline"
                                 >
@@ -706,6 +709,24 @@ const MainUsers = () => {
 
           <ButtonNav />
         </>
+
+        {modalMaps && (
+          <ActModal
+            isModalOpen={modalMaps}
+            title={"Lokasi Saya"}
+            setIsModalOpen={setModalMaps}
+          >
+            <iframe
+              width="100%"
+              height="500"
+              style={{ border: 0 }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps?q=${location.latitude},${location.longitude}&output=embed`}
+            ></iframe>
+          </ActModal>
+        )}
         {modal && (
           <ActModal isModalOpen={modal} title={"Notification"}>
             {next ? (

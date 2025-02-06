@@ -84,12 +84,11 @@ const UseCheckLogin = () => {
       }
     );
   };
+
   const fetchIpAddress = async () => {
     try {
-   
       const responses = await axios.get("https://ipwhois.app/json/");
       setIp(responses.data);
-      
     } catch (error) {
       console.error("Gagal mengambil alamat IP:", error);
     }
@@ -114,8 +113,20 @@ const UseCheckLogin = () => {
   };
 
   useEffect(() => {
-    fetchLocation();
     fetchIpAddress();
+  }, []);
+
+  useEffect(() => {
+    // Panggil pertama kali saat komponen dipasang
+    fetchLocation();
+
+    // Set interval untuk refetch setiap 20 detik
+    const interval = setInterval(() => {
+      fetchLocation();
+    }, 20000);
+
+    // Membersihkan interval saat komponen di-unmount
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
