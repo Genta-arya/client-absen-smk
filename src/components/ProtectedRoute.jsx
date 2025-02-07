@@ -6,7 +6,7 @@ import Loading from "./Loading";
 import { toast } from "sonner";
 
 const ProtectedRoute = ({ redirectPath = "/login" }) => {
-  const { user, loading } = UseCheckLogin();
+  const { user, loading} = UseCheckLogin();
   const isAuthenticated = user?.status_login;
   const location = useLocation().pathname;
   const navigate = useNavigate();
@@ -14,12 +14,8 @@ const ProtectedRoute = ({ redirectPath = "/login" }) => {
     return <Loading />;
   }
 
-  if (!isAuthenticated) {
-    navigate("/");
-  }
-
   if (location.includes("/admin") && user?.role === "user") {
-   navigate("/app");
+    navigate("/app");
     return null;
   }
 

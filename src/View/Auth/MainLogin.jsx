@@ -21,6 +21,7 @@ const MainLogin = () => {
   const navigate = useNavigate();
   const { setUser, user } = useAuthStore();
   const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const [rememberMe, setRememberMe] = useState(false);
   const [capslock, setCapslock] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -35,9 +36,14 @@ const MainLogin = () => {
   };
 
   useEffect(() => {
+    setPassword(localStorage.getItem("savedPassword"));
+    setNim(localStorage.getItem("savedNim"));
+    setRememberMe(localStorage.getItem("rememberMe") === "true");
+  }, []);
+
+  useEffect(() => {
     window.addEventListener("keydown", handleKeyUp);
 
-    
     if (capslock) {
       toast.info("CapsLock aktif");
     }
@@ -46,16 +52,17 @@ const MainLogin = () => {
     };
   }, [capslock]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      if (user?.role === "user") {
-        navigate("/app");
-      } else {
-        navigate("/admin");
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = user?.token;
+
+  //   if (token) {
+  //     if (user?.role === "user") {
+  //       navigate("/app");
+  //     } else {
+  //       navigate("/admin");
+  //     }
+  //   }
+  // }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -69,7 +76,17 @@ const MainLogin = () => {
     try {
       const response = await HandleLogin({ nim, password });
 
-      localStorage.setItem("token", response.data.token);
+      if (rememberMe) {
+     
+        localStorage.setItem("savedNim", nim);
+        localStorage.setItem("rememberMe", rememberMe);
+        localStorage.setItem("savedPassword", password);
+      } else {
+      
+        localStorage.removeItem("savedNim");
+        localStorage.removeItem("rememberMe");
+        localStorage.removeItem("savedPassword");
+      }
 
       setUser(response.data);
       if (response.data.role === "user") {
@@ -183,6 +200,19 @@ const MainLogin = () => {
               onChange={handleRecaptchaChange}
             />
           </div> */}
+
+          <div className="mb-4 flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)}
+              className="mr-2"
+            />
+            <label htmlFor="rememberMe" className="text-gray-700 text-sm">
+              Ingat Saya
+            </label>
+          </div>
 
           {/* Submit Button */}
           <button

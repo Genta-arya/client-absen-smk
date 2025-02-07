@@ -29,16 +29,16 @@ export const HandleRegister = async (data) => {
   }
 };
 
-export const CheckSession = async (token) => {
+export const CheckSession = async () => {
   try {
-    const response = await Axios.post("/auth/session", {
-      token: token,
-    });
+    const response = await Axios.get("/auth/session");
     return response.data;
   } catch (error) {
     handleError(error);
   }
 };
+
+
 
 export const Logout = async (id) => {
   try {

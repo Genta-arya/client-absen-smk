@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import axios from "axios";
 
 const UseCheckLogin = () => {
-  const token = localStorage.getItem("token");
+  
   const { user, setUser } = useAuthStore();
 
   const { setLocation, setLocationError, setIp, setLocationPermission } =
@@ -94,11 +94,13 @@ const UseCheckLogin = () => {
     }
   };
 
+
+
   const fetch = async () => {
     setLoading(true);
 
     try {
-      const response = await CheckSession(token);
+      const response = await CheckSession();
       setUser(response.data);
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
@@ -129,6 +131,7 @@ const UseCheckLogin = () => {
     return () => clearInterval(interval);
   }, []);
 
+ 
   useEffect(() => {
     fetch();
   }, []);
