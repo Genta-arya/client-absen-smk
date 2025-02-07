@@ -30,7 +30,7 @@ const Input = ({
 
       <input
         onChange={onChange}
-        type={type}
+        type={type === "password" ? inputType : type}
         placeholder={placeholder}
         id={id}
         value={value}

@@ -1,4 +1,4 @@
-import { Axios, AxiosFormData } from "../AxiosConfig/Axios";
+import { Axios, Axios2, AxiosFormData } from "../AxiosConfig/Axios";
 import { handleError } from "../../Utils/Error";
 import { UPLOAD_URL } from "../../constants/Constants";
 import axios from "axios";
@@ -38,8 +38,6 @@ export const CheckSession = async () => {
   }
 };
 
-
-
 export const Logout = async (id) => {
   try {
     const response = await Axios.post("/auth/logout/" + id);
@@ -71,7 +69,7 @@ export const getDataUser = async (role) => {
 
 export const updatePassowrd = async (data) => {
   try {
-    const response = await axios.post("/auth/update/user/password/" + data.id, {
+    const response = await Axios.post("/auth/update/user/password/" + data.id, {
       password: data.password,
       new_password: data.new_password,
     });
@@ -211,6 +209,7 @@ export const updateSingleUser = async (data) => {
     });
     return response.data;
   } catch (error) {
+    console.error(error);
     handleError(error);
   }
 };

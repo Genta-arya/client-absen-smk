@@ -11,6 +11,7 @@ import { ResponseHandler } from "../../Utils/ResponseHandler";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
+import { Axios } from "../../Api/AxiosConfig/Axios";
 
 const MainLogin = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -26,7 +27,15 @@ const MainLogin = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+  const fetchCsrfToken = async () => {
+    try {
+      const response = await Axios.get("/csrf-token");
 
+      localStorage.setItem("csrfToken", response.data.csrfToken);
+    } catch (error) {
+      console.error("Gagal mengambil CSRF token:", error);
+    }
+  };
   const handleKeyUp = (event) => {
     if (event.getModifierState("CapsLock")) {
       setCapslock(true);
@@ -51,6 +60,10 @@ const MainLogin = () => {
       window.removeEventListener("keydown", handleKeyUp);
     };
   }, [capslock]);
+
+  useEffect(() => {
+    fetchCsrfToken();
+  }, []);
 
   // useEffect(() => {
   //   const token = user?.token;
@@ -77,12 +90,10 @@ const MainLogin = () => {
       const response = await HandleLogin({ nim, password });
 
       if (rememberMe) {
-     
         localStorage.setItem("savedNim", nim);
         localStorage.setItem("rememberMe", rememberMe);
         localStorage.setItem("savedPassword", password);
       } else {
-      
         localStorage.removeItem("savedNim");
         localStorage.removeItem("rememberMe");
         localStorage.removeItem("savedPassword");

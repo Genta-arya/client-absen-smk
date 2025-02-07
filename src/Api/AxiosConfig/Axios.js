@@ -6,29 +6,30 @@ export const Axios = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+
   withCredentials: true,
 });
 
+export const Axios2 = axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
+
+Axios.interceptors.request.use((config) => {
+  const csrfToken = localStorage.getItem("csrfToken");
+  if (csrfToken) {
+    config.headers["X-CSRF-Token"] = csrfToken;
+  }
+  return config;
+});
 
 export const AxiosFormData = axios.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "multipart/form-data",
   },
-  
+  withCredentials: true,
 });
-
-
-// const addAuthToken = (config) => {
-//   const token = localStorage.getItem("token"); 
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// };
-
-
-// Axios.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
-// AxiosFormData.interceptors.request.use(addAuthToken, (error) =>
-//   Promise.reject(error)
-// );

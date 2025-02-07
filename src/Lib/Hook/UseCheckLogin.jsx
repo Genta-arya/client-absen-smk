@@ -4,10 +4,10 @@ import { CheckSession } from "../../Api/Services/LoginServices";
 import useAuthStore from "../Zustand/AuthStore";
 import useLocationStore from "../Zustand/useLocationStore";
 import { toast } from "sonner";
+import { Axios } from "../../Api/AxiosConfig/Axios";
 import axios from "axios";
 
 const UseCheckLogin = () => {
-  
   const { user, setUser } = useAuthStore();
 
   const { setLocation, setLocationError, setIp, setLocationPermission } =
@@ -94,8 +94,6 @@ const UseCheckLogin = () => {
     }
   };
 
-
-
   const fetch = async () => {
     setLoading(true);
 
@@ -111,6 +109,16 @@ const UseCheckLogin = () => {
       localStorage.removeItem("token");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCsrfToken = async () => {
+    try {
+      const response = await Axios.get("/csrf-token");
+
+      localStorage.setItem("csrfToken", response.data.csrfToken);
+    } catch (error) {
+      console.error("Gagal mengambil CSRF token:", error);
     }
   };
 
@@ -131,8 +139,8 @@ const UseCheckLogin = () => {
     return () => clearInterval(interval);
   }, []);
 
- 
   useEffect(() => {
+    fetchCsrfToken();
     fetch();
   }, []);
 
