@@ -44,8 +44,8 @@ const ModalAddsiswa = ({
         shift_data: shiftData, // Mengirimkan data shift yang lebih dinamis
       });
 
-      fetchData();
       setModalSiswa(false);
+      window.location.reload();
       toast.success("Siswa berhasil ditambahkan", {});
     } catch (error) {
       if (error.code === "ERR_NETWORK") {

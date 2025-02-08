@@ -23,7 +23,7 @@ import ModalAddsiswa from "./ModalAddsiswa";
 const DetailPkl = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
-  
+
   const [data, setData] = useState(null);
   const [modal1, setModal1] = useState(false);
   const [modal, setModal] = useState(false);
@@ -32,7 +32,6 @@ const DetailPkl = () => {
   const [deleteId, setDeleteId] = useState(null);
   const { loading: loadingUser, userOptions, getDataUsers } = useUser();
   const [status, setStatus] = useState(null);
-
 
   const toggleStatus = async () => {
     setLoading(true);
@@ -71,7 +70,7 @@ const DetailPkl = () => {
     try {
       await DeletePkl(id);
       setModal(false);
-    
+
       toast.success("Data PKL Berhasil dihapus");
       navigate("/admin/management/pkl");
     } catch (error) {
@@ -80,7 +79,6 @@ const DetailPkl = () => {
       setLoading(false);
     }
   };
-
 
   const RemoveSiswa = async () => {
     setLoading(true);
@@ -91,12 +89,13 @@ const DetailPkl = () => {
         isDelete: data?.users?.length === 1 ? true : false,
         siswaId: deleteId,
       });
-      fetchData();
+
       setDeleteId(null);
       setModal1(false);
       toast.success("Siswa Berhasil dihapus", {
         duration: 2000,
       });
+      window.location.reload();
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
@@ -127,7 +126,9 @@ const DetailPkl = () => {
 
   const FormatJam = ({ item }) => {
     const formatTime = (time) => {
-      const date = new Date(time);
+      const date = new Date(time) ;
+
+      console.log(date);
       return (
         date.getHours().toString().padStart(2, "0") +
         ":" +
