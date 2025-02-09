@@ -10,7 +10,7 @@ export const getLaporanUser = async (id) => {
   }
 };
 
-export const getSingleLaporan= async (id) => {
+export const getSingleLaporan = async (id) => {
   try {
     const response = await Axios.get("/report/data/laporan/" + id);
     return response.data;
@@ -18,8 +18,6 @@ export const getSingleLaporan= async (id) => {
     handleError(error);
   }
 };
-
-
 
 export const getLaporanUserMingguan = async (id) => {
   try {
@@ -30,9 +28,30 @@ export const getLaporanUserMingguan = async (id) => {
   }
 };
 
-export const getSingleLaporanMingguan= async (id) => {
+export const getSingleLaporanMingguan = async (id) => {
   try {
     const response = await Axios.get("/report/data/laporan/mingguan/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const uploadLaporanHarina = async (data) => {
+  try {
+    const response = await Axios.post("/report/laporan/harian/" + data.id, {
+      data,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+
+export const deleteFotoById = async (id) => {
+  try {
+    const response = await Axios.delete("/report/delete/image/" + id);
     return response.data;
   } catch (error) {
     handleError(error);

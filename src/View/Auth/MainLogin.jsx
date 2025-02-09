@@ -65,17 +65,17 @@ const MainLogin = () => {
     fetchCsrfToken();
   }, []);
 
-  // useEffect(() => {
-  //   const token = user?.token;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  //   if (token) {
-  //     if (user?.role === "user") {
-  //       navigate("/app");
-  //     } else {
-  //       navigate("/admin");
-  //     }
-  //   }
-  // }, []);
+    if (token) {
+      if (user?.role === "user") {
+        navigate("/app");
+      } else {
+        navigate("/admin");
+      }
+    }
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -88,6 +88,7 @@ const MainLogin = () => {
     setLoading(true);
     try {
       const response = await HandleLogin({ nim, password });
+      localStorage.setItem("token", response.data.token);
 
       if (rememberMe) {
         localStorage.setItem("savedNim", nim);

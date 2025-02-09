@@ -8,6 +8,7 @@ import {
 import { uploadProfile } from "../../../../Api/Services/LoginServices";
 import Loading from "../../../Loading";
 import NotfoundData from "../../../NotfoundData";
+import { FaTag } from "react-icons/fa";
 
 const MainFormLaporanMingguan = () => {
   const { id } = useParams();
@@ -112,7 +113,10 @@ const MainFormLaporanMingguan = () => {
   return (
     <ContainerGlobal>
       <div className="">
-        <h1 className="text-2xl font-bold mb-12">Laporan Mingguan</h1>
+        <div className="flex items-center gap-2 mb-12">
+          <FaTag className="text-blue text-xl" />
+          <h1 className="text-2xl font-bold text-blue ">Laporan Mingguan</h1>
+        </div>
         {!laporan.pembimbingId ? (
           <NotfoundData />
         ) : (
@@ -144,9 +148,9 @@ const MainFormLaporanMingguan = () => {
             </div>
 
             {/* Nama Pekerjaan & Tanggal */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium w-full">
                   Nama Pekerjaan
                 </label>
                 <input

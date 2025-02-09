@@ -105,7 +105,7 @@ const DaftarLaporanMingguan = () => {
         </>
       )}
 
-      {filteredData.length === 0 ? (
+      {filteredData.length === 0 && loading ? (
         <NotfoundData />
       ) : (
         <div className="space-y-6">

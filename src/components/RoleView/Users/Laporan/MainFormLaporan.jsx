@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ContainerGlobal from "../../../ContainerGlobal";
-import { getSingleLaporan } from "../../../../Api/Services/LaporanServices";
+import {
+  deleteFotoById,
+  getSingleLaporan,
+  uploadLaporanHarina,
+} from "../../../../Api/Services/LaporanServices";
 import { uploadProfile } from "../../../../Api/Services/LoginServices";
 import Loading from "../../../Loading";
 import NotfoundData from "../../../NotfoundData";
+import { toast } from "sonner";
+import { ScaleLoader } from "react-spinners";
+import { FaTag } from "react-icons/fa";
 
 const MainFormLaporan = () => {
   const { id } = useParams();
@@ -24,27 +31,28 @@ const MainFormLaporan = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]); // Untuk menyimpan file yang dipilih sebelum diupload
 
+  const fetchLaporan = async () => {
+    try {
+      const response = await getSingleLaporan(id);
+      setLaporan(response.data);
+    } catch (error) {
+      console.error("Error fetching laporan:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchLaporan = async () => {
-      try {
-        const response = await getSingleLaporan(id);
-        setLaporan(response.data);
-      } catch (error) {
-        console.error("Error fetching laporan:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLaporan();
   }, [id]);
+
+  console.log("Data laporan:", laporan);
 
   // Menyimpan file yang dipilih
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
     if (laporan.fotos.length + files.length + selectedFiles.length > 3) {
       event.preventDefault(); // Mencegah event jika jumlah file melebihi 3
-      alert("Maksimal 3 foto yang dapat diunggah.");
+      toast.info("Maksimal 3 foto yang dapat diunggah.");
       //   saya mau kembalikan tulisan  no file choose
       event.target.value = null;
 
@@ -54,7 +62,7 @@ const MainFormLaporan = () => {
     if (files.some((file) => file.size > 2 * 1024 * 1024)) {
       event.preventDefault(); // Mencegah event jika ukuran file terlalu besar
       event.target.value = null;
-      alert("Ukuran gambar terlalu besar, maksimal 2MB.");
+      toast.info("Ukuran gambar terlalu besar, maksimal 2MB.");
       setSelectedFiles([]);
       return;
     }
@@ -70,36 +78,73 @@ const MainFormLaporan = () => {
     event.preventDefault();
     setUploading(true);
 
-    // Membuat FormData untuk semua file
-    const formData = new FormData();
+    let uploadedFotos = []; // Default kosong jika tidak ada foto
 
-    // Menambahkan semua file ke dalam FormData
-    selectedFiles.forEach((file) => {
-      formData.append("file[]", file); // Menambahkan file dalam array "file[]"
-    });
+    // Jika ada foto yang dipilih, lakukan upload
+    if (selectedFiles.length > 0) {
+      const formData = new FormData();
+      selectedFiles.forEach((file) => {
+        formData.append("file[]", file);
+      });
 
-    try {
-      // Mengirim FormData ke endpoint upload
-      const response = await uploadProfile(formData);
+      try {
+        const response = await uploadProfile(formData);
+        console.log("Response dari server:", response);
 
-      // Jika berhasil, ambil URL foto yang diupload
-      if (response?.data?.foto_url) {
-        const uploadedFotos = response.data.foto_url.map((fotoUrl) => ({
-          id: Date.now(), // Anda bisa menggunakan ID unik jika ingin
-          foto_url: fotoUrl,
-        }));
-
-        // Gabungkan dengan foto yang sudah ada
-        setLaporan((prev) => ({
-          ...prev,
-          fotos: [...prev.fotos, ...uploadedFotos],
-        }));
+        if (response?.data?.files) {
+          uploadedFotos = response.data.files.map((file) => ({
+            id: Date.now(), // ID unik sementara
+            foto_url: file.file_url,
+          }));
+        }
+      } catch (error) {
+        console.error("Gagal mengunggah gambar:", error);
+        setUploading(false);
+        return; // Jika upload foto gagal, hentikan proses
       }
-    } catch (error) {
-      console.error("Gagal mengunggah gambar:", error);
     }
 
-    setUploading(false);
+    try {
+      setLoading(true);
+
+      await uploadLaporanHarina({
+        ...laporan,
+        fotos: [...(laporan.fotos || []), ...uploadedFotos],
+      });
+
+      fetchLaporan();
+      setSelectedFiles([]);
+    } catch (error) {
+      console.error("Gagal mengunggah laporan:", error);
+    } finally {
+      setLoading(false);
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteFoto = async (fotoId) => {
+    if (laporan.fotos.length === 1) {
+      toast.info("Tidak dapat menghapus foto. Minimal tersisa 1  foto.");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      await deleteFotoById(fotoId);
+
+      setLaporan((prevLaporan) => ({
+        ...prevLaporan,
+        fotos: prevLaporan.fotos.filter((foto) => foto.id !== fotoId),
+      }));
+
+      toast.success("Foto berhasil dihapus!");
+      fetchLaporan();
+    } catch (error) {
+      console.error("Gagal menghapus foto:", error);
+      toast.error("Gagal menghapus foto.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -109,7 +154,10 @@ const MainFormLaporan = () => {
   return (
     <ContainerGlobal>
       <div className="">
-        <h1 className="text-2xl font-bold mb-12">Laporan Harian</h1>
+        <div className="flex items-center gap-2 mb-12">
+          <FaTag className="text-blue text-xl" />
+          <h1 className="text-2xl font-bold text-blue ">Laporan Harian</h1>
+        </div>
         {!laporan.pembimbingId ? (
           <NotfoundData />
         ) : (
@@ -124,6 +172,9 @@ const MainFormLaporan = () => {
                   type="text"
                   className="w-full border rounded p-2"
                   value={laporan.nama_instruktur}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, nama_instruktur: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -135,6 +186,10 @@ const MainFormLaporan = () => {
                   type="text"
                   className="w-full border rounded p-2"
                   value={laporan.nama_pembimbing}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, nama_pembimbing: e.target.value })
+                  }
+                  disabled
                   required
                 />
               </div>
@@ -150,6 +205,9 @@ const MainFormLaporan = () => {
                   type="text"
                   className="w-full border rounded p-2"
                   value={laporan.nama_pekerjaan}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, nama_pekerjaan: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -172,6 +230,12 @@ const MainFormLaporan = () => {
               <textarea
                 className="w-full border rounded p-2"
                 value={laporan.perencanaan_kegiatan}
+                onChange={(e) =>
+                  setLaporan({
+                    ...laporan,
+                    perencanaan_kegiatan: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -184,6 +248,12 @@ const MainFormLaporan = () => {
               <textarea
                 className="w-full border rounded p-2"
                 value={laporan.pelaksanaan_kegiatan}
+                onChange={(e) =>
+                  setLaporan({
+                    ...laporan,
+                    pelaksanaan_kegiatan: e.target.value,
+                  })
+                }
                 required
               />
             </div>
@@ -196,11 +266,13 @@ const MainFormLaporan = () => {
               <textarea
                 className="w-full border rounded p-2"
                 value={laporan.catatan_instruktur}
+                onChange={(e) =>
+                  setLaporan({ ...laporan, catatan_instruktur: e.target.value })
+                }
                 required
               />
             </div>
 
-            {/* Upload & Preview Gambar (3 Kolom) */}
             <div>
               <label className="block text-sm font-medium">
                 Upload Foto (Maksimal 3 & 2MB){" "}
@@ -209,23 +281,42 @@ const MainFormLaporan = () => {
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
+                required={laporan.fotos.length === 0}
                 className="w-full border p-2 rounded"
                 multiple
               />
 
-              {uploading && (
-                <p className="text-sm text-gray-500">Mengunggah gambar...</p>
-              )}
+              {uploading ? (
+                <div className="flex justify-center items-center mt-4">
+                  <ScaleLoader className="text-blue text-2xl" />
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  {laporan.fotos.map((foto, index) => (
+                    <div key={`uploaded-${index}`} className="relative">
+                      <img
+                        src={foto.foto_url}
+                        alt="Uploaded"
+                        loading="lazy"
+                        className="w-full h-52 object-cover rounded border"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                        onClick={() => handleDeleteFoto(foto.id)}
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  ))}
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                {/* Preview Gambar yang dipilih */}
-                {selectedFiles.length > 0 ? (
-                  selectedFiles.map((file, index) => (
-                    <div key={index} className="relative">
+                  {selectedFiles.map((file, index) => (
+                    <div key={`selected-${index}`} className="relative">
                       <img
                         src={URL.createObjectURL(file)}
                         alt="Preview"
-                        className="w-full h-32 md:h-32 lg:h-96 object-cover rounded border"
+                        loading="lazy"
+                        className="w-full h-52 object-cover rounded border"
                       />
                       <button
                         type="button"
@@ -235,21 +326,25 @@ const MainFormLaporan = () => {
                         Hapus
                       </button>
                     </div>
-                  ))
-                ) : (
-                  <p className="col-span-3 text-center text-gray-500">
-                    Belum ada foto
-                  </p>
-                )}
-              </div>
+                  ))}
+
+                  {/* Jika tidak ada foto sama sekali */}
+                  {laporan.fotos.length === 0 && selectedFiles.length === 0 && (
+                    <p className="col-span-3 text-center text-gray-500">
+                      Belum ada foto Laporan
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Tombol Submit */}
             <button
+              disabled={loading || uploading}
               type="submit"
-              className="bg-blue w-full text-white px-4 py-2 rounded-md hover:opacity-85"
+              className="bg-blue w-full text-white px-4 py-2 text-sm rounded-md hover:opacity-85"
             >
-              Simpan Laporan
+              {loading || uploading ? "Menyimpan..." : "Simpan"}
             </button>
           </form>
         )}

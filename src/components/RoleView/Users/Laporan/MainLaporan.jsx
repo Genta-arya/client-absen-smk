@@ -5,7 +5,7 @@ import Tabs from "./componets/Tabs";
 import DaftarLaporanMingguan from "./componets/DaftarLaporanMingguan";
 
 const MainLaporan = () => {
-  const tabList = ["harian", "mingguan"]; 
+  const tabList = ["harian", "mingguan"];
   const [tabsState, setTabsState] = useState(tabList[0]);
 
   return (
@@ -16,11 +16,7 @@ const MainLaporan = () => {
           setTabsState={setTabsState}
           tabs={tabList}
         />
-        {tabsState === "harian" ? (
-          <DaftarLaporan />
-        ) : (
-          <DaftarLaporanMingguan />
-        )}
+        {tabsState === "harian" ? <DaftarLaporan /> : <DaftarLaporanMingguan />}
       </div>
     </ContainerGlobal>
   );

@@ -140,8 +140,7 @@ const DaftarLaporan = () => {
           </div>
         </>
       )}
-
-      {filteredData.length === 0 ? (
+      {filteredData.length === 0 && loading ? (
         <NotfoundData />
       ) : (
         <div className="space-y-6">
@@ -162,7 +161,12 @@ const DaftarLaporan = () => {
                   >
                     <li className="text-blue-600 text-lg font-medium ">
                       <div className="flex items-center gap-2 text-blue">
-                        <FaCircle size={10} color="red" />
+                        <FaCircle
+                          size={10}
+                          color={
+                            item.status_selesai === "Selesai" ? "green" : "red"
+                          }
+                        />
                         <p className="text-sm">{formatDate(item.tanggal)}</p>
                       </div>
                     </li>
