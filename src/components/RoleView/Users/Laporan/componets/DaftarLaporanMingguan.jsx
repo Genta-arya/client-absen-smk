@@ -10,21 +10,27 @@ import {
   FaCircle,
   FaClipboardList,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const DaftarLaporanMingguan = () => {
   const { user } = useAuthStore();
-  const id = user?.id;
+
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [dataProgress, setDataProgress] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
-
+  const { id } = useParams();
   const fetchDataLaporan = async () => {
     setLoading(true);
+    let response;
     try {
-      const response = await getLaporanUserMingguan(id);
+      if (user?.id && user?.role === "user") {
+        const id = user?.id;
+        response = await getLaporanUserMingguan(id);
+      } else {
+        response = await getLaporanUserMingguan(id);
+      }
 
       const sortedData = response.data.sort(
         (a, b) => new Date(a.tanggal) - new Date(b.tanggal)
@@ -105,13 +111,17 @@ const DaftarLaporanMingguan = () => {
         </>
       )}
 
-      {filteredData.length === 0 && loading ? (
+{filteredData.length === 0 || loading ? (
         <NotfoundData />
       ) : (
         <div className="space-y-6">
           {filteredData.map((item, idx) => (
             <Link
-              to={`/app/laporan/mingguan/${item.id}`}
+              to={
+                user?.role !== "user"
+                  ? `/admin/laporan/mingguan/${item.id}`
+                  : `/app/laporan/mingguan/${item.id}`
+              }
               key={idx}
               className=" flex border-b hover:bg-gray-50 transition-all ease-in-out duration-300 py-2 px-3 justify-between"
             >
@@ -119,7 +129,12 @@ const DaftarLaporanMingguan = () => {
                 <div className="flex py-1 justify-between">
                   <li className="text-blue-600 text-lg font-medium ">
                     <div className="flex items-center gap-2 text-blue">
-                      <FaCircle size={10} color="red" />
+                      <FaCircle
+                        size={10}
+                        color={
+                          item.status_selesai === "Selesai" ? "green" : "red"
+                        }
+                      />
                       <div>
                         <p className="text-sm font-bold">
                           Minggu ke - {idx + 1}

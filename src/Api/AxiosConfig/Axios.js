@@ -18,13 +18,7 @@ export const Axios2 = axios.create({
   withCredentials: true,
 });
 
-Axios.interceptors.request.use((config) => {
-  const csrfToken = localStorage.getItem("csrfToken");
-  if (csrfToken) {
-    config.headers["X-CSRF-Token"] = csrfToken;
-  }
-  return config;
-});
+
 
 export const AxiosFormData = axios.create({
   baseURL: API_URL,

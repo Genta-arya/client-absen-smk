@@ -48,6 +48,18 @@ export const uploadLaporanHarina = async (data) => {
   }
 };
 
+export const uploadLaporanMingguan = async (data) => {
+  try {
+    const response = await Axios.post("/report/laporan/mingguan/" + data.id, {
+      data,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+
 
 export const deleteFotoById = async (id) => {
   try {

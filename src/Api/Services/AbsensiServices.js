@@ -34,3 +34,13 @@ export const getSingleAbsen = async (id) => {
     handleError(error);
   }
 };
+
+
+export const rekababsensi = async (id) => {
+  try {
+    const response = await Axios.get("/absensi/rekap/absen/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

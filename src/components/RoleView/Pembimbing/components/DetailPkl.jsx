@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   DeletePkl,
   getSinglePkl,
@@ -8,7 +8,7 @@ import {
 } from "../../../../Api/Services/PKLServices";
 import Loading from "../../../Loading";
 import ContainerGlobal from "../../../ContainerGlobal";
-import { FaClock, FaPlus, FaTag, FaTrash } from "react-icons/fa";
+import { FaClock, FaPlus, FaPrint, FaTag, FaTrash } from "react-icons/fa";
 import Input from "../../../Input";
 import { useNavigate } from "react-router-dom";
 import EditPkl from "./EditPkl";
@@ -126,7 +126,7 @@ const DetailPkl = () => {
 
   const FormatJam = ({ item }) => {
     const formatTime = (time) => {
-      const date = new Date(time) ;
+      const date = new Date(time);
 
       console.log(date);
       return (
@@ -157,14 +157,20 @@ const DetailPkl = () => {
           <div className="pb-8">
             <div className="mb-8">
               <div className="space-y-4">
-                <p className="text-gray-700">
-                  <div className="flex items-center gap-2">
-                    <FaTag />
-                    <p className="font-bold text-base md:text-lg">
-                      {data?.name}
-                    </p>
-                  </div>
-                </p>
+                <div className="flex flex-row-reverse items-center gap-2 justify-between">
+                  <Link to={`/admin/management/pkl/rekap/absensi/${data?.id}`} className="flex text-sm  hover:underline cursor-pointer hover:font-extrabold items-center gap-2">
+                    <FaPrint />
+                    <h1 className="text-center  font-bold">Rekap Absensi</h1>
+                  </Link>
+                  <p className="text-gray-700">
+                    <div className="flex items-center gap-2">
+                      <FaTag />
+                      <p className="font-bold text-base md:text-lg">
+                        {data?.name}
+                      </p>
+                    </div>
+                  </p>
+                </div>
                 <Input disabled={true} value={data?.alamat} label={"Alamat"} />
 
                 <>

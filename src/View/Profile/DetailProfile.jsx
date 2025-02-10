@@ -9,6 +9,9 @@ import Calendar from "../../components/Table/Calendar";
 import { FaFolderOpen, FaTag } from "react-icons/fa";
 import { toast } from "sonner";
 import NotfoundData from "../../components/NotfoundData";
+import DaftarLaporanMingguan from "../../components/RoleView/Users/Laporan/componets/DaftarLaporanMingguan";
+import DaftarLaporan from "../../components/RoleView/Users/Laporan/componets/DaftarLaporan";
+import MainLaporan from "../../components/RoleView/Users/Laporan/MainLaporan";
 
 const DetailProfile = () => {
   const { id } = useParams();
@@ -125,6 +128,7 @@ const DetailProfile = () => {
               <p>Laporan Kegiatan</p>
             </div>
           </h2>
+          <MainLaporan />
         </div>
       )}
     </ContainerGlobal>

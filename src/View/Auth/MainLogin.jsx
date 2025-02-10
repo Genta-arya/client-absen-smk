@@ -27,15 +27,7 @@ const MainLogin = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-  const fetchCsrfToken = async () => {
-    try {
-      const response = await Axios.get("/csrf-token");
-
-      localStorage.setItem("csrfToken", response.data.csrfToken);
-    } catch (error) {
-      console.error("Gagal mengambil CSRF token:", error);
-    }
-  };
+ 
   const handleKeyUp = (event) => {
     if (event.getModifierState("CapsLock")) {
       setCapslock(true);
@@ -61,10 +53,7 @@ const MainLogin = () => {
     };
   }, [capslock]);
 
-  useEffect(() => {
-    fetchCsrfToken();
-  }, []);
-
+ 
   useEffect(() => {
     const token = localStorage.getItem("token");
 

@@ -22,6 +22,8 @@
     "firebase": "^11.2.0",
     "framer-motion": "^11.15.0",
     "i": "^0.3.7",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "luxon": "^3.5.0",
     "moment-timezone": "^0.5.47",
     "npm": "^10.9.2",
@@ -41,6 +43,7 @@
     "react-spinners": "^0.15.0",
     "socket.io-client": "^4.8.1",
     "sonner": "^1.7.1",
+    "xlsx": "^0.18.5",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

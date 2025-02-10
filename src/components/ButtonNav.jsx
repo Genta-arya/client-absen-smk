@@ -10,8 +10,8 @@ const ButtonNav = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0  bg-white shadow-lg ">
-      <ul className="flex justify-around items-center py-4">
+    <div className="fixed bottom-0 left-0 right-0  bg-white shadow-lg text-xs ">
+      <ul className="flex justify-around items-center py-1 pt-2.5">
         {navItems.map((item) => (
           <li key={item.path} className="flex-1 text-center">
             <NavLink

@@ -112,15 +112,6 @@ const UseCheckLogin = () => {
     }
   };
 
-  const fetchCsrfToken = async () => {
-    try {
-      const response = await Axios.get("/csrf-token");
-
-      localStorage.setItem("csrfToken", response.data.csrfToken);
-    } catch (error) {
-      console.error("Gagal mengambil CSRF token:", error);
-    }
-  };
 
   useEffect(() => {
     fetchIpAddress();
@@ -140,7 +131,7 @@ const UseCheckLogin = () => {
   }, []);
 
   useEffect(() => {
-    fetchCsrfToken();
+  
     fetch();
   }, []);
 

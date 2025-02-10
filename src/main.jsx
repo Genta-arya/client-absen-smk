@@ -27,6 +27,7 @@ import MainFormLaporan from "./components/RoleView/Users/Laporan/MainFormLaporan
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
 import MainFormLaporanMingguan from "./components/RoleView/Users/Laporan/MainFormLaporanMingguan.jsx";
+import MainRekababsensi from "./components/RoleView/Pembimbing/RekapAbsensi/MainRekababsensi.jsx";
 const route = createBrowserRouter([
   {
     path: "/admin",
@@ -76,6 +77,18 @@ const route = createBrowserRouter([
         path: "/admin/management/pkl/detail/:id",
         element: <DetailPkl />,
       },
+      {
+        path: "/admin/laporan/:id",
+        element: <MainFormLaporan />,
+      },
+      {
+        path: "/admin/laporan/mingguan/:id",
+        element: <MainFormLaporanMingguan />,
+      },
+      {
+        path: "/admin/management/pkl/rekap/absensi/:id",
+        element: <MainRekababsensi />,
+      }
     ],
   },
 

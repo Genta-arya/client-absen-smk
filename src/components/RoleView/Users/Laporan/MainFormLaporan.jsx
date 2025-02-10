@@ -11,10 +11,12 @@ import Loading from "../../../Loading";
 import NotfoundData from "../../../NotfoundData";
 import { toast } from "sonner";
 import { ScaleLoader } from "react-spinners";
-import { FaTag } from "react-icons/fa";
+import { FaSave, FaTag } from "react-icons/fa";
+import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 
 const MainFormLaporan = () => {
   const { id } = useParams();
+  const { user } = useAuthStore();
   const [laporan, setLaporan] = useState({
     pembimbingId: "",
     nama_instruktur: "",
@@ -114,6 +116,7 @@ const MainFormLaporan = () => {
 
       fetchLaporan();
       setSelectedFiles([]);
+      toast.success("Laporan berhasil diunggah!");
     } catch (error) {
       console.error("Gagal mengunggah laporan:", error);
     } finally {
@@ -154,7 +157,7 @@ const MainFormLaporan = () => {
   return (
     <ContainerGlobal>
       <div className="">
-        <div className="flex items-center gap-2 mb-12">
+        <div className="flex items-center gap-2 mb-8">
           <FaTag className="text-blue text-xl" />
           <h1 className="text-2xl font-bold text-blue ">Laporan Harian</h1>
         </div>
@@ -163,7 +166,7 @@ const MainFormLaporan = () => {
         ) : (
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Nama Instruktur & Pembimbing */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium">
                   Nama Instruktur
@@ -176,6 +179,7 @@ const MainFormLaporan = () => {
                     setLaporan({ ...laporan, nama_instruktur: e.target.value })
                   }
                   required
+                  disabled={user?.role !== "user"}
                 />
               </div>
               <div>
@@ -196,7 +200,7 @@ const MainFormLaporan = () => {
             </div>
 
             {/* Nama Pekerjaan & Tanggal */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium">
                   Nama Pekerjaan
@@ -209,6 +213,7 @@ const MainFormLaporan = () => {
                     setLaporan({ ...laporan, nama_pekerjaan: e.target.value })
                   }
                   required
+                  disabled={user?.role !== "user"}
                 />
               </div>
               <div>
@@ -237,6 +242,7 @@ const MainFormLaporan = () => {
                   })
                 }
                 required
+                disabled={user?.role !== "user"}
               />
             </div>
 
@@ -255,6 +261,7 @@ const MainFormLaporan = () => {
                   })
                 }
                 required
+                disabled={user?.role !== "user"}
               />
             </div>
 
@@ -270,43 +277,51 @@ const MainFormLaporan = () => {
                   setLaporan({ ...laporan, catatan_instruktur: e.target.value })
                 }
                 required
+                disabled={user?.role !== "user"}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium">
-                Upload Foto (Maksimal 3 & 2MB){" "}
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                required={laporan.fotos.length === 0}
-                className="w-full border p-2 rounded"
-                multiple
-              />
+              {user?.role === "user" && (
+                <>
+                  <label className="block text-sm font-medium">
+                    Upload Foto (Maksimal 3 & 2MB){" "}
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    required={laporan.fotos.length === 0}
+                    className="w-full border p-2 rounded"
+                    multiple
+                  />
+                </>
+              )}
 
               {uploading ? (
                 <div className="flex justify-center items-center mt-4">
                   <ScaleLoader className="text-blue text-2xl" />
                 </div>
               ) : (
-                <div className="grid grid-cols-3 gap-4 mt-4">
+                <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2  gap-4 mt-4">
                   {laporan.fotos.map((foto, index) => (
                     <div key={`uploaded-${index}`} className="relative">
                       <img
                         src={foto.foto_url}
                         alt="Uploaded"
                         loading="lazy"
-                        className="w-full h-52 object-cover rounded border"
+                        onClick={() => window.open(foto.foto_url, "_blank")}
+                        className="w-full cursor-pointer h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
                       />
-                      <button
-                        type="button"
-                        className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                        onClick={() => handleDeleteFoto(foto.id)}
-                      >
-                        Hapus
-                      </button>
+                      {user?.role === "user" && (
+                        <button
+                          type="button"
+                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                          onClick={() => handleDeleteFoto(foto.id)}
+                        >
+                          Hapus
+                        </button>
+                      )}
                     </div>
                   ))}
 
@@ -316,15 +331,17 @@ const MainFormLaporan = () => {
                         src={URL.createObjectURL(file)}
                         alt="Preview"
                         loading="lazy"
-                        className="w-full h-52 object-cover rounded border"
+                        className="w-full h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
                       />
-                      <button
-                        type="button"
-                        className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                        onClick={() => handleRemovePreviewImage(index)}
-                      >
-                        Hapus
-                      </button>
+                      {user?.role === "user" && (
+                        <button
+                          type="button"
+                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                          onClick={() => handleRemovePreviewImage(index)}
+                        >
+                          Hapus
+                        </button>
+                      )}
                     </div>
                   ))}
 
@@ -339,13 +356,18 @@ const MainFormLaporan = () => {
             </div>
 
             {/* Tombol Submit */}
-            <button
-              disabled={loading || uploading}
-              type="submit"
-              className="bg-blue w-full text-white px-4 py-2 text-sm rounded-md hover:opacity-85"
-            >
-              {loading || uploading ? "Menyimpan..." : "Simpan"}
-            </button>
+            {user?.role === "user" && (
+              <button
+                disabled={loading || uploading}
+                type="submit"
+                className="bg-blue w-full text-white px-4 py-2 text-sm rounded-md hover:opacity-85"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <FaSave />
+                  <p>{loading ? "Menyimpan..." : "Simpan Laporan"}</p>
+                </div>
+              </button>
+            )}
           </form>
         )}
       </div>

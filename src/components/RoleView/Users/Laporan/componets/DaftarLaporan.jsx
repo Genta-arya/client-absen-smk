@@ -10,10 +10,11 @@ import {
   FaCircle,
   FaClipboardList,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 const DaftarLaporan = () => {
   const { user } = useAuthStore();
-  const id = user?.id;
+  const { id } = useParams();
+
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [dataProgress, setDataProgress] = useState([]);
@@ -22,7 +23,13 @@ const DaftarLaporan = () => {
   const fetchDataLaporan = async () => {
     setLoading(true);
     try {
-      const response = await getLaporanUser(id);
+      let response;
+      if (user?.id && user?.role === "user") {
+        const id = user?.id;
+        response = await getLaporanUser(id);
+      } else {
+        response = await getLaporanUser(id);
+      }
 
       const sortedData = response.data.sort(
         (a, b) => new Date(a.tanggal) - new Date(b.tanggal)
@@ -98,7 +105,7 @@ const DaftarLaporan = () => {
     <div className="">
       {totalLaporan > 0 && (
         <>
-          <div className="flex justify-between items-center gap-2 mb-6">
+          <div className="flex  items-center gap-2 mb-6 ">
             <div className=" text-xs md:w-full lg:w-full w-36">
               <label className="block mb-2">Tanggal:</label>
               <input
@@ -140,7 +147,7 @@ const DaftarLaporan = () => {
           </div>
         </>
       )}
-      {filteredData.length === 0 && loading ? (
+      {filteredData.length === 0 || loading ? (
         <NotfoundData />
       ) : (
         <div className="space-y-6">
@@ -155,7 +162,11 @@ const DaftarLaporan = () => {
               <ul className="space-y-2">
                 {groupedData[monthYear].map((item, idx) => (
                   <Link
-                    to={`/app/laporan/${item.id}`}
+                    to={
+                      user?.role !== "user"
+                        ? `/admin/laporan/${item.id}`
+                        : `/app/laporan/${item.id}`
+                    }
                     className="flex border-b hover:bg-gray-50 transition-all ease-in-out duration-300 py-2 px-3 justify-between"
                     key={idx}
                   >

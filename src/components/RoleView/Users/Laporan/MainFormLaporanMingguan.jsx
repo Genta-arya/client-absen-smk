@@ -2,44 +2,47 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ContainerGlobal from "../../../ContainerGlobal";
 import {
+  deleteFotoById,
   getSingleLaporan,
   getSingleLaporanMingguan,
+  uploadLaporanMingguan,
 } from "../../../../Api/Services/LaporanServices";
 import { uploadProfile } from "../../../../Api/Services/LoginServices";
 import Loading from "../../../Loading";
 import NotfoundData from "../../../NotfoundData";
-import { FaTag } from "react-icons/fa";
+import { FaSave, FaTag } from "react-icons/fa";
+import { ScaleLoader } from "react-spinners";
+import { toast } from "sonner";
+import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 
 const MainFormLaporanMingguan = () => {
   const { id } = useParams();
   const [laporan, setLaporan] = useState({
     pembimbingId: "",
     nama_instruktur: "",
-    pelaksanaan_kegiatan: "",
-    catatan_instruktur: "",
+    catatan: "",
     nama_pekerjaan: "",
-    perencanaan_kegiatan: "",
     nama_pembimbing: "",
     tanggal: "",
     status_selesai: "",
     fotos: [],
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]); // Untuk menyimpan file yang dipilih sebelum diupload
-
+  const { user } = useAuthStore();
+  const fetchLaporan = async () => {
+    setLoading(true);
+    try {
+      const response = await getSingleLaporanMingguan(id);
+      setLaporan(response.data);
+    } catch (error) {
+      console.error("Error fetching laporan:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchLaporan = async () => {
-      try {
-        const response = await getSingleLaporanMingguan(id);
-        setLaporan(response.data);
-      } catch (error) {
-        console.error("Error fetching laporan:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLaporan();
   }, [id]);
 
@@ -48,7 +51,7 @@ const MainFormLaporanMingguan = () => {
     const files = Array.from(event.target.files);
     if (laporan.fotos.length + files.length + selectedFiles.length > 3) {
       event.preventDefault(); // Mencegah event jika jumlah file melebihi 3
-      alert("Maksimal 3 foto yang dapat diunggah.");
+      toast.info("Maksimal 3 foto yang dapat diunggah.");
       //   saya mau kembalikan tulisan  no file choose
       event.target.value = null;
 
@@ -58,7 +61,7 @@ const MainFormLaporanMingguan = () => {
     if (files.some((file) => file.size > 2 * 1024 * 1024)) {
       event.preventDefault(); // Mencegah event jika ukuran file terlalu besar
       event.target.value = null;
-      alert("Ukuran gambar terlalu besar, maksimal 2MB.");
+      toast.info("Ukuran gambar terlalu besar, maksimal 2MB.");
       setSelectedFiles([]);
       return;
     }
@@ -74,38 +77,75 @@ const MainFormLaporanMingguan = () => {
     event.preventDefault();
     setUploading(true);
 
-    // Membuat FormData untuk semua file
-    const formData = new FormData();
+    let uploadedFotos = []; // Default kosong jika tidak ada foto
 
-    // Menambahkan semua file ke dalam FormData
-    selectedFiles.forEach((file) => {
-      formData.append("file[]", file); // Menambahkan file dalam array "file[]"
-    });
+    // Jika ada foto yang dipilih, lakukan upload
+    if (selectedFiles.length > 0) {
+      const formData = new FormData();
+      selectedFiles.forEach((file) => {
+        formData.append("file[]", file);
+      });
 
-    try {
-      // Mengirim FormData ke endpoint upload
-      const response = await uploadProfile(formData);
+      try {
+        const response = await uploadProfile(formData);
+        console.log("Response dari server:", response);
 
-      // Jika berhasil, ambil URL foto yang diupload
-      if (response?.data?.foto_url) {
-        const uploadedFotos = response.data.foto_url.map((fotoUrl) => ({
-          id: Date.now(), // Anda bisa menggunakan ID unik jika ingin
-          foto_url: fotoUrl,
-        }));
-
-        // Gabungkan dengan foto yang sudah ada
-        setLaporan((prev) => ({
-          ...prev,
-          fotos: [...prev.fotos, ...uploadedFotos],
-        }));
+        if (response?.data?.files) {
+          uploadedFotos = response.data.files.map((file) => ({
+            id: Date.now(), // ID unik sementara
+            foto_url: file.file_url,
+          }));
+        }
+      } catch (error) {
+        console.error("Gagal mengunggah gambar:", error);
+        setUploading(false);
+        return; // Jika upload foto gagal, hentikan proses
       }
-    } catch (error) {
-      console.error("Gagal mengunggah gambar:", error);
     }
 
-    setUploading(false);
+    try {
+      setLoading(true);
+
+      await uploadLaporanMingguan({
+        ...laporan,
+        fotos: [...(laporan.fotos || []), ...uploadedFotos],
+      });
+
+      fetchLaporan();
+      setSelectedFiles([]);
+      toast.success("Laporan berhasil diunggah!");
+    } catch (error) {
+      console.error("Gagal mengunggah laporan:", error);
+    } finally {
+      setLoading(false);
+      setUploading(false);
+    }
   };
 
+  const handleDeleteFoto = async (fotoId) => {
+    if (laporan.fotos.length === 1) {
+      toast.info("Tidak dapat menghapus foto. Minimal tersisa 1  foto.");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      await deleteFotoById(fotoId);
+
+      setLaporan((prevLaporan) => ({
+        ...prevLaporan,
+        fotos: prevLaporan.fotos.filter((foto) => foto.id !== fotoId),
+      }));
+
+      toast.success("Foto berhasil dihapus!");
+      fetchLaporan();
+    } catch (error) {
+      console.error("Gagal menghapus foto:", error);
+      toast.error("Gagal menghapus foto.");
+    } finally {
+      setLoading(false);
+    }
+  };
   if (loading) {
     return <Loading />;
   }
@@ -113,7 +153,7 @@ const MainFormLaporanMingguan = () => {
   return (
     <ContainerGlobal>
       <div className="">
-        <div className="flex items-center gap-2 mb-12">
+        <div className="flex items-center gap-2 mb-8">
           <FaTag className="text-blue text-xl" />
           <h1 className="text-2xl font-bold text-blue ">Laporan Mingguan</h1>
         </div>
@@ -122,7 +162,7 @@ const MainFormLaporanMingguan = () => {
         ) : (
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Nama Instruktur & Pembimbing */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium">
                   Nama Instruktur
@@ -131,7 +171,11 @@ const MainFormLaporanMingguan = () => {
                   type="text"
                   className="w-full border rounded p-2"
                   value={laporan?.nama_instruktur}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, nama_instruktur: e.target.value })
+                  }
                   required
+                  disabled={user?.role !== "user"}
                 />
               </div>
               <div>
@@ -142,7 +186,10 @@ const MainFormLaporanMingguan = () => {
                   type="text"
                   className="w-full border rounded p-2"
                   value={laporan?.nama_pembimbing}
-                  required
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, nama_pembimbing: e.target.value })
+                  }
+                  disabled
                 />
               </div>
             </div>
@@ -157,33 +204,13 @@ const MainFormLaporanMingguan = () => {
                   type="text"
                   className="w-full border rounded p-2"
                   value={laporan?.nama_pekerjaan}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, nama_pekerjaan: e.target.value })
+                  }
                   required
+                  disabled={user?.role !== "user"}
                 />
               </div>
-            </div>
-
-            {/* Perencanaan Kegiatan */}
-            <div>
-              <label className="block text-sm font-medium">
-                Perencanaan Kegiatan
-              </label>
-              <textarea
-                className="w-full border rounded p-2"
-                value={laporan.perencanaan_kegiatan}
-                required
-              />
-            </div>
-
-            {/* Pelaksanaan Kegiatan */}
-            <div>
-              <label className="block text-sm font-medium">
-                Pelaksanaan Kegiatan
-              </label>
-              <textarea
-                className="w-full border rounded p-2"
-                value={laporan.pelaksanaan_kegiatan}
-                required
-              />
             </div>
 
             {/* Catatan Instruktur */}
@@ -193,62 +220,103 @@ const MainFormLaporanMingguan = () => {
               </label>
               <textarea
                 className="w-full border rounded p-2"
-                value={laporan.catatan_instruktur}
+                value={laporan.catatan}
+                onChange={(e) =>
+                  setLaporan({ ...laporan, catatan: e.target.value })
+                }
                 required
+                disabled={user?.role !== "user"}
               />
             </div>
 
-            {/* Upload & Preview Gambar (3 Kolom) */}
             <div>
-              <label className="block text-sm font-medium">
-                Upload Foto (Maksimal 3 & 2MB){" "}
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full border p-2 rounded"
-                multiple
-              />
-
-              {uploading && (
-                <p className="text-sm text-gray-500">Mengunggah gambar...</p>
+              {user?.role === "user" && (
+                <>
+                  <label className="block text-sm font-medium">
+                    Upload Foto (Maksimal 3 & 2MB){" "}
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    required={laporan.fotos.length === 0}
+                    className="w-full border p-2 rounded"
+                    multiple
+                  />
+                </>
               )}
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                {/* Preview Gambar yang dipilih */}
-                {selectedFiles.length > 0 ? (
-                  selectedFiles.map((file, index) => (
-                    <div key={index} className="relative">
+              {uploading ? (
+                <div className="flex justify-center items-center mt-4">
+                  <ScaleLoader className="text-blue text-2xl" />
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-3 lg:grid-cols-3 grid-cols-2  gap-4 mt-4">
+                  {laporan.fotos.map((foto, index) => (
+                    <div key={`uploaded-${index}`} className="relative">
+                      <img
+                        src={foto.foto_url}
+                        alt="Uploaded"
+                        loading="lazy"
+                        onClick={() => window.open(foto.foto_url, "_blank")}
+                        className="w-full cursor-pointer h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
+                      />
+                      {user?.role === "user" && (
+                        <button
+                          type="button"
+                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                          onClick={() => handleDeleteFoto(foto.id)}
+                        >
+                          Hapus
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  {selectedFiles.map((file, index) => (
+                    <div key={`selected-${index}`} className="relative">
                       <img
                         src={URL.createObjectURL(file)}
                         alt="Preview"
-                        className="w-full h-32 md:h-32 lg:h-96 object-cover rounded border"
+                        loading="lazy"
+                     
+                        className="w-full h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
                       />
-                      <button
-                        type="button"
-                        className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                        onClick={() => handleRemovePreviewImage(index)}
-                      >
-                        Hapus
-                      </button>
+                      {user?.role === "user" && (
+                        <button
+                          type="button"
+                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                          onClick={() => handleRemovePreviewImage(index)}
+                        >
+                          Hapus
+                        </button>
+                      )}
                     </div>
-                  ))
-                ) : (
-                  <p className="col-span-3 text-center text-gray-500">
-                    Belum ada foto
-                  </p>
-                )}
-              </div>
+                  ))}
+
+                  {/* Jika tidak ada foto sama sekali */}
+                  {laporan.fotos.length === 0 && selectedFiles.length === 0 && (
+                    <p className="col-span-3 text-center text-gray-500">
+                      Belum ada foto Laporan
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Tombol Submit */}
-            <button
-              type="submit"
-              className="bg-blue w-full text-white px-4 py-2 rounded-md hover:opacity-85"
-            >
-              Simpan Laporan
-            </button>
+            {user?.role === "user" && (
+              <button
+                type="submit"
+                disabled={loading || uploading}
+                className="bg-blue w-full text-white px-4 py-2 rounded-md hover:opacity-85"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <FaSave />
+                  <p>{loading ? "Menyimpan..." : "Simpan Laporan"}</p>
+                </div>
+              </button>
+            )}
           </form>
         )}
       </div>
