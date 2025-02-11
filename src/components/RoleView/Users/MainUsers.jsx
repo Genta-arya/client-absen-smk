@@ -467,123 +467,143 @@ const MainUsers = () => {
                           )}
 
                           <>
-                            <div className="flex justify-center gap-4 mt-4">
-                              <div className="flex flex-col gap-2">
-                                <button
-                                  onClick={() => setModal1(true)}
-                                  disabled={
-                                    isMasukDisabled() ||
-                                    absenToday.hadir === "hadir"
-                                  }
-                                  className={`${
-                                    absenToday.hadir !== "hadir"
-                                      ? "bg-blue disabled:bg-gray-500"
-                                      : "bg-green-600"
-                                  } disabled:hover:opacity-100  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
-                                >
-                                  {absenToday.hadir === "hadir" ? (
-                                    <div className="flex items-center justify-center gap-2 text-sm">
-                                      <FaCheck />
-                                      <p>Sudah Absen</p>
-                                    </div>
-                                  ) : (
-                                    <div className="flex items-center justify-center gap-2 text-sm">
-                                      <FaSignInAlt />
-                                      <p>Masuk</p>
-                                    </div>
-                                  )}
-                                </button>
-                                <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
-                                  <FaClock />
-
-                                  <h1>
-                                    <div className="flex items-center">
-                                      <div className="flex">
-                                        <p>
-                                          {jamMasukHours
-                                            .toString()
-                                            .padStart(2, "0")}
-                                          :
-                                          {jamMasukMinutes
-                                            .toString()
-                                            .padStart(2, "0")}{" "}
-                                          -
-                                        </p>
-                                      </div>
-                                      <div className="flex ml-1">
-                                        <p>
-                                          {new Date(jamMasuk).getHours() + 2}:
-                                        </p>
-                                        <p>{new Date(jamMasuk).getMinutes()}</p>
-                                      </div>
-                                    </div>
+                            {!user?.Pkl[0]?.status ? (
+                              <>
+                                <div>
+                                  <h1 className="text-center mt-4 font-bold text-red-500 text-sm">
+                                    Periode PKL telah berakhir
                                   </h1>
-
-                                  <h1></h1>
                                 </div>
-                              </div>
-
-                              <div className="flex flex-col gap-2">
-                                <button
-                                  disabled={
-                                    isPulangDisabled() ||
-                                    absenToday.pulang !== null ||
-                                    loading
-                                  }
-                                  onClick={() => handlePulang(absenToday.id)}
-                                  className="border disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all md:w-64 lg:w-64 w-36 text-black  py-3  rounded-md"
-                                >
-                                  <div className="flex items-center justify-center gap-2">
-                                    {absenToday.pulang !== null ? (
-                                      <>
-                                        <div className="flex    items-center justify-center gap-2 text-sm">
+                              </>
+                            ) : (
+                              <>
+                                <div className="flex justify-center gap-4 mt-4">
+                                  <div className="flex flex-col gap-2">
+                                    <button
+                                      onClick={() => setModal1(true)}
+                                      disabled={
+                                        isMasukDisabled() ||
+                                        absenToday.hadir === "hadir"
+                                      }
+                                      className={`${
+                                        absenToday.hadir !== "hadir"
+                                          ? "bg-blue disabled:bg-gray-500"
+                                          : "bg-green-600"
+                                      } disabled:hover:opacity-100  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
+                                    >
+                                      {absenToday.hadir === "hadir" ? (
+                                        <div className="flex items-center justify-center gap-2 text-sm">
                                           <FaCheck />
-                                          <p>Sudah Pulang</p>
+                                          <p>Sudah Absen</p>
                                         </div>
-                                      </>
-                                    ) : (
-                                      <LoadingButton
-                                        loading={loading}
-                                        icon={<FaSignOutAlt />}
-                                        text={"Pulang"}
-                                      />
-                                    )}
-                                  </div>
-                                </button>
-                                <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
-                                  <FaClock />
+                                      ) : (
+                                        <div className="flex items-center justify-center gap-2 text-sm">
+                                          <FaSignInAlt />
+                                          <p>Masuk</p>
+                                        </div>
+                                      )}
+                                    </button>
+                                    <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
+                                      <FaClock />
 
-                                  <h1>
-                                    <div className="flex items-center">
-                                      <div className="flex">
-                                        <p>
-                                          {new Date(jamKeluar)
-                                            .getHours()
-                                            .toString()
-                                            .padStart(2, "0")}
-                                          :
-                                        </p>
-                                        <p>
-                                          {new Date(jamKeluar)
-                                            .getMinutes()
-                                            .toString()
-                                            .padStart(2, "0")}{" "}
-                                          -{" "}
-                                        </p>
-                                      </div>
-                                      <div className="flex ml-1">
-                                        <p>
-                                          {new Date(jamKeluar).getHours() + 1}:
-                                        </p>
-                                        <p>
-                                          {new Date(jamKeluar).getMinutes()}
-                                        </p>
-                                      </div>
+                                      <h1>
+                                        <div className="flex items-center">
+                                          <div className="flex">
+                                            <p>
+                                              {jamMasukHours
+                                                .toString()
+                                                .padStart(2, "0")}
+                                              :
+                                              {jamMasukMinutes
+                                                .toString()
+                                                .padStart(2, "0")}{" "}
+                                              -
+                                            </p>
+                                          </div>
+                                          <div className="flex ml-1">
+                                            <p>
+                                              {new Date(jamMasuk).getHours() +
+                                                2}
+                                              :
+                                            </p>
+                                            <p>
+                                              {new Date(jamMasuk).getMinutes()}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </h1>
+
+                                      <h1></h1>
                                     </div>
-                                  </h1>
+                                  </div>
+
+                                  <div className="flex flex-col gap-2">
+                                    <button
+                                      disabled={
+                                        isPulangDisabled() ||
+                                        absenToday.pulang !== null ||
+                                        loading
+                                      }
+                                      onClick={() =>
+                                        handlePulang(absenToday.id)
+                                      }
+                                      className="border disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all md:w-64 lg:w-64 w-36 text-black  py-3  rounded-md"
+                                    >
+                                      <div className="flex items-center justify-center gap-2">
+                                        {absenToday.pulang !== null ? (
+                                          <>
+                                            <div className="flex    items-center justify-center gap-2 text-sm">
+                                              <FaCheck />
+                                              <p>Sudah Pulang</p>
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <LoadingButton
+                                            loading={loading}
+                                            icon={<FaSignOutAlt />}
+                                            text={"Pulang"}
+                                          />
+                                        )}
+                                      </div>
+                                    </button>
+                                    <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
+                                      <FaClock />
+
+                                      <h1>
+                                        <div className="flex items-center">
+                                          <div className="flex">
+                                            <p>
+                                              {new Date(jamKeluar)
+                                                .getHours()
+                                                .toString()
+                                                .padStart(2, "0")}
+                                              :
+                                            </p>
+                                            <p>
+                                              {new Date(jamKeluar)
+                                                .getMinutes()
+                                                .toString()
+                                                .padStart(2, "0")}{" "}
+                                              -{" "}
+                                            </p>
+                                          </div>
+                                          <div className="flex ml-1">
+                                            <p>
+                                              {new Date(jamKeluar).getHours() +
+                                                1}
+                                              :
+                                            </p>
+                                            <p>
+                                              {new Date(jamKeluar).getMinutes()}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </h1>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
+                              </>
+                            )}
                           </>
                         </div>
                       ) : (
@@ -592,31 +612,17 @@ const MainUsers = () => {
                             {user?.Pkl &&
                             user.Pkl.length > 0 &&
                             user.Pkl[0]?.name ? (
-                              <>
-                                {!user?.Pkl[0]?.status ? (
-                                  <div>
-                                    <h1 className="text-center font-extrabold text-blue und">
-                                      {user.Pkl[0].name}
-                                    </h1>
-                                    <h1 className="text-center mt-4 font-bold text-red-500 text-sm">
-                                      Periode PKL telah berakhir
-                                    </h1>
-                                  </div>
-                                ) : (
-                                  <div>
-                                    <h1 className="text-center font-extrabold text-blue und">
-                                      {user.Pkl[0].name}
-                                    </h1>
-                                    <h1 className="text-center font-bold text-red-500 text-sm mt-2">
-                                      <p>
-                                        Tidak ada absensi untuk hari ini,
-                                        silahkan cek kalender untuk info lebih
-                                        lanjut
-                                      </p>
-                                    </h1>
-                                  </div>
-                                )}
-                              </>
+                              <div>
+                                <h1 className="text-center font-extrabold text-blue und">
+                                  {user.Pkl[0].name}
+                                </h1>
+                                <h1 className="text-center font-bold text-red-500 text-sm mt-2">
+                                  <p>
+                                    Tidak ada absensi untuk hari ini, silahkan
+                                    cek kalender untuk info lebih lanjut
+                                  </p>
+                                </h1>
+                              </div>
                             ) : (
                               <>
                                 <div className="flex flex-col gap-2 items-center justify-center">

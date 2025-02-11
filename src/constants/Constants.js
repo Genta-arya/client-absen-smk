@@ -36,10 +36,13 @@ export const formatDate = (dateString) => {
   return `${day}-${month}-${year}`;
 };
 
-// export const API_URL = "http://localhost:8081/api";
-// export const SOCKET = "http://localhost:8081";
+export let API_URL;
+const type = "production";
 
-export const API_URL = "https://pkl.apiservices.my.id/api";
+if (type === "production") API_URL = "https://pkl.apiservices.my.id/api";
+else API_URL = "http://localhost:8081/api";
+
+
 export const SOCKET = "https://pkl.apiservices.my.id";
 
 export const API_URL_IMAGE = "https://pkl.apiservices.my.id/uploads/";
@@ -48,7 +51,6 @@ export const UPLOAD_URL = "https://cloud.mystorages.my.id/uploads.php";
 export const formatTanggal = (dateString) => {
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const date = new Date(dateString);
-
 
   const utc7Date = new Date(date.getTime() + 7 * 60 * 60 * 1000);
 
