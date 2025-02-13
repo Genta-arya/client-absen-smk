@@ -54,6 +54,11 @@ const MainProfile = () => {
       return;
     }
 
+    if (croppedImage.size > 5 * 1024 * 1024) {
+      toast.info("Ukuran file maksimal 5MB.");
+      return;
+    }
+
     setSelectedImage(file);
     setPreview(URL.createObjectURL(file)); // Menampilkan preview gambar yang dipilih
   };
