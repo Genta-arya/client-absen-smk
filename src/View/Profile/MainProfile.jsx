@@ -70,10 +70,7 @@ const MainProfile = () => {
       return;
     }
 
-    if (
-      croppedImage.size > 5 * 1024 * 1024 ||
-      selectedImage.size > 5 * 1024 * 1024
-    ) {
+    if (selectedImage.size > 5 * 1024 * 1024) {
       toast.info("Ukuran file maksimal 5MB.");
       return;
     }
@@ -107,10 +104,7 @@ const MainProfile = () => {
   };
 
   const handleCrop = () => {
-    if (
-      cropper.size > 5 * 1024 * 1024 ||
-      selectedImage.size > 5 * 1024 * 1024
-    ) {
+    if (selectedImage.size > 5 * 1024 * 1024) {
       toast.info("Ukuran file maksimal 5MB.");
       return;
     }
