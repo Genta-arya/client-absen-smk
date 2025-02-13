@@ -44,15 +44,18 @@ const MainProfile = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (!file) {
+      toast.info("Tidak ada file yang dipilih.");
+      return;
+    }
 
     if (file.size > 5 * 1024 * 1024) {
       toast.info("Ukuran file maksimal 5MB.");
       return;
     }
-    if (file) {
-      setSelectedImage(file);
-      setPreview(URL.createObjectURL(file)); // Menampilkan preview gambar yang dipilih
-    }
+
+    setSelectedImage(file);
+    setPreview(URL.createObjectURL(file)); // Menampilkan preview gambar yang dipilih
   };
 
   const onClose = () => {
