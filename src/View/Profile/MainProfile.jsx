@@ -107,6 +107,13 @@ const MainProfile = () => {
   };
 
   const handleCrop = () => {
+    if (
+      cropper.size > 5 * 1024 * 1024 ||
+      selectedImage.size > 5 * 1024 * 1024
+    ) {
+      toast.info("Ukuran file maksimal 5MB.");
+      return;
+    }
     if (cropper) {
       cropper.getCroppedCanvas().toBlob((blob) => {
         setCroppedImage(blob);
