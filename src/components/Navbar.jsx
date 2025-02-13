@@ -80,7 +80,7 @@ const Navbar = ({ role }) => {
               </button>
               <div className="flex items-center gap-4">
                 <img
-                  src="https://uploads.mgentaarya.my.id/storage-documents/Screenshot_2025-01-16_075511-removebg-preview.png"
+                  src="https://e-library.smkn2ketapang.sch.id/static/media/icon-login.6c41b2b908d2a42cee4d.png"
                   alt="Logo"
                   className="w-10 h-10 bg-white p-1 rounded-full"
                 />
