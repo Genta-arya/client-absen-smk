@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaBars, FaMoon, FaSun, FaTimes } from "react-icons/fa";
 import Sidebar from "./Sidebar";
 import { toast } from "sonner";
-
+import icon from "../assets/icon.png"
 const Navbar = ({ role }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -80,7 +80,7 @@ const Navbar = ({ role }) => {
               </button>
               <div className="flex items-center gap-4">
                 <img
-                  src="https://e-library.smkn2ketapang.sch.id/static/media/icon-login.6c41b2b908d2a42cee4d.png"
+                  src={icon}
                   alt="Logo"
                   className="w-10 h-10 bg-white p-1 rounded-full"
                 />
