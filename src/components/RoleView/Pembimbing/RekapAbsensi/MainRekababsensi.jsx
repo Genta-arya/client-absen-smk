@@ -284,7 +284,7 @@ const MainRekababsensi = () => {
   return (
     <ContainerGlobal title="Rekap Absensi">
       <div className="">
-        <div className="flex flex-wrap lg:flex-nowrap md:flex-nowrap lg:justify-start md:justify-start justify-center gap-4 mb-4 w-full">
+        <div className="flex  gap-4 mb-4 w-full">
           <button
             onClick={exportExcel}
             className="bg-green-500 text-white px-4 py-2 text-xs rounded hover:bg-green-600"
