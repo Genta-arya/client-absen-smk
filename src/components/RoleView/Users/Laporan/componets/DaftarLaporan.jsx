@@ -77,10 +77,15 @@ const DaftarLaporan = () => {
   // Filter data berdasarkan tanggal yang dipilih
   let filteredData = selectedDate
     ? data.filter((item) => {
-        const formattedItemDate = new Date(item.tanggal)
-          .toISOString()
-          .split("T")[0];
-        return formattedItemDate === selectedDate;
+        const itemDate = new Date(item.tanggal);
+        const itemMonth = itemDate.getMonth() + 1; // getMonth() dimulai dari 0
+        const itemYear = itemDate.getFullYear();
+
+        const [selectedYear, selectedMonth] = selectedDate
+          .split("-")
+          .map(Number);
+
+        return itemMonth === selectedMonth && itemYear === selectedYear;
       })
     : data;
 
@@ -107,11 +112,11 @@ const DaftarLaporan = () => {
         <>
           <div className="flex  items-center gap-2 mb-6 ">
             <div className=" text-xs md:w-full lg:w-full w-36">
-              <label className="block mb-2">Tanggal:</label>
+              <label className="block mb-2">Bulan:</label>
               <input
-                type="date"
+                type="month"
                 value={selectedDate}
-                placeholder="Pilih Tanggal"
+                placeholder="Pilih Bulan"
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="w-full md:w-full text-black p-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
               />
