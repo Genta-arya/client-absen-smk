@@ -24,6 +24,7 @@
     "i": "^0.3.7",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
+    "lottie-react": "^2.4.1",
     "luxon": "^3.5.0",
     "moment-timezone": "^0.5.47",
     "npm": "^10.9.2",

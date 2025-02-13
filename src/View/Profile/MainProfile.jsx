@@ -98,6 +98,10 @@ const MainProfile = () => {
         toast.success("Foto profil berhasil diperbarui.");
         setModal(false);
         setUser({ ...user, avatar: response.data.file_url });
+        setCroppedImage(null);
+        setStatusCrop(false);
+        setCropper(null);
+        setPreview(response.data.file_url);
       } else {
         toast.error("Foto profil gagal diperbarui.");
       }

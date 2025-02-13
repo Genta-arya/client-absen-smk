@@ -1,9 +1,10 @@
 import React from "react";
-import image from "../assets/notfound.png";
+import loading from "../assets/notfound.json";
+import Lottie from "lottie-react";
 const NotfoundData = () => {
   return (
     <div className="flex justify-center  mt-52 md:mt-12 lg:mt-12">
-      <img src={ image } alt="" className=" md:w-[60%] lg:w-[40%] w-[80%]" />
+      <Lottie animationData={loading} autoplay loop={false} className="w-64 h-64" />
     </div>
   );
 };
