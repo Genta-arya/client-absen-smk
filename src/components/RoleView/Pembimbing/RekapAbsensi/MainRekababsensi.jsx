@@ -14,6 +14,10 @@ const MainRekababsensi = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(
+    DateTime.now().toFormat("yyyy-MM")
+  );
+
   const [loading, setLoading] = useState(false);
   const fetchData = async () => {
     setLoading(true);
@@ -35,16 +39,19 @@ const MainRekababsensi = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredData = data.filter(
-    (item) =>
-      item.user.nim.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredData = data
+    .filter(
+      (item) =>
+        item.tanggal.startsWith(selectedMonth) &&
+        (item.user.nim.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.user.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+    .sort((a, b) => DateTime.fromISO(a.tanggal) - DateTime.fromISO(b.tanggal));
 
   const exportExcel = () => {
     const wb = XLSX.utils.book_new();
 
-    const dates = [...new Set(data.map((item) => item.tanggal))]
+    const dates = [...new Set(filteredData.map((item) => item.tanggal))]
       .map((date) => formatTanggal(date))
       .sort();
 
@@ -72,10 +79,86 @@ const MainRekababsensi = () => {
     XLSX.utils.book_append_sheet(wb, ws, "Rekap Absensi");
     XLSX.writeFile(wb, "Rekap_Absensi.xlsx");
   };
+  // const exportPDF = () => {
+  //   const doc = new jsPDF();
+
+  //   const firstData = filteredData[0]; // Ambil dari entri pertama
+  //   const namaPkl = firstData.pkl.name;
+  //   const namaPembimbing = firstData.pkl.creator.name;
+  //   const periode = `${formatTanggal(
+  //     firstData.pkl.tanggal_mulai.split("T")[0]
+  //   )} - ${formatTanggal(firstData.pkl.tanggal_selesai.split("T")[0])}`;
+
+  //   doc.setFont("helvetica", "bold");
+  //   doc.setFontSize(16);
+  //   doc.text("REKAP ABSENSI", 105, 10, { align: "center" }); // Pindah ke atas agar tidak bertabrakan
+   
+
+  //   doc.setFontSize(14);
+  //   doc.text("SMK 2 NEGERI KETAPANG", 105, 16, { align: "center" });
+
+  //   doc.setFontSize(8);
+  //   doc.text(
+  //     "JL. Jenderal Gatot Subroto, Matan Hilir Utara, Payah Kumang, Delta Pawan, Kabupaten Ketapang, Kalimantan Barat 78851",
+  //     105,
+  //     20,
+  //     { align: "center" }
+  //   );
+
+  //   doc.setLineWidth(0.5);
+  //   doc.line(10, 25, 200, 25); // Garis bawah kop surat
+
+  //   const marginLeft = 15; // Margin kiri
+  //   const labelWidth = 50; // Lebar tetap untuk label agar titik dua sejajar
+  //   const marginTop = 30; // Margin atas setelah kop surat
+  //   const lineSpacing = 5; // Jarak antar baris
+
+  //   doc.setFont("helvetica", "normal");
+  //   doc.setFontSize(10);
+
+  //   // Menampilkan informasi dengan margin atas dan spasi antar baris
+  //   doc.text(`Tempat PKL`, marginLeft, marginTop);
+  //   doc.text(`: ${namaPkl}`, marginLeft + labelWidth, marginTop);
+
+  //   doc.text(`Pembimbing`, marginLeft, marginTop + lineSpacing);
+  //   doc.text(
+  //     `: ${namaPembimbing}`,
+  //     marginLeft + labelWidth,
+  //     marginTop + lineSpacing
+  //   );
+
+  //   doc.text(`Periode`, marginLeft, marginTop + 2 * lineSpacing);
+  //   doc.text(
+  //     `: ${periode}`,
+  //     marginLeft + labelWidth,
+  //     marginTop + 2 * lineSpacing
+  //   );
+
+  //   doc.autoTable({
+  //     startY: 43,
+  //     head: [["NO", "NISN", "Nama", "Kelas", "Keterangan", "Tanggal"]],
+  //     body: filteredData.map((item, index) => [
+  //       index + 1,
+  //       item.user.nim,
+  //       item.user.name,
+  //       item.user.Kelas.map((k) => k.nama).join(", ") || "-",
+  //       item.hadir || "Tidak Hadir",
+  //       item.tanggal ? formatTanggal(item.tanggal) : "-",
+  //     ]),
+  //     headStyles: {
+  //       fillColor: [41, 74, 112],
+  //       textColor: "#ffffff",
+  //     },
+  //     theme: "grid",
+  //   });
+
+  //   doc.save("Rekap_Absensi.pdf");
+  // };
+
   const exportPDF = () => {
     const doc = new jsPDF();
 
-    const firstData = data[0]; // Ambil dari entri pertama
+    const firstData = filteredData[0]; // Ambil dari entri pertama
     const namaPkl = firstData.pkl.name;
     const namaPembimbing = firstData.pkl.creator.name;
     const periode = `${formatTanggal(
@@ -84,7 +167,7 @@ const MainRekababsensi = () => {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.text("REKAP ABSENSI", 105, 10, { align: "center" }); // Pindah ke atas agar tidak bertabrakan
+    doc.text("REKAP ABSENSI", 105, 10, { align: "center" });
 
     doc.setFontSize(14);
     doc.text("SMK 2 NEGERI KETAPANG", 105, 16, { align: "center" });
@@ -100,50 +183,69 @@ const MainRekababsensi = () => {
     doc.setLineWidth(0.5);
     doc.line(10, 25, 200, 25); // Garis bawah kop surat
 
-    const marginLeft = 15; // Margin kiri
-    const labelWidth = 50; // Lebar tetap untuk label agar titik dua sejajar
-    const marginTop = 30; // Margin atas setelah kop surat
-    const lineSpacing = 5; // Jarak antar baris
+    const marginLeft = 15;
+    const labelWidth = 50;
+    const marginTop = 30;
+    const lineSpacing = 5;
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
 
-    // Menampilkan informasi dengan margin atas dan spasi antar baris
-    doc.text(`Nama PKL`, marginLeft, marginTop);
+    // Menampilkan informasi
+    doc.text(`Tempat PKL`, marginLeft, marginTop);
     doc.text(`: ${namaPkl}`, marginLeft + labelWidth, marginTop);
 
-    doc.text(`Nama Pembimbing`, marginLeft, marginTop + lineSpacing);
-    doc.text(
-      `: ${namaPembimbing}`,
-      marginLeft + labelWidth,
-      marginTop + lineSpacing
-    );
+    doc.text(`Pembimbing`, marginLeft, marginTop + lineSpacing);
+    doc.text(`: ${namaPembimbing}`, marginLeft + labelWidth, marginTop + lineSpacing);
 
     doc.text(`Periode`, marginLeft, marginTop + 2 * lineSpacing);
-    doc.text(
-      `: ${periode}`,
-      marginLeft + labelWidth,
-      marginTop + 2 * lineSpacing
-    );
+    doc.text(`: ${periode}`, marginLeft + labelWidth, marginTop + 2 * lineSpacing);
 
     doc.autoTable({
-      startY: 43,
-      head: [["NIM", "Nama", "Kelas", "Ket", "Tanggal"]],
-      body: data.map((item) => [
-        item.user.nim,
-        item.user.name,
-        item.user.Kelas.map((k) => k.nama).join(", "),
-        item.hadir || "Tidak Hadir",
-        item.tanggal ? formatTanggal(item.tanggal) : "-",
-      ]),
-      headStyles: {
-        fillColor: [41, 74, 112],
-        textColor: "#ffffff",
-      },
-      theme: "grid",
+        startY: 43,
+        head: [["NO", "NISN", "Nama", "Kelas", "Keterangan", "Tanggal"]],
+        body: filteredData.map((item, index) => [
+            index + 1,
+            item.user.nim,
+            item.user.name,
+            item.user.Kelas.map((k) => k.nama).join(", ") || "-",
+            item.hadir || "Tidak Hadir",
+            item.tanggal ? formatTanggal(item.tanggal) : "-",
+        ]),
+        headStyles: {
+            fillColor: [41, 74, 112],
+            textColor: "#ffffff",
+        },
+        theme: "grid",
     });
 
+    // === Tambahkan form tanda tangan ===
+    const yPos = doc.autoTable.previous.finalY + 20; // Ambil posisi terakhir dari tabel
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    doc.setFontSize(10);
+    doc.text("Mengetahui,", marginLeft, yPos);
+    doc.text("Ketapang, " + DateTime.now().toFormat("dd LLLL yyyy"), pageWidth - 60, yPos); // Tanggal di sisi kanan
+
+    const tandaTanganY = yPos + 25; // Posisi garis tanda tangan
+
+    // Garis untuk tanda tangan
+    doc.line(marginLeft, tandaTanganY, marginLeft + 50, tandaTanganY); // Pembimbing
+    doc.line(pageWidth - 80, tandaTanganY, pageWidth - 30, tandaTanganY); // Kepala Sekolah
+
+    // Nama di bawah tanda tangan
+    doc.text("Pembimbing PKL", marginLeft, tandaTanganY + 5);
+    doc.text(namaPembimbing, marginLeft, tandaTanganY + 10);
+
+    doc.text("Kepala Sekolah", pageWidth - 80, tandaTanganY + 5);
+    doc.text("Trisno, ST", pageWidth - 80, tandaTanganY + 10); // Ganti dengan nama kepala sekolah
+
     doc.save("Rekap_Absensi.pdf");
+};
+
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
   };
 
   const formatTanggal = (tanggal) => {
@@ -162,7 +264,7 @@ const MainRekababsensi = () => {
   return (
     <ContainerGlobal title="Rekap Absensi">
       <div className="">
-        <div className="flex gap-4 mb-4">
+        <div className="flex flex-wrap lg:flex-nowrap md:flex-nowrap lg:justify-start md:justify-start justify-center gap-4 mb-4 w-full">
           <button
             onClick={exportExcel}
             className="bg-green-500 text-white px-4 py-2 text-xs rounded hover:bg-green-600"
@@ -181,11 +283,17 @@ const MainRekababsensi = () => {
               <p>Print PDF</p>
             </div>
           </button>
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={handleMonthChange}
+            className="text-xs px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
+          />
         </div>
 
         <input
           type="text"
-          placeholder="Cari NIM atau Nama"
+          placeholder="Cari NISN atau Nama"
           value={searchQuery}
           onChange={handleSearch}
           className="w-full text-xs e px-4 py-2 border mb-8 border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
@@ -218,7 +326,7 @@ const MainRekababsensi = () => {
                     {item.user.name}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
-                    {item.user.Kelas.map((k) => k.nama).join(", ")}
+                    {item.user.Kelas.map((k) => k.nama).join(", ") || "-"}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
                     {item.hadir || "Tidak Hadir"}
