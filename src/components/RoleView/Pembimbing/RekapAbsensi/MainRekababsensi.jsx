@@ -92,7 +92,6 @@ const MainRekababsensi = () => {
   //   doc.setFont("helvetica", "bold");
   //   doc.setFontSize(16);
   //   doc.text("REKAP ABSENSI", 105, 10, { align: "center" }); // Pindah ke atas agar tidak bertabrakan
-   
 
   //   doc.setFontSize(14);
   //   doc.text("SMK 2 NEGERI KETAPANG", 105, 16, { align: "center" });
@@ -161,9 +160,19 @@ const MainRekababsensi = () => {
     const firstData = filteredData[0]; // Ambil dari entri pertama
     const namaPkl = firstData.pkl.name;
     const namaPembimbing = firstData.pkl.creator.name;
-    const periode = `${formatTanggal(
-      firstData.pkl.tanggal_mulai.split("T")[0]
-    )} - ${formatTanggal(firstData.pkl.tanggal_selesai.split("T")[0])}`;
+    const startDate = firstData.pkl.tanggal_mulai.split("T")[0];
+    const endDate = firstData.pkl.tanggal_selesai.split("T")[0];
+
+    let periode;
+    if (selectedMonth) {
+      const [year, month] = selectedMonth.split("-");
+      const firstDay = `${year}-${month}-01`;
+      const lastDay = DateTime.fromISO(firstDay).endOf("month").toISODate();
+
+      periode = `${formatTanggal(firstDay)} - ${formatTanggal(lastDay)}`;
+    } else {
+      periode = `${formatTanggal(startDate)} - ${formatTanggal(endDate)}`;
+    }
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
@@ -196,27 +205,35 @@ const MainRekababsensi = () => {
     doc.text(`: ${namaPkl}`, marginLeft + labelWidth, marginTop);
 
     doc.text(`Pembimbing`, marginLeft, marginTop + lineSpacing);
-    doc.text(`: ${namaPembimbing}`, marginLeft + labelWidth, marginTop + lineSpacing);
+    doc.text(
+      `: ${namaPembimbing}`,
+      marginLeft + labelWidth,
+      marginTop + lineSpacing
+    );
 
     doc.text(`Periode`, marginLeft, marginTop + 2 * lineSpacing);
-    doc.text(`: ${periode}`, marginLeft + labelWidth, marginTop + 2 * lineSpacing);
+    doc.text(
+      `: ${periode}`,
+      marginLeft + labelWidth,
+      marginTop + 2 * lineSpacing
+    );
 
     doc.autoTable({
-        startY: 43,
-        head: [["NO", "NISN", "Nama", "Kelas", "Keterangan", "Tanggal"]],
-        body: filteredData.map((item, index) => [
-            index + 1,
-            item.user.nim,
-            item.user.name,
-            item.user.Kelas.map((k) => k.nama).join(", ") || "-",
-            item.hadir || "Tidak Hadir",
-            item.tanggal ? formatTanggal(item.tanggal) : "-",
-        ]),
-        headStyles: {
-            fillColor: [41, 74, 112],
-            textColor: "#ffffff",
-        },
-        theme: "grid",
+      startY: 43,
+      head: [["NO", "NISN", "Nama", "Kelas", "Keterangan", "Tanggal"]],
+      body: filteredData.map((item, index) => [
+        index + 1,
+        item.user.nim,
+        item.user.name,
+        item.user.Kelas.map((k) => k.nama).join(", ") || "-",
+        item.hadir || "Tidak Hadir",
+        item.tanggal ? formatTanggal(item.tanggal) : "-",
+      ]),
+      headStyles: {
+        fillColor: [41, 74, 112],
+        textColor: "#ffffff",
+      },
+      theme: "grid",
     });
 
     // === Tambahkan form tanda tangan ===
@@ -225,7 +242,11 @@ const MainRekababsensi = () => {
 
     doc.setFontSize(10);
     doc.text("Mengetahui,", marginLeft, yPos);
-    doc.text("Ketapang, " + DateTime.now().toFormat("dd LLLL yyyy"), pageWidth - 60, yPos); // Tanggal di sisi kanan
+    doc.text(
+      "Ketapang, " + DateTime.now().toFormat("dd LLLL yyyy"),
+      pageWidth - 60,
+      yPos
+    ); // Tanggal di sisi kanan
 
     const tandaTanganY = yPos + 25; // Posisi garis tanda tangan
 
@@ -241,8 +262,7 @@ const MainRekababsensi = () => {
     doc.text("Trisno, ST", pageWidth - 80, tandaTanganY + 10); // Ganti dengan nama kepala sekolah
 
     doc.save("Rekap_Absensi.pdf");
-};
-
+  };
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
@@ -283,13 +303,13 @@ const MainRekababsensi = () => {
               <p>Print PDF</p>
             </div>
           </button>
-          <input
-            type="month"
-            value={selectedMonth}
-            onChange={handleMonthChange}
-            className="text-xs px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
-          />
         </div>
+        <input
+          type="month"
+          value={selectedMonth}
+          onChange={handleMonthChange}
+          className="text-xs px-4 mb-2 py-2 border w-full border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
+        />
 
         <input
           type="text"
