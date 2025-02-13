@@ -70,6 +70,11 @@ const MainProfile = () => {
       return;
     }
 
+    if (selectedImage.size > 5 * 1024 * 1024) {
+      toast.info("Ukuran file maksimal 5MB.");
+      return;
+    }
+
     try {
       setLoading(true);
       const formData = new FormData();
