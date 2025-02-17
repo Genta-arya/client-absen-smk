@@ -42,7 +42,7 @@ const Calendar = ({ data }) => {
       let textColorPulang = "";
 
       // Cek waktu datang menggunakan Luxon
-      if (absen.hadir === "hadir" && absen.datang) {
+      if (absen.hadir === "selesai" && absen.datang) {
         const datangDate = DateTime.fromISO(absen.datang, { zone: "UTC" })
           .setZone("Asia/Jakarta");
 

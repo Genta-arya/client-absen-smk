@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { ScaleLoader } from "react-spinners";
 import { FaSave, FaTag } from "react-icons/fa";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
+import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 
 const MainFormLaporan = () => {
   const { id } = useParams();
@@ -119,6 +120,7 @@ const MainFormLaporan = () => {
       toast.success("Laporan berhasil diunggah!");
     } catch (error) {
       console.error("Gagal mengunggah laporan:", error);
+      ResponseHandler(error.response);
     } finally {
       setLoading(false);
       setUploading(false);

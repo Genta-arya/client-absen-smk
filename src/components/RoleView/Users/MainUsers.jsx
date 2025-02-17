@@ -483,15 +483,15 @@ const MainUsers = () => {
                                       onClick={() => setModal1(true)}
                                       disabled={
                                         isMasukDisabled() ||
-                                        absenToday.hadir === "hadir"
+                                        absenToday.hadir === "selesai"
                                       }
                                       className={`${
-                                        absenToday.hadir !== "hadir"
+                                        absenToday.hadir !== "selesai"
                                           ? "bg-blue disabled:bg-gray-500"
                                           : "bg-green-600"
                                       } disabled:hover:opacity-100  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
                                     >
-                                      {absenToday.hadir === "hadir" ? (
+                                      {absenToday.hadir === "selesai" ? (
                                         <div className="flex items-center justify-center gap-2 text-sm">
                                           <FaCheck />
                                           <p>Sudah Absen</p>
