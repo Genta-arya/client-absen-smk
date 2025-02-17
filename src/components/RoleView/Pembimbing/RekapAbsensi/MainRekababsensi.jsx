@@ -68,7 +68,8 @@ const MainRekababsensi = () => {
         });
       }
 
-      rowData[nama][formattedDate] = item.hadir || "Tidak Hadir";
+      rowData[nama][formattedDate] =
+        item.hadir === "selesai" ? "Hadir" : item.hadir ? "Tidak Hadir" : "-";
     });
 
     // Konversi data ke array untuk dijadikan sheet
@@ -226,12 +227,16 @@ const MainRekababsensi = () => {
         item.user.nim,
         item.user.name,
         item.user.Kelas.map((k) => k.nama).join(", ") || "-",
-        item.hadir || "Tidak Hadir",
+        item.hadir === "selesai" ? "Hadir" : item.hadir ? "Tidak Hadir" : "-",
         item.tanggal ? formatTanggal(item.tanggal) : "-",
       ]),
       headStyles: {
         fillColor: [41, 74, 112],
         textColor: "#ffffff",
+        halign: "center",
+      },
+      styles: {
+        halign: "center",
       },
       theme: "grid",
     });
@@ -269,9 +274,7 @@ const MainRekababsensi = () => {
   };
 
   const formatTanggal = (tanggal) => {
-    return DateTime.fromISO(tanggal)
-      .setLocale("id")
-      .toFormat("cccc, dd LLLL yyyy");
+    return DateTime.fromISO(tanggal).setLocale("id").toFormat("dd LLLL yyyy");
   };
   const formatJam = (jam) => {
     return DateTime.fromISO(jam).toFormat("HH:mm");
@@ -328,9 +331,6 @@ const MainRekababsensi = () => {
                 <th className="border border-gray-300 px-4 py-2">Kelas</th>
                 <th className="border border-gray-300 px-4 py-2">Status</th>
                 <th className="border border-gray-300 px-4 py-2">Tanggal</th>
-                <th className="border border-gray-300 px-4 py-2">Shift</th>
-                <th className="border border-gray-300 px-4 py-2">Jam Masuk</th>
-                <th className="border border-gray-300 px-4 py-2">Jam Pulang</th>
               </tr>
             </thead>
             <tbody>
@@ -348,26 +348,24 @@ const MainRekababsensi = () => {
                   <td className="border border-gray-300 px-4 py-2">
                     {item.user.Kelas.map((k) => k.nama).join(", ") || "-"}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.hadir || "Tidak Hadir"}
+                  <td
+                    className={`border border-gray-300 px-4 py-2 font-bold ${
+                      item.hadir === "selesai"
+                        ? "text-green-500"
+                        : item.hadir === null || item.hadir === undefined
+                        ? "text-gray-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {item.hadir === "selesai"
+                      ? "Hadir"
+                      : item.hadir
+                      ? "Tidak Hadir"
+                      : "-"}
                   </td>
+
                   <td className="border border-gray-300 px-4 py-2">
                     {item.tanggal ? formatTanggal(item.tanggal) : "-"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.user.shifts.length > 0
-                      ? item.user.shifts[0].name
-                      : "-"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.user.shifts.length > 0
-                      ? formatJam(item.user.shifts[0].jamMasuk)
-                      : "-"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.user.shifts.length > 0
-                      ? formatJam(item.user.shifts[0].jamPulang)
-                      : "-"}
                   </td>
                 </tr>
               ))}
