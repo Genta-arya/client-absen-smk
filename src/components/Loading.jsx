@@ -4,7 +4,7 @@ import loading from "../assets/loading.json";
 import Lottie from "lottie-react";
 const Loading = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen dark:bg-dark-bg   ">
+    <div className="flex items-center justify-center min-h-screen dark:bg-dark-bg bg-white   ">
       <Lottie
         animationData={loading}
         autoplay
