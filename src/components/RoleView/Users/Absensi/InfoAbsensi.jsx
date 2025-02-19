@@ -153,7 +153,7 @@ const InfoAbsensi = () => {
         <div className="  ">
           {data ? (
             <>
-              {!data?.datang || data?.hadir !== "hadir" ? (
+              {!data?.datang || (data?.hadir !== "hadir" && data?.hadir !== "selesai") ? (
                 <div className="mt-24 flex flex-col gap-4">
                   <p className="text-center text-red-500">
                     {formatTanggal(data.tanggal)}
