@@ -350,7 +350,7 @@ const MainRekababsensi = () => {
             <thead>
               <tr className="bg-gray-100">
                 <th className="border border-gray-300 px-4 py-2">No</th>
-                <th className="border border-gray-300 px-4 py-2">NIM</th>
+                <th className="border border-gray-300 px-4 py-2">NISN</th>
                 <th className="border border-gray-300 px-4 py-2">Nama</th>
                 <th className="border border-gray-300 px-4 py-2">Kelas</th>
                 <th className="border border-gray-300 px-4 py-2">Status</th>
