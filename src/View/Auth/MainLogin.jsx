@@ -11,7 +11,7 @@ import { ResponseHandler } from "../../Utils/ResponseHandler";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
-import { Axios } from "../../Api/AxiosConfig/Axios";
+import icon from "../../assets/icon.png"
 
 const MainLogin = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -111,21 +111,22 @@ const MainLogin = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-blue dark:bg-dark-bg">
-      <Helmet>
-        <title>Login - SIPKL</title>
-      </Helmet>
+    
       <div className="bg-white p-8  rounded-lg shadow-lg w-[90%] lg:w-[30%] border-t-4 border-orange-500">
         <div className="flex flex-col items-center mb-6">
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfqgzc3z4pYYehdJbSmuMT8Gp7abIEiE-zw&s"
+            src={icon}
             alt="Logo"
-            className="w-28 h-28 rounded-full"
+            className="w-32 object-fill h-32 "
           />
           <h2 className="text-2xl mt-2 font-semibold text-center text-gray-800 ">
-            SIPKL
+            DIGITAL
+          </h2>
+          <h2 className="text-base w-72 mt-1 font-semibold text-center text-gray-800 ">
+            Digitalisasi Informasi Praktik Kerja Lapangan
           </h2>
           <p>
-            <span className="text-gray-600">v1.0.0</span>
+            <span className="text-gray-600 text-xs">v1.0.0</span>
           </p>
         </div>
         <form onSubmit={handleLogin}>

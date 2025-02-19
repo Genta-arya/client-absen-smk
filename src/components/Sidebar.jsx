@@ -6,7 +6,7 @@ import UseLogout from "../Lib/Hook/UseLogout";
 import LoadingButton from "./LoadingButton";
 import { BeatLoader, ScaleLoader } from "react-spinners";
 import { div } from "framer-motion/m";
-
+import icon from "../assets/icon.png"
 const Sidebar = ({ isMenuOpen, toggleMenu, setMenu, role }) => {
   const sidebarRef = useRef(null);
   const { logout, loading } = UseLogout();
@@ -46,12 +46,12 @@ const Sidebar = ({ isMenuOpen, toggleMenu, setMenu, role }) => {
 
         <div className="flex justify-start mt-5 px-1 gap-2">
           <img
-            src="https://uploads.mgentaarya.my.id/storage-documents/Screenshot_2025-01-16_075511-removebg-preview.png"
+            src={icon}
             alt="Logo"
             className="w-10 h-10 bg-white p-1 rounded-full"
           />
           <div className="flex flex-col">
-            <p className="font-bold">SMK 2 KETAPANG</p>
+            <p className="font-bold">DIGITAL</p>
             <p className="text-xs">V.1.0</p>
           </div>
         </div>

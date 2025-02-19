@@ -86,11 +86,11 @@ const Navbar = ({ role }) => {
                 />
                 <div className="flex items-start gap-1 flex-col">
                   <p className="text-xl font-extrabold uppercase text-oren">
-                    Lampias
+                    DIGITAL
                   </p>
                   <div>
                     <p className="text-xs font-bold">
-                      Management Praktek Kerja Lapangan
+                      Digitalisasi Informasi Praktik Kerja Lapangan
                     </p>
                     <p className="text-xs">Versi 1.0</p>
                   </div>
