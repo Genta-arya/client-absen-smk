@@ -126,7 +126,7 @@ const MainUsers = () => {
           name: user?.name,
           nim: user?.nim,
           email: data.email,
-          kelas: selectedKelas?.value, // Update dengan ID kelas yang dipilih
+          kelas: selectedKelas?.value, 
         });
       } else {
         await updateDataUser({
