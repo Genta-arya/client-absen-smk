@@ -483,9 +483,9 @@ const MainUsers = () => {
                                 {absenToday.hadir === "selesai" ? (
                                   <>
                                     <div className="flex justify-center">
-                                      <div className="flex justify-center animate-pulse items-center gap-2 mt-4 bg-green-100 w-fit py-2 px-4 rounded-lg shadow-md">
+                                      <div className="flex justify-center items-center gap-2 mt-4 bg-green-100 w-fit py-2 px-4 rounded-lg shadow-md">
                                         <FaCheck className="text-green-600 text-xl " />
-                                        <h1 className="text-center font-semibold text-green-700 text-base">
+                                        <h1 className="text-center text-sm font-semibold text-green-700 ">
                                           Kamu sudah absen! 🎉
                                         </h1>
                                       </div>
