@@ -9,6 +9,8 @@ import "jspdf-autotable";
 import { DateTime } from "luxon";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 import Loading from "../../../Loading";
+import { toast } from "sonner";
+import NotfoundData from "../../../NotfoundData";
 
 const MainRekababsensi = () => {
   const { id } = useParams();
@@ -49,6 +51,15 @@ const MainRekababsensi = () => {
     .sort((a, b) => DateTime.fromISO(a.tanggal) - DateTime.fromISO(b.tanggal));
 
   const exportExcel = () => {
+    if (selectedMonth.length === 0) {
+      return toast.info("Pilih bulan terlebih dahulu");
+    }
+
+    if (searchQuery === "") {
+      return toast.info(
+        "Masukkan NISN atau Nama Siswa dipencarian terlebih dahulu"
+      );
+    }
     const wb = XLSX.utils.book_new();
 
     const dates = [...new Set(filteredData.map((item) => item.tanggal))]
@@ -155,8 +166,19 @@ const MainRekababsensi = () => {
   //   doc.save("Rekap_Absensi.pdf");
   // };
 
+  console.log(selectedMonth);
+
   const exportPDF = () => {
     const doc = new jsPDF();
+    if (selectedMonth.length === 0) {
+      return toast.info("Pilih bulan terlebih dahulu");
+    }
+
+    if (searchQuery === "") {
+      return toast.info(
+        "Masukkan NISN atau Nama Siswa dipencarian terlebih dahulu"
+      );
+    }
 
     const firstData = filteredData[0]; // Ambil dari entri pertama
     const namaPkl = firstData.pkl.name;
@@ -290,7 +312,8 @@ const MainRekababsensi = () => {
         <div className="flex  gap-4 mb-4 w-full">
           <button
             onClick={exportExcel}
-            className="bg-green-500 text-white px-4 py-2 text-xs rounded hover:bg-green-600"
+            disabled={filteredData.length === 0}
+            className="bg-green-500 disabled:bg-gray-500 text-white px-4 py-2 text-xs rounded hover:bg-green-600"
           >
             <div className="flex items-center gap-2">
               <FaFileExcel />
@@ -299,7 +322,8 @@ const MainRekababsensi = () => {
           </button>
           <button
             onClick={exportPDF}
-            className="bg-red-500 text-xs text-white px-4  rounded hover:bg-red-600"
+            disabled={filteredData.length === 0}
+            className="bg-red-500 disabled:bg-gray-500 text-xs text-white px-4  rounded hover:bg-red-600"
           >
             <div className="flex items-center gap-2">
               <FaFilePdf />
@@ -334,50 +358,60 @@ const MainRekababsensi = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((item, index) => (
-                <tr
-                  key={index}
-                  className={`text-center ${
-                    item.hadir === "selesai"
-                      ? "bg-green-500 text-white"
-                      : item.hadir === null || item.hadir === undefined
-                      ? ""
-                      : "bg-red-500 text-white"
-                  }`}
-                >
-                  <td className="border border-gray-300 px-4 py-2">
-                    {index + 1}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.user.nim}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.user.name}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.user.Kelas.map((k) => k.nama).join(", ") || "-"}
-                  </td>
-                  <td
-                    className={`border border-gray-300 px-4 py-2 font-bold ${
-                      item.hadir === "selesai"
-                        ? ""
-                        : item.hadir === null || item.hadir === undefined
-                        ? "text-gray-500"
-                        : ""
-                    }`}
-                  >
-                    {item.hadir === "selesai"
-                      ? "Hadir"
-                      : item.hadir
-                      ? "Tidak Hadir"
-                      : "-"}
-                  </td>
-
-                  <td className="border border-gray-300 px-4 py-2">
-                    {item.tanggal ? formatTanggal(item.tanggal) : "-"}
+              {filteredData.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                   <NotfoundData />
                   </td>
                 </tr>
-              ))}
+              ) : (
+                <>
+                  {filteredData.map((item, index) => (
+                    <tr
+                      key={index}
+                      className={`text-center ${
+                        item.hadir === "selesai"
+                          ? "bg-green-500 text-white"
+                          : item.hadir === null || item.hadir === undefined
+                          ? ""
+                          : "bg-red-500 text-white"
+                      }`}
+                    >
+                      <td className="border border-gray-300 px-4 py-2">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {item.user.nim}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {item.user.name}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {item.user.Kelas.map((k) => k.nama).join(", ") || "-"}
+                      </td>
+                      <td
+                        className={`border border-gray-300 px-4 py-2 font-bold ${
+                          item.hadir === "selesai"
+                            ? ""
+                            : item.hadir === null || item.hadir === undefined
+                            ? "text-gray-500"
+                            : ""
+                        }`}
+                      >
+                        {item.hadir === "selesai"
+                          ? "Hadir"
+                          : item.hadir
+                          ? "Tidak Hadir"
+                          : "-"}
+                      </td>
+
+                      <td className="border border-gray-300 px-4 py-2">
+                        {item.tanggal ? formatTanggal(item.tanggal) : "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              )}
             </tbody>
           </table>
         </div>
