@@ -506,7 +506,7 @@ const MainUsers = () => {
                                           absenToday.hadir !== "selesai"
                                             ? "bg-blue disabled:bg-gray-500"
                                             : "bg-green-600"
-                                        } disabled:hover:opacity-100  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
+                                        } disabled:hover:opacity-100 disabled:cursor-not-allowed  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
                                       >
                                         {absenToday.hadir === "hadir" ||
                                         absenToday.hadir === "selesai" ? (
@@ -567,7 +567,7 @@ const MainUsers = () => {
                                         onClick={() =>
                                           handlePulang(absenToday.id)
                                         }
-                                        className="border disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all md:w-64 lg:w-64 w-36 text-black  py-3  rounded-md"
+                                        className="border disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all md:w-64 lg:w-64 w-36 text-black  py-3  rounded-md"
                                       >
                                         <div className="flex items-center justify-center gap-2">
                                           {absenToday.pulang !== null ? (
