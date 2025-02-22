@@ -135,7 +135,7 @@ const MainLogin = () => {
               htmlFor="nim"
               className="block text-gray-700 font-medium text-sm lg:text-base md:text-base"
             >
-              NISN / NIP
+              NISN / KODE GURU
             </label>
             <div className="flex items-center border border-gray-300 rounded-lg">
               <FaUser className="ml-3 text-gray-400" size={20} />

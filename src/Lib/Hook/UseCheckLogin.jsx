@@ -100,6 +100,7 @@ const UseCheckLogin = () => {
     try {
       const response = await CheckSession();
       setUser(response.data);
+      localStorage.setItem("token", response.data.token);
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");

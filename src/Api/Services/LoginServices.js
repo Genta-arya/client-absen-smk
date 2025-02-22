@@ -30,8 +30,9 @@ export const HandleRegister = async (data) => {
 };
 
 export const CheckSession = async () => {
+  const token = localStorage.getItem("token");
   try {
-    const response = await Axios.get("/auth/session");
+    const response = await Axios.post("/auth/session" , { token });
     return response.data;
   } catch (error) {
     handleError(error);
