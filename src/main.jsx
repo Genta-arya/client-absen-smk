@@ -3,11 +3,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import NotFound from "./components/NotFound.jsx";
-
 import MainLogin from "./View/Auth/MainLogin.jsx";
-
-import { Toaster } from "sonner";
-
 import MainUser from "./View/User/MainUser.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import MainSetting from "./View/Setting/MainSetting.jsx";
@@ -24,10 +20,15 @@ import InfoAbsensi from "./components/RoleView/Users/Absensi/InfoAbsensi.jsx";
 import MainCalendar from "./components/RoleView/Users/Calendar/MainCalendar.jsx";
 import MainLaporan from "./components/RoleView/Users/Laporan/MainLaporan.jsx";
 import MainFormLaporan from "./components/RoleView/Users/Laporan/MainFormLaporan.jsx";
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 import MainFormLaporanMingguan from "./components/RoleView/Users/Laporan/MainFormLaporanMingguan.jsx";
 import MainRekababsensi from "./components/RoleView/Pembimbing/RekapAbsensi/MainRekababsensi.jsx";
+import { Suspense } from "react";
+import Loading from "./components/Loading.jsx";
+import ErrorPage from "./components/ErrorPage.jsx";
+import { Toaster } from "sonner";
+import BrowserCheck from "./components/BrowserChceck.jsx";
 const route = createBrowserRouter([
   {
     path: "/admin",
@@ -35,7 +36,11 @@ const route = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <App />,
+        element: (
+          <BrowserCheck>
+            <App />
+          </BrowserCheck>
+        ),
       },
       {
         path: "/admin/user",
@@ -88,7 +93,7 @@ const route = createBrowserRouter([
       {
         path: "/admin/management/pkl/rekap/absensi/:id",
         element: <MainRekababsensi />,
-      }
+      },
     ],
   },
 
@@ -98,7 +103,11 @@ const route = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <App />,
+        element: (
+          <BrowserCheck>
+            <App />
+          </BrowserCheck>
+        ),
       },
       {
         path: "/app/laporan/:id",
@@ -159,15 +168,23 @@ const route = createBrowserRouter([
   },
 ]);
 
-createRoot(document.getElementById("root")).render(
-  <>
-    <Toaster
-      richColors
-      position="bottom-center"
-      toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
-    />
-    <SpeedInsights />
-    <Analytics />
-    <RouterProvider router={route} />
-  </>
-);
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  document.body.innerHTML = "<div id='error-root'></div>";
+  createRoot(document.getElementById("error-root")).render(<ErrorPage />);
+} else {
+  createRoot(rootElement).render(
+    <>
+      <Suspense fallback={<Loading />}>
+        <Toaster
+          richColors
+          position="bottom-center"
+          toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
+        />
+
+        <RouterProvider router={route} />
+      </Suspense>
+    </>
+  );
+}

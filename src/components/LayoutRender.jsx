@@ -5,8 +5,9 @@ import MainUsers from "./RoleView/Users/MainUsers";
 import Container from "./Container";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 import MainUser from "../View/User/MainUser";
+import { Toaster } from "sonner";
 
-const LayoutRender = ({loading}) => {
+const LayoutRender = ({ loading }) => {
   const { user } = useAuthStore();
   const role = user?.role;
   const navigate = useNavigate();
@@ -55,6 +56,11 @@ const LayoutRender = ({loading}) => {
           )}
         </>
       )}
+      <Toaster
+        richColors
+        position="bottom-center"
+        toastOptions={{ style: { fontSize: "14px" }, closeButton: true }}
+      />
     </>
   );
 };
