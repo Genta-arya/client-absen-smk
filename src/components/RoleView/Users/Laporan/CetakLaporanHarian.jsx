@@ -6,6 +6,7 @@ import Loading from "../../../Loading";
 import ContainerGlobal from "../../../ContainerGlobal";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
+import NotfoundData from "../../../NotfoundData";
 
 // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
 export const getDayName = (dateString) => {
@@ -56,6 +57,7 @@ const CetakLaporanHarian = () => {
   });
 
   if (loading) return <Loading />;
+  if (!laporan) return <NotfoundData />;
 
   return (
     <div className="p-4">

@@ -8,6 +8,7 @@ import Loading from "../../../Loading";
 import ContainerGlobal from "../../../ContainerGlobal";
 import { formatDate, getDayName } from "./CetakLaporanHarian";
 import { div } from "framer-motion/m";
+import NotfoundData from "../../../NotfoundData";
 
 const CetakLaporanMingguan = () => {
   const { id, week } = useParams();
@@ -47,6 +48,8 @@ const CetakLaporanMingguan = () => {
   });
 
   if (loading) return <Loading />;
+
+  if (!laporan) return <NotfoundData />;
 
   return (
     <div className="p-4">
@@ -96,8 +99,8 @@ const CetakLaporanMingguan = () => {
             ))}
           </div>
 
-          <div className="mt-8">
-            <table className="w-full border-collapse border border-black text-sm">
+          <div className="mt-8  overflow-auto">
+            <table className="w-full overflow-auto border-collapse border border-black text-sm">
               <thead>
                 <tr className="bg-gray-200">
                   <th className="border border-black p-2 w-10">No</th>

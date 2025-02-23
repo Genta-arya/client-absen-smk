@@ -5,6 +5,7 @@ import { useReactToPrint } from "react-to-print";
 import Loading from "../../../Loading";
 import { useParams } from "react-router-dom";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
+import NotfoundData from "../../../NotfoundData";
 
 const CetakLaporanRekap = () => {
   const { id } = useParams();
@@ -43,7 +44,7 @@ const CetakLaporanRekap = () => {
   });
 
   if (loading) return <Loading />;
-  if (!laporan) return <p>Tidak ada data laporan.</p>;
+  if (!laporan) return <NotfoundData />;
 
   // Ambil kunci yang numerik untuk data laporan (hindari "nama_pembimbing")
   const laporanKeys = Object.keys(laporan).filter((key) => !isNaN(key));
@@ -89,8 +90,8 @@ const CetakLaporanRekap = () => {
         </div>
 
         {/* Tabel Pelaksanaan Kegiatan */}
-        <div className="mt-8">
-          <table className="w-full border-collapse border border-black text-sm">
+        <div className="mt-8  overflow-auto">
+          <table className="w-full overflow-auto border-collapse border border-black text-sm">
             <thead>
               <tr className="bg-gray-200">
                 <th className="border border-black p-2 w-10">No</th>
