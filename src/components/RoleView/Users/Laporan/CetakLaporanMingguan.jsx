@@ -129,7 +129,7 @@ const CetakLaporanMingguan = () => {
           <div className="flex justify-end mt-12 mr-10">
             <div className="text-center">
               <p>Instruktur</p>
-              <p className="font-semibold mt-12">
+              <p className="font-semibold mt-24">
                 ( {laporan?.nama_instruktur || "............"} )
               </p>
             </div>
