@@ -7,6 +7,7 @@ import { useReactToPrint } from "react-to-print";
 import Loading from "../../../Loading";
 import ContainerGlobal from "../../../ContainerGlobal";
 import { formatDate, getDayName } from "./CetakLaporanHarian";
+import { div } from "framer-motion/m";
 
 const CetakLaporanMingguan = () => {
   const { id, week } = useParams();
@@ -48,12 +49,13 @@ const CetakLaporanMingguan = () => {
   if (loading) return <Loading />;
 
   return (
-    <ContainerGlobal title="Cetak Laporan Mingguan">
+  <div>
+
       {/* Pastikan ref digunakan dengan benar */}
       <div>
         <button
           onClick={handlePrint}
-          className="mb-4 px-4 py-2 w-full bg-blue text-white rounded-lg"
+          className="mb-4 px-4 py-2 w-full print:hidden bg-blue text-white rounded-lg"
         >
           Cetak Laporan
         </button>
@@ -132,7 +134,8 @@ const CetakLaporanMingguan = () => {
           </div>
         </div>
       </div>
-    </ContainerGlobal>
+    
+      </div>
   );
 };
 

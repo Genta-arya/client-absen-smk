@@ -58,92 +58,97 @@ const CetakLaporanHarian = () => {
   if (loading) return <Loading />;
 
   return (
-    <ContainerGlobal title="Cetak Laporan Harian">
-      {/* Pastikan ref digunakan dengan benar */}
-      <div>
-        <button
-          onClick={handlePrint}
-          className="mb-4 px-4 py-2 w-full bg-blue text-white rounded-lg"
-        >
-          Cetak Laporan
-        </button>
-        <div
-          ref={componentRef}
-          className="border print:border-none p-6  bg-white"
-        >
-          <h1 className="text-xl font-bold text-center mb-8">
-            RINCIAN KEGIATAN PKL HARIAN
-          </h1>
+    <div className="p-4">
+    
+        {/* Pastikan ref digunakan dengan benar */}
+        <div>
+          <button
+            onClick={handlePrint}
+            className="mb-4 px-4 py-2 w-full print:hidden bg-blue text-white rounded-lg"
+          >
+            Cetak Laporan
+          </button>
+          <div
+            ref={componentRef}
+            className="border print:border-none p-6  bg-white"
+          >
+            <h1 className="text-xl font-bold text-center mb-8">
+              RINCIAN KEGIATAN PKL HARIAN
+            </h1>
 
-          {/* Data Peserta */}
-          <div className="space-y-2 mb-6">
-            {[
-              { label: "Nama Peserta Didik", value: user?.name || "-" },
-              {
-                label: "Dunia Kerja Tempat PKL",
-                value: user?.Pkl?.[0]?.name || "-",
-              },
-              {
-                label: "Nama Instruktur",
-                value: laporan?.nama_instruktur || "-",
-              },
-              {
-                label: "Nama Guru Pembimbing",
-                value: laporan?.nama_pembimbing || "-",
-              },
-              { label: "Hari", value: getDayName(laporan?.tanggal) || "-" },
-              { label: "Tanggal", value: formatDate(laporan?.tanggal) || "-" },
-            ].map((item, index) => (
-              <div key={index} className="flex justify-between gap-4 text-sm">
-                <p className="font-semibold w-52">{item.label}</p>
-                <p className="font-semibold">:</p>
-                <p className="flex-1">{item.value}</p>
-              </div>
-            ))}
-          </div>
+            {/* Data Peserta */}
+            <div className="space-y-2 mb-6">
+              {[
+                { label: "Nama Peserta Didik", value: user?.name || "-" },
+                {
+                  label: "Dunia Kerja Tempat PKL",
+                  value: user?.Pkl?.[0]?.name || "-",
+                },
+                {
+                  label: "Nama Instruktur",
+                  value: laporan?.nama_instruktur || "-",
+                },
+                {
+                  label: "Nama Guru Pembimbing",
+                  value: laporan?.nama_pembimbing || "-",
+                },
+                { label: "Hari", value: getDayName(laporan?.tanggal) || "-" },
+                {
+                  label: "Tanggal",
+                  value: formatDate(laporan?.tanggal) || "-",
+                },
+              ].map((item, index) => (
+                <div key={index} className="flex justify-between gap-4 text-sm">
+                  <p className="font-semibold w-52">{item.label}</p>
+                  <p className="font-semibold">:</p>
+                  <p className="flex-1">{item.value}</p>
+                </div>
+              ))}
+            </div>
 
-          {/* Pelaksanaan Kegiatan */}
-          <div className="space-y-4">
-            {[
-              {
-                title: "A. Nama Pekerjaan",
-                value: laporan?.nama_pekerjaan || "-",
-              },
-              {
-                title: "B. Perencanaan Kegiatan",
-                value: laporan?.perencanaan_kegiatan || "-",
-              },
-              {
-                title: "C. Pelaksanaan Kegiatan/hasil",
-                value: laporan?.pelaksanaan_kegiatan || "-",
-              },
-              {
-                title: "D. Catatan Instruktur",
-                value: laporan?.catatan_instruktur || "-",
-              },
-            ].map((item, index) => (
-              <div className="mt-12" key={index}>
-                <h2 className="font-bold text-sm">{item.title}</h2>
-                <input
-                  type="text"
-                  value={item.value}
-                  disabled
-                  className="w-full disabled:bg-white border p-2 rounded-md bg-gray-100 text-sm"
-                />
+            {/* Pelaksanaan Kegiatan */}
+            <div className="space-y-4">
+              {[
+                {
+                  title: "A. Nama Pekerjaan",
+                  value: laporan?.nama_pekerjaan || "-",
+                },
+                {
+                  title: "B. Perencanaan Kegiatan",
+                  value: laporan?.perencanaan_kegiatan || "-",
+                },
+                {
+                  title: "C. Pelaksanaan Kegiatan/hasil",
+                  value: laporan?.pelaksanaan_kegiatan || "-",
+                },
+                {
+                  title: "D. Catatan Instruktur",
+                  value: laporan?.catatan_instruktur || "-",
+                },
+              ].map((item, index) => (
+                <div className="mt-12" key={index}>
+                  <h2 className="font-bold text-sm">{item.title}</h2>
+                  <input
+                    type="text"
+                    value={item.value}
+                    disabled
+                    className="w-full disabled:bg-white border p-2 rounded-md bg-gray-100 text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end mt-12 mr-10">
+              <div className="text-center">
+                <p>Instruktur</p>
+                <p className="font-semibold mt-12">
+                  ( {laporan?.nama_instruktur || "............"} )
+                </p>
               </div>
-            ))}
-          </div>
-          <div className="flex justify-end mt-12 mr-10">
-            <div className="text-center">
-              <p>Instruktur</p>
-              <p className="font-semibold mt-12">
-                ( {laporan?.nama_instruktur || "............"} )
-              </p>
             </div>
           </div>
         </div>
-      </div>
-    </ContainerGlobal>
+ 
+    </div>
   );
 };
 
