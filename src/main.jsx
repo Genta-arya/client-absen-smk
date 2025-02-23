@@ -31,6 +31,7 @@ import { Toaster } from "sonner";
 import BrowserCheck from "./components/BrowserChceck.jsx";
 import CetakLaporanHarian from "./components/RoleView/Users/Laporan/CetakLaporanHarian.jsx";
 import CetakLaporanMingguan from "./components/RoleView/Users/Laporan/CetakLaporanMingguan.jsx";
+import CetakLaporanRekap from "./components/RoleView/Users/Laporan/CetakLaporanRekap.jsx";
 const route = createBrowserRouter([
   {
     path: "/admin",
@@ -154,6 +155,10 @@ const route = createBrowserRouter([
       {
         path: "/app/cetak/laporan/mingguan/:week/:id",
         element: <CetakLaporanMingguan />,
+      },
+      {
+        path: "/app/cetak/laporan/mingguan/rekap/:id",
+        element: <CetakLaporanRekap />,
       },
       {
         path: "/app/kalender",

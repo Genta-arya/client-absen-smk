@@ -37,7 +37,7 @@ export const formatDate = (dateString) => {
 };
 
 export let API_URL;
-const type = "production";
+const type = "productions";
 
 if (type === "production") API_URL = "https://pkl.apiservices.my.id/api";
 else API_URL = "http://localhost:8081/api";

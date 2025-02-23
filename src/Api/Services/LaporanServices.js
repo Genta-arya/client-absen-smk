@@ -37,6 +37,16 @@ export const getSingleLaporanMingguan = async (id) => {
   }
 };
 
+export const getLaporanMingguan = async (id) => {
+  try {
+    const response = await Axios.get("/report/data/laporan/all/mingguan/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+
 export const uploadLaporanHarina = async (data) => {
   try {
     const response = await Axios.post("/report/laporan/harian/" + data.id, {

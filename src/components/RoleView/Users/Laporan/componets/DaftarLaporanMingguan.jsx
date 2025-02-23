@@ -9,8 +9,10 @@ import {
   FaCalendar,
   FaCircle,
   FaClipboardList,
+  FaPrint,
 } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+import { div } from "framer-motion/m";
 
 const DaftarLaporanMingguan = () => {
   const { user } = useAuthStore();
@@ -78,6 +80,15 @@ const DaftarLaporanMingguan = () => {
     <div className="">
       {totalLaporan > 0 && (
         <>
+          {user?.role === "user" && (
+            <Link
+              to={`/app/cetak/laporan/mingguan/rekap/${user?.id}`}
+              className="flex justify-end items-center gap-2 cursor-pointer"
+            >
+              <FaPrint />
+              <p>Rekap Laporan</p>
+            </Link>
+          )}
           <div className="flex justify-between items-center gap-2 mb-6">
             <div className="text-xs md:w-full lg:w-full w-full">
               <label className="block mb-2">Status:</label>
