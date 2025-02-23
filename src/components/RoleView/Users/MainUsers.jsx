@@ -165,21 +165,13 @@ const MainUsers = () => {
     }
 
     const jamMasuks = DateTime.fromISO(jamMasuk); // Menggunakan Luxon untuk jamMasuk
-    const jamMasukHours = jamMasuks.hour;
-    const jamMasukMinutes = jamMasuks.minute;
+    const jamTutup = jamMasuks.plus({ minutes: 15 }); // Hanya aktif selama 15 menit setelah jamMasuk
 
-    const jamTutup = jamMasuks.plus({ hours: 2 }); // Jam tutup 2 jam setelah jam masuk
+    const serverTime = serverDate.toMillis(); // Waktu server dalam milidetik
+    const masukTime = jamMasuks.toMillis(); // Waktu masuk dalam milidetik
+    const tutupTime = jamTutup.toMillis(); // Waktu tutup dalam milidetik
 
-    const serverHours = serverDate.hour;
-    const serverMinutes = serverDate.minute;
-
-    const isWithinMasukTime =
-      (serverHours > jamMasukHours ||
-        (serverHours === jamMasukHours && serverMinutes >= jamMasukMinutes)) &&
-      (serverHours < jamTutup.hour ||
-        (serverHours === jamTutup.hour && serverMinutes <= jamTutup.minute));
-
-    return !isWithinMasukTime;
+    return !(serverTime >= masukTime && serverTime <= tutupTime);
   };
 
   const isPulangDisabled = () => {
@@ -540,20 +532,21 @@ const MainUsers = () => {
                                             </div>
                                             <div className="flex ml-1">
                                               <p>
-                                                {new Date(jamMasuk).getHours() +
-                                                  2}
+                                                {DateTime.fromISO(jamMasuk)
+                                                  .plus({ minutes: 15 })
+                                                  .hour.toString()
+                                                  .padStart(2, "0")}
                                                 :
                                               </p>
                                               <p>
-                                                {new Date(
-                                                  jamMasuk
-                                                ).getMinutes()}
+                                                {DateTime.fromISO(jamMasuk)
+                                                  .plus({ minutes: 15 })
+                                                  .minute.toString()
+                                                  .padStart(2, "0")}
                                               </p>
                                             </div>
                                           </div>
                                         </h1>
-
-                                        <h1></h1>
                                       </div>
                                     </div>
 

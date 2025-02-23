@@ -111,7 +111,7 @@ const DaftarLaporanMingguan = () => {
         </>
       )}
 
-{filteredData.length === 0 || loading ? (
+      {filteredData.length === 0 || loading ? (
         <NotfoundData />
       ) : (
         <div className="space-y-6">
@@ -119,8 +119,8 @@ const DaftarLaporanMingguan = () => {
             <Link
               to={
                 user?.role !== "user"
-                  ? `/admin/laporan/mingguan/${item.id}`
-                  : `/app/laporan/mingguan/${item.id}`
+                  ? `/admin/laporan/mingguan/${idx + 1}/${item.id}`
+                  : `/app/laporan/mingguan/${idx + 1}/${item.id}`
               }
               key={idx}
               className=" flex border-b hover:bg-gray-50 transition-all ease-in-out duration-300 py-2 px-3 justify-between"

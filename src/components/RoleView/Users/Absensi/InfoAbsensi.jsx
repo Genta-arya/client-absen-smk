@@ -67,29 +67,24 @@ const InfoAbsensi = () => {
 
   const validateDatang = (datang) => {
     if (!datang) return "-";
-  
+
     // Pastikan waktu datang diparse dengan benar
     const datangDate = DateTime.fromISO(datang).setZone("Asia/Jakarta");
     const jamMasukDate = DateTime.fromISO(jamMasuk).setZone("Asia/Jakarta");
-  
+
     // Periksa apakah parsing berhasil
     if (!datangDate.isValid || !jamMasukDate.isValid) {
-
       return "-";
     }
-  
+
     // Ambil jam dan menit saja (abaikan tanggal)
     const datangJamMenit = datangDate.toFormat("HH:mm");
     const jamMasukJamMenit = jamMasukDate.toFormat("HH:mm");
-  
-   
-  
+
     // Batas keterlambatan: 2 jam setelah jam masuk
-    const batasKeterlambatan = jamMasukDate.plus({ hours: 2 });
+    const batasKeterlambatan = jamMasukDate.plus({ minutes: 15 });
     const batasKeterlambatanJamMenit = batasKeterlambatan.toFormat("HH:mm");
-  
-   
-  
+
     // Bandingkan hanya jam dan menit
     if (datangJamMenit <= batasKeterlambatanJamMenit) {
       return "Hadir"; // Jika datang sebelum atau tepat batas
@@ -100,29 +95,24 @@ const InfoAbsensi = () => {
 
   // Validasi Waktu Pulang
   const validatePulang = (pulang) => {
-    if (!pulang ) return "-";
-  
+    if (!pulang) return "-";
+
     // Pastikan waktu pulang diparse dengan benar
     const pulangDate = DateTime.fromISO(pulang).setZone("Asia/Jakarta");
     const jamKeluarDate = DateTime.fromISO(jamKeluar).setZone("Asia/Jakarta");
-  
+
     // Periksa apakah parsing berhasil
     if (!pulangDate.isValid || !jamKeluarDate.isValid) {
-
       return "-";
     }
-  
+
     // Ambil jam dan menit saja (abaikan tanggal)
     const pulangJamMenit = pulangDate.toFormat("HH:mm");
-    const jamKeluarJamMenit = jamKeluarDate.toFormat("HH:mm");
-  
-  
+
     // Batas pulang cepat: 1 jam sebelum jam keluar
     const batasPulangCepat = jamKeluarDate.minus({ hours: 1 });
     const batasPulangCepatJamMenit = batasPulangCepat.toFormat("HH:mm");
-  
 
-  
     // Bandingkan hanya jam dan menit
     if (pulangJamMenit >= batasPulangCepatJamMenit) {
       return "Pulang"; // Jika pulang sesuai atau lebih lambat dari batas
@@ -130,9 +120,6 @@ const InfoAbsensi = () => {
       return "Pulang Cepat"; // Jika pulang lebih cepat dari batas
     }
   };
-  
-
-
 
   if (loading) return <Loading />;
 
@@ -153,7 +140,8 @@ const InfoAbsensi = () => {
         <div className="  ">
           {data ? (
             <>
-              {!data?.datang || (data?.hadir !== "hadir" && data?.hadir !== "selesai") ? (
+              {!data?.datang ||
+              (data?.hadir !== "hadir" && data?.hadir !== "selesai") ? (
                 <div className="mt-24 flex flex-col gap-4">
                   <p className="text-center text-red-500">
                     {formatTanggal(data.tanggal)}

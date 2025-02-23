@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ContainerGlobal from "../../../ContainerGlobal";
 import {
   deleteFotoById,
@@ -11,7 +11,7 @@ import Loading from "../../../Loading";
 import NotfoundData from "../../../NotfoundData";
 import { toast } from "sonner";
 import { ScaleLoader } from "react-spinners";
-import { FaSave, FaTag } from "react-icons/fa";
+import { FaPrint, FaSave, FaTag } from "react-icons/fa";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 
@@ -159,9 +159,11 @@ const MainFormLaporan = () => {
   return (
     <ContainerGlobal>
       <div className="">
-        <div className="flex items-center gap-2 mb-8">
-          <FaTag className="text-blue text-xl" />
-          <h1 className="text-2xl font-bold text-blue ">Laporan Harian</h1>
+        <div>
+          <div className="flex items-center gap-2 mb-8">
+            <FaTag className="text-blue text-xl" />
+            <h1 className="text-2xl font-bold text-blue ">Laporan Harian</h1>
+          </div>
         </div>
         {!laporan.pembimbingId ? (
           <NotfoundData />
@@ -372,6 +374,13 @@ const MainFormLaporan = () => {
             )}
           </form>
         )}
+        <Link
+          to={`/app/cetak/laporan/harian/${laporan.id}`}
+          className="flex items-center gap-2 justify-center mt-2 border py-2 rounded-md hover:cursor-pointer"
+        >
+          <FaPrint className="text-blue text-xl" />
+          <h1 className="text-xs font-bold text-blue ">Cetak Laporan Harian</h1>
+        </Link>
       </div>
     </ContainerGlobal>
   );

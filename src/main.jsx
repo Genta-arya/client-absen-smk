@@ -29,6 +29,8 @@ import Loading from "./components/Loading.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
 import { Toaster } from "sonner";
 import BrowserCheck from "./components/BrowserChceck.jsx";
+import CetakLaporanHarian from "./components/RoleView/Users/Laporan/CetakLaporanHarian.jsx";
+import CetakLaporanMingguan from "./components/RoleView/Users/Laporan/CetakLaporanMingguan.jsx";
 const route = createBrowserRouter([
   {
     path: "/admin",
@@ -114,7 +116,7 @@ const route = createBrowserRouter([
         element: <MainFormLaporan />,
       },
       {
-        path: "/app/laporan/mingguan/:id",
+        path: "/app/laporan/mingguan/:week/:id",
         element: <MainFormLaporanMingguan />,
       },
       {
@@ -144,6 +146,14 @@ const route = createBrowserRouter([
       {
         path: "/app/detail/absensi",
         element: <DetailAbsensi />,
+      },
+      {
+        path: "/app/cetak/laporan/harian/:id",
+        element: <CetakLaporanHarian />,
+      },
+      {
+        path: "/app/cetak/laporan/mingguan/:week/:id",
+        element: <CetakLaporanMingguan />,
       },
       {
         path: "/app/kalender",

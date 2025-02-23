@@ -42,19 +42,23 @@ const Calendar = ({ data }) => {
       let textColorPulang = "";
 
       // Cek waktu datang menggunakan Luxon
-      if (absen.hadir === "hadir" || absen.hadir === "selesai" && absen.datang) {
-        const datangDate = DateTime.fromISO(absen.datang, { zone: "UTC" })
-          .setZone("Asia/Jakarta");
+      if (
+        absen.hadir === "hadir" ||
+        (absen.hadir === "selesai" && absen.datang)
+      ) {
+        const datangDate = DateTime.fromISO(absen.datang, {
+          zone: "UTC",
+        }).setZone("Asia/Jakarta");
 
         timeFormattedDatang = datangDate.toFormat("HH:mm");
 
-  
-       
+        const batasJamPlus2 = DateTime.fromISO(jamMasuk, {
+          zone: "Asia/Jakarta",
+        }).plus({ minutes: 15 });
 
-        const batasJamPlus2 = DateTime.fromISO(jamMasuk, { zone: "Asia/Jakarta" }).plus({ hours: 2 });
-       
+        const batasJamPlus15Formatted = batasJamPlus2.toFormat("HH:mm");
 
-        if (timeFormattedDatang > batasJamPlus2) {
+        if (timeFormattedDatang > batasJamPlus15Formatted) {
           timeFormattedDatang = `${timeFormattedDatang}`; // Jika datang setelah batas
           bgColorDatang = "purple";
           textColorDatang = "white";
@@ -75,7 +79,9 @@ const Calendar = ({ data }) => {
 
         timeFormattedPulang = pulangDate.toFormat("HH:mm"); // Format waktu pulang menggunakan Luxon
 
-        const batasJamPlus1 = DateTime.fromISO(jamKeluar, { zone: "Asia/Jakarta" }).plus({ hours: 1 });
+        const batasJamPlus1 = DateTime.fromISO(jamKeluar, {
+          zone: "Asia/Jakarta",
+        }).plus({ hours: 1 });
 
         if (timeFormattedDatang > batasJamPlus1) {
           timeFormattedPulang = ` ${timeFormattedPulang}`;

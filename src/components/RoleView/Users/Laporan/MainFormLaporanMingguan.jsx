@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ContainerGlobal from "../../../ContainerGlobal";
 import {
   deleteFotoById,
@@ -10,13 +10,14 @@ import {
 import { uploadProfile } from "../../../../Api/Services/LoginServices";
 import Loading from "../../../Loading";
 import NotfoundData from "../../../NotfoundData";
-import { FaSave, FaTag } from "react-icons/fa";
+import { FaPrint, FaSave, FaTag } from "react-icons/fa";
 import { ScaleLoader } from "react-spinners";
 import { toast } from "sonner";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 
 const MainFormLaporanMingguan = () => {
-  const { id } = useParams();
+  const { id , week } = useParams();
+  console.log(week);
   const [laporan, setLaporan] = useState({
     pembimbingId: "",
     nama_instruktur: "",
@@ -279,7 +280,6 @@ const MainFormLaporanMingguan = () => {
                         src={URL.createObjectURL(file)}
                         alt="Preview"
                         loading="lazy"
-                     
                         className="w-full h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
                       />
                       {user?.role === "user" && (
@@ -319,6 +319,13 @@ const MainFormLaporanMingguan = () => {
             )}
           </form>
         )}
+        <Link
+          to={`/app/cetak/laporan/mingguan/${week}/${laporan.id}`}
+          className="flex items-center gap-2 justify-center mt-2 border py-2 rounded-md hover:cursor-pointer"
+        >
+          <FaPrint className="text-blue text-xl" />
+          <h1 className="text-xs font-bold text-blue ">Cetak Laporan Mingguan</h1>
+        </Link>
       </div>
     </ContainerGlobal>
   );
