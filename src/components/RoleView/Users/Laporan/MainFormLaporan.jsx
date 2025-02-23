@@ -374,13 +374,17 @@ const MainFormLaporan = () => {
             )}
           </form>
         )}
-        <Link
-          to={`/app/cetak/laporan/harian/${laporan.id}`}
-          className="flex items-center gap-2 justify-center mt-2 border py-2 rounded-md hover:cursor-pointer"
-        >
-          <FaPrint className="text-blue text-xl" />
-          <h1 className="text-xs font-bold text-blue ">Cetak Laporan Harian</h1>
-        </Link>
+        {user?.role === "user" && (
+          <Link
+            to={`/app/cetak/laporan/harian/${laporan.id}`}
+            className="flex items-center gap-2 justify-center mt-2 border py-2 rounded-md hover:cursor-pointer"
+          >
+            <FaPrint className="text-blue text-xl" />
+            <h1 className="text-xs font-bold text-blue ">
+              Cetak Laporan Harian
+            </h1>
+          </Link>
+        )}
       </div>
     </ContainerGlobal>
   );
