@@ -9,7 +9,7 @@ const MainHome = ({ role, user }) => {
       <>
         <Tools title={"Dashboard"} />
         <Headers role={role} user={user} />
-        <Charts />
+        {/* <Charts /> */}
       </>
     </div>
   );
