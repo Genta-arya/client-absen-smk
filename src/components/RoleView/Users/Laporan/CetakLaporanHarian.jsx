@@ -143,7 +143,7 @@ const CetakLaporanHarian = () => {
                         <img
                           src={foto.foto_url}
                           alt={`Bukti ${index + 1}`}
-                          className="w-20 rounded-md"
+                          className="w-14 rounded-md"
                         />
                       </div>
                     
