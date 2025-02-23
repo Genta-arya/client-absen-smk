@@ -374,7 +374,7 @@ const MainFormLaporan = () => {
             )}
           </form>
         )}
-        {user?.role === "user" && (
+        {user?.role !== "user" && (
           <Link
             to={`/app/cetak/laporan/harian/${laporan.id}`}
             className="flex items-center gap-2 justify-center mt-2 border py-2 rounded-md hover:cursor-pointer"
