@@ -132,29 +132,30 @@ const CetakLaporanHarian = () => {
             ))}
 
             {laporan.fotos?.length > 0 && (
-              <div className="print:mt-10 mt-8">
-                <h2 className="font-bold text-sm mb-2 text-center">
-                  Gambar Kegiatan
+              <>
+                <h2 className="font-bold text-sm mb-2 ">
+                  D. Gambar Kegiatan
                 </h2>
-                <div className="grid grid-cols-3 gap-4">
-                  {laporan.fotos.map((foto, index) => (
-                    <div key={index} className=" p-2 rounded-md ">
-                      <div className="flex justify-center">
-                        <img
-                          src={foto.foto_url}
-                          alt={`Bukti ${index + 1}`}
-                          className="w-14 rounded-md"
-                        />
+                <div className="border border-gray-400 p-2 rounded-md">
+                  <div className="grid grid-cols-3 gap-2">
+                    {laporan.fotos.map((foto, index) => (
+                      <div key={index} className=" p-2 rounded-md ">
+                        <div className="flex justify-center">
+                          <img
+                            src={foto.foto_url}
+                            alt={`Bukti ${index + 1}`}
+                            className="w-14 rounded-md"
+                          />
+                        </div>
                       </div>
-                    
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </>
             )}
 
             <div className="mt-3">
-              <h2 className="font-bold text-sm">D. Catatan Instruktur</h2>
+              <h2 className="font-bold text-sm">E. Catatan Instruktur</h2>
               <p className="mt-2 border border-gray-400 p-2 rounded-md text-xs ">
                 {laporan?.catatan_instruktur || "-"}
               </p>
