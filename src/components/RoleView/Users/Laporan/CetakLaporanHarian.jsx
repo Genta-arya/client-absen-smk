@@ -108,7 +108,7 @@ const CetakLaporanHarian = () => {
           </div>
 
           {/* Pelaksanaan Kegiatan */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[
               {
                 title: "A. Nama Pekerjaan",
@@ -122,48 +122,54 @@ const CetakLaporanHarian = () => {
                 title: "C. Pelaksanaan Kegiatan/hasil",
                 value: laporan?.pelaksanaan_kegiatan || "-",
               },
-              {
-                title: "D. Catatan Instruktur",
-                value: laporan?.catatan_instruktur || "-",
-              },
             ].map((item, index) => (
               <div className="mt-5" key={index}>
                 <h2 className="font-bold text-sm">{item.title}</h2>
-                <p className="mt-2 border border-gray-400 p-2 rounded-md text-sm">
+                <p className="mt-2 border border-gray-400 p-2 rounded-md text-xs">
                   {item.value}
                 </p>
               </div>
             ))}
 
+            {laporan.fotos?.length > 0 && (
+              <div className="print:mt-10 mt-8">
+                <h2 className="font-bold text-sm mb-2 text-center">
+                  Gambar Kegiatan
+                </h2>
+                <div className="grid grid-cols-3 gap-4">
+                  {laporan.fotos.map((foto, index) => (
+                    <div key={index} className=" p-2 rounded-md ">
+                      <div className="flex justify-center">
+                        <img
+                          src={foto.foto_url}
+                          alt={`Bukti ${index + 1}`}
+                          className="w-20 rounded-md"
+                        />
+                      </div>
+                    
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-3">
+              <h2 className="font-bold text-sm">D. Catatan Instruktur</h2>
+              <p className="mt-2 border border-gray-400 p-2 rounded-md text-xs ">
+                {laporan?.catatan_instruktur || "-"}
+              </p>
+            </div>
+
             <div className="flex justify-end mt-12 mr-10">
               <div className="text-center">
                 <p>Instruktur</p>
-                <p className="font-semibold mt-24">
+                <p className="font-semibold mt-16">
                   ( {laporan?.nama_instruktur || "............"} )
                 </p>
               </div>
             </div>
             {/* Bukti Laporan Kegiatan */}
           </div>
-          {laporan.fotos?.length > 0 && (
-            <div className="print:mt-40 mt-8">
-              <h2 className="font-bold text-sm mb-2 text-center">
-                Lampiran Laporan PKL
-              </h2>
-              <div className="grid grid-cols-3 gap-4">
-                {laporan.fotos.map((foto, index) => (
-                  <div key={index} className="border p-2 rounded-md">
-                    <img
-                      src={foto.foto_url}
-                      alt={`Bukti ${index + 1}`}
-                      className="w-full h-auto rounded-md"
-                    />
-                    <p className="text-xs text-center">Gambar {index + 1}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
