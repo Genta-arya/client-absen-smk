@@ -49,8 +49,7 @@ const CetakLaporanMingguan = () => {
   if (loading) return <Loading />;
 
   return (
-  <div>
-
+    <div className="p-4">
       {/* Pastikan ref digunakan dengan benar */}
       <div>
         <button
@@ -134,8 +133,7 @@ const CetakLaporanMingguan = () => {
           </div>
         </div>
       </div>
-    
-      </div>
+    </div>
   );
 };
 
