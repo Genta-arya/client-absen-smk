@@ -11,7 +11,7 @@ import { ResponseHandler } from "../../Utils/ResponseHandler";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
-import icon from "../../assets/icon.png"
+import icon from "../../assets/icon.png";
 
 const MainLogin = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -27,7 +27,7 @@ const MainLogin = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
- 
+
   const handleKeyUp = (event) => {
     if (event.getModifierState("CapsLock")) {
       setCapslock(true);
@@ -53,7 +53,6 @@ const MainLogin = () => {
     };
   }, [capslock]);
 
- 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -111,14 +110,9 @@ const MainLogin = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-blue dark:bg-dark-bg">
-    
       <div className="bg-white p-8  rounded-lg shadow-lg w-[90%] lg:w-[30%] border-t-4 border-orange-500">
         <div className="flex flex-col items-center mb-6">
-          <img
-            src={icon}
-            alt="Logo"
-            className="w-32 object-fill h-32 "
-          />
+          <img src={icon} alt="Logo" className="w-32 object-fill h-32 " />
           <h2 className="text-2xl mt-2 font-semibold text-center text-gray-800 ">
             DIGITAL
           </h2>
@@ -250,7 +244,7 @@ const MainLogin = () => {
               <button
                 className="flex items-center gap-2 mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all"
                 onClick={() =>
-                  window.open("https://wa.me/6289618601348", "_blank")
+                  window.open("https://wa.me/6285292460880", "_blank")
                 }
               >
                 <FaWhatsapp size={20} />

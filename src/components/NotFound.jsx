@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Text } from "../constants/Constants";
+import { toast } from "sonner";
 
 const NotFound = () => {
   const replaceUrl = () => {
@@ -9,6 +10,14 @@ const NotFound = () => {
 
   useEffect(() => {
     replaceUrl();
+  }, []);
+
+  // dalam 3 detik arahkan ke /
+  useEffect(() => {
+    toast.info("Kamu akan diarahkan ke halaman utama dalam 3 detik.");
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 3000);
   }, []);
 
   return (
