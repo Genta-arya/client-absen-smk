@@ -105,6 +105,7 @@ const UseCheckLogin = () => {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
         localStorage.removeItem("token");
+        window.location.href = "/";
       }
       ResponseHandler(error.response, "/");
       localStorage.removeItem("token");

@@ -26,6 +26,7 @@ const LayoutRender = ({ loading }) => {
         break;
 
       default:
+        navigate("/");
         break;
     }
   }, [role, navigate]);
