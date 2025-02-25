@@ -32,7 +32,13 @@ import BrowserCheck from "./components/BrowserChceck.jsx";
 import CetakLaporanHarian from "./components/RoleView/Users/Laporan/CetakLaporanHarian.jsx";
 import CetakLaporanMingguan from "./components/RoleView/Users/Laporan/CetakLaporanMingguan.jsx";
 import CetakLaporanRekap from "./components/RoleView/Users/Laporan/CetakLaporanRekap.jsx";
+import Maintenance from "./components/Maintenance.jsx";
 const route = createBrowserRouter([
+  
+  {
+    path: "/maintenance",
+    element: <Maintenance />,
+  },
   {
     path: "/admin",
     element: <ProtectedRoute redirectPath="/login" />,

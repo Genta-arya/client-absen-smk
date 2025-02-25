@@ -133,9 +133,7 @@ const CetakLaporanHarian = () => {
 
             {laporan.fotos?.length > 0 && (
               <>
-                <h2 className="font-bold text-sm mb-2 ">
-                  D. Gambar Kegiatan
-                </h2>
+                <h2 className="font-bold text-sm mb-2 ">D. Gambar Kegiatan</h2>
                 <div className="border border-gray-400 p-2 rounded-md">
                   <div className="grid grid-cols-3 gap-2">
                     {laporan.fotos.map((foto, index) => (

@@ -28,6 +28,14 @@ const MainLogin = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+
+  // otomatis redirect to maintenance page
+  useEffect(() => { 
+    navigate("/maintenance");
+    toast.info("Sistem sedang dalam perbaikan , silahkan coba lagi nanti.");
+  
+  }, []);
+
   const handleKeyUp = (event) => {
     if (event.getModifierState("CapsLock")) {
       setCapslock(true);
