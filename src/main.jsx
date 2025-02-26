@@ -40,8 +40,8 @@ const route = createBrowserRouter([
     element: <Maintenance />,
   },
   {
-    path: "/admin",
-    element: <ProtectedRoute redirectPath="/login" />,
+    path: "/admin", 
+    element: <ProtectedRoute />,
     children: [
       {
         path: "",
@@ -108,7 +108,7 @@ const route = createBrowserRouter([
 
   {
     path: "/app",
-    element: <ProtectedRoute redirectPath="/login" />,
+    element: <ProtectedRoute />,
     children: [
       {
         path: "",

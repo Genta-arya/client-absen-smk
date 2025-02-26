@@ -5,7 +5,7 @@ import UseCheckLogin from "../Lib/Hook/UseCheckLogin";
 import Loading from "./Loading";
 import { toast } from "sonner";
 
-const ProtectedRoute = ({ redirectPath = "/login" }) => {
+const ProtectedRoute = () => {
   const { user, loading} = UseCheckLogin();
   const isAuthenticated = user?.status_login;
   const location = useLocation().pathname;
