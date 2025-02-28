@@ -51,7 +51,8 @@ const ListPKL = () => {
   }
 
   return (
-    <div className="lg:p-6 md:p-6 p-2">
+    <div className="lg:p-6 md:p-6 p-2 -mt-4">
+    
       {/* Search & Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-4">
         <input
@@ -72,6 +73,9 @@ const ListPKL = () => {
           <option value="inactive">Tidak Aktif</option>
         </select>
       </div>
+      <p>
+        Jumlah PKL: <b>{filteredData.length}</b>
+      </p>
 
       {loading ? (
         <Loading />
@@ -156,7 +160,7 @@ const ListPKL = () => {
                 {expandedPKL === item.id && (
                   <div className="mt-4 border-t pt-3">
                     <h4 className="text-md font-semibold text-gray-800 mb-2">
-                      Siswa PKL
+                      Siswa PKL ({item.users.length})
                     </h4>
                     {item.users.length > 0 ? (
                       <ul className="space-y-2">
@@ -195,7 +199,7 @@ const ListPKL = () => {
               </div>
             ))
           ) : (
-           <NotfoundData />
+            <NotfoundData />
           )}
         </div>
       )}
