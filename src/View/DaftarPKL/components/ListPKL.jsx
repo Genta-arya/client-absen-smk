@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ResponseHandler } from "../../../Utils/ResponseHandler";
 import { getAllPklRole } from "../../../Api/Services/PKLServices";
 import useAuthStore from "../../../Lib/Zustand/AuthStore";
 import { DateTime } from "luxon";
 import Loading from "../../../components/Loading";
-import { FaTag } from "react-icons/fa";
+import { FaPrint, FaTag } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import NotfoundData from "../../../components/NotfoundData";
+import { useReactToPrint } from "react-to-print";
+import PrintDaftarPKL from "./PrintDaftarPKl";
 
 const ListPKL = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +17,7 @@ const ListPKL = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [expandedPKL, setExpandedPKL] = useState(null); // 🔥 State untuk kontrol show/hide anggota
   const { user } = useAuthStore();
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -34,6 +37,15 @@ const ListPKL = () => {
     }
   }, []);
 
+  const componentRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    documentTitle: "Daftar PKL",
+    content: () => componentRef.current,
+
+  
+  });
+
   const filteredData = data.filter((item) => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -52,7 +64,6 @@ const ListPKL = () => {
 
   return (
     <div className="lg:p-6 md:p-6 p-2 -mt-4">
-    
       {/* Search & Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-4">
         <input
@@ -73,15 +84,38 @@ const ListPKL = () => {
           <option value="inactive">Tidak Aktif</option>
         </select>
       </div>
-      <p>
-        Jumlah PKL: <b>{filteredData.length}</b>
-      </p>
+
+      <div className="flex justify-between items-center">
+        <p>
+          Jumlah PKL: <b>{filteredData.length}</b>
+        </p>
+
+        {!isPrinting ? (
+          <div
+            onClick={() => setIsPrinting(true)}
+            className=" cursor-pointer flex text-xs gap-2 items-center bg-blue w-fit px-4 py-1 rounded-md text-white"
+          >
+            <FaPrint />
+            <p>Cetak PKL</p>
+          </div>
+        ) : (
+          <div
+            onClick={() => setIsPrinting(false)}
+            className=" cursor-pointer flex text-xs gap-2 items-center bg-red-500 w-fit px-4 py-1 rounded-md text-white"
+          >
+            
+            <p>Batal</p>
+          </div>
+        )}
+      </div>
 
       {loading ? (
         <Loading />
       ) : (
         <div className="mt-4 space-y-4">
-          {filteredData.length > 0 ? (
+          {isPrinting ? (
+            <PrintDaftarPKL handlePrint={handlePrint} data={filteredData} ref={componentRef} />
+          ) : filteredData.length > 0 ? (
             filteredData.map((item) => (
               <div
                 key={item.id}
