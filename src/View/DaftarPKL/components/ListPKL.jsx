@@ -39,13 +39,6 @@ const ListPKL = () => {
 
   const componentRef = useRef();
 
-  const handlePrint = useReactToPrint({
-    documentTitle: "Daftar PKL",
-    content: () => componentRef.current,
-
-  
-  });
-
   const filteredData = data.filter((item) => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -90,22 +83,25 @@ const ListPKL = () => {
           Jumlah PKL: <b>{filteredData.length}</b>
         </p>
 
-        {!isPrinting ? (
-          <div
-            onClick={() => setIsPrinting(true)}
-            className=" cursor-pointer flex text-xs gap-2 items-center bg-blue w-fit px-4 py-1 rounded-md text-white"
-          >
-            <FaPrint />
-            <p>Cetak PKL</p>
-          </div>
-        ) : (
-          <div
-            onClick={() => setIsPrinting(false)}
-            className=" cursor-pointer flex text-xs gap-2 items-center bg-red-500 w-fit px-4 py-1 rounded-md text-white"
-          >
-            
-            <p>Batal</p>
-          </div>
+        {filteredData.length > 0 && (
+          <>
+            {!isPrinting ? (
+              <div
+                onClick={() => setIsPrinting(true)}
+                className=" cursor-pointer flex text-xs gap-2 items-center bg-blue w-fit px-4 py-1 rounded-md text-white"
+              >
+                <FaPrint />
+                <p>Cetak PKL</p>
+              </div>
+            ) : (
+              <div
+                onClick={() => setIsPrinting(false)}
+                className=" cursor-pointer flex text-xs gap-2 items-center bg-red-500 w-fit px-4 py-1 rounded-md text-white"
+              >
+                <p>Batal</p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -114,7 +110,7 @@ const ListPKL = () => {
       ) : (
         <div className="mt-4 space-y-4">
           {isPrinting ? (
-            <PrintDaftarPKL handlePrint={handlePrint} data={filteredData} ref={componentRef} />
+            <PrintDaftarPKL data={filteredData} ref={componentRef} />
           ) : filteredData.length > 0 ? (
             filteredData.map((item) => (
               <div
