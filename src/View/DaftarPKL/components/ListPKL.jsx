@@ -36,6 +36,15 @@ const ListPKL = () => {
       fetchData();
     }
   }, []);
+  function formatJam(jam) {
+    // Pastikan jam adalah string dalam format ISO, contohnya "2025-02-28T00:00:00.000Z"
+    const date = new Date(jam); // Membuat objek Date dari waktu ISO
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }); // Format 24 jam
+  }
 
   const componentRef = useRef();
 
@@ -83,26 +92,24 @@ const ListPKL = () => {
           Jumlah PKL: <b>{filteredData.length}</b>
         </p>
 
-       
-          <>
-            {!isPrinting ? (
-              <div
-                onClick={() => setIsPrinting(true)}
-                className=" cursor-pointer flex text-xs gap-2 items-center bg-blue w-fit px-4 py-1 rounded-md text-white"
-              >
-                <FaPrint />
-                <p>Cetak PKL</p>
-              </div>
-            ) : (
-              <div
-                onClick={() => setIsPrinting(false)}
-                className=" cursor-pointer flex text-xs gap-2 items-center bg-red-500 w-fit px-4 py-1 rounded-md text-white"
-              >
-                <p>Batal</p>
-              </div>
-            )}
-          </>
-   
+        <>
+          {!isPrinting ? (
+            <div
+              onClick={() => setIsPrinting(true)}
+              className=" cursor-pointer flex text-xs gap-2 items-center bg-blue w-fit px-4 py-1 rounded-md text-white"
+            >
+              <FaPrint />
+              <p>Cetak PKL</p>
+            </div>
+          ) : (
+            <div
+              onClick={() => setIsPrinting(false)}
+              className=" cursor-pointer flex text-xs gap-2 items-center bg-red-500 w-fit px-4 py-1 rounded-md text-white"
+            >
+              <p>Batal</p>
+            </div>
+          )}
+        </>
       </div>
 
       {loading ? (
@@ -205,10 +212,30 @@ const ListPKL = () => {
                                 alt={user.name}
                                 className="w-8 h-8 rounded-full"
                               />
-                              <p className="text-gray-800 font-medium">
-                                {user.name}
-                              </p>
+                              <div>
+                                <p className="text-gray-800 font-medium">
+                                  {user.name}
+                                </p>
+                                <p className="text-xs text-gray-600">
+                                  {user.shifts && user.shifts.length > 0
+                                    ? user.shifts
+                                        .map((shift) => (
+                                          <span key={shift.name}>
+                                            {shift.name} (
+                                            {formatJam(shift.jamMasuk)} -{" "}
+                                            {formatJam(shift.jamPulang)})
+                                          </span>
+                                        ))
+                                        .reduce((prev, curr) => [
+                                          prev,
+                                          ", ",
+                                          curr,
+                                        ]) // Gabungkan dengan koma
+                                    : "-"}
+                                </p>
+                              </div>
                             </div>
+
                             <Link
                               to={`/admin/detail/profile/${
                                 user.id
