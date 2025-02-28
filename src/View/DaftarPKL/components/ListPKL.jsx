@@ -83,7 +83,7 @@ const ListPKL = () => {
           Jumlah PKL: <b>{filteredData.length}</b>
         </p>
 
-        {filteredData.length > 0 && (
+       
           <>
             {!isPrinting ? (
               <div
@@ -102,7 +102,7 @@ const ListPKL = () => {
               </div>
             )}
           </>
-        )}
+   
       </div>
 
       {loading ? (
