@@ -9,18 +9,19 @@ import {
   FaCircle,
   FaWarehouse,
   FaSchool,
+  FaEnvelope,
 } from "react-icons/fa";
 import { FaCircleRight } from "react-icons/fa6";
 import useAuthStore from "../Lib/Zustand/AuthStore";
 
 const menuItems = [
   { name: "Dashboard", path: "/admin", icon: FaHome },
-  {
-    name: "Daftar Permohonan",
-    path: "#",
-    icon: FaClipboardList,
-    submenu: [{ name: "Permohonan PKL", path: "/admin/permohonan/list" }],
-  },
+  // {
+  //   name: "Daftar Permohonan",
+  //   path: "#",
+  //   icon: FaClipboardList,
+  //   submenu: [{ name: "Permohonan PKL", path: "/admin/permohonan/list" }],
+  // },
   {
     name: "Management PKL",
     path: "/admin/management/pkl",
@@ -29,12 +30,20 @@ const menuItems = [
     restrictedTo: 'non-admin',
   },
   {
+    name: "Daftar PKL",
+    path: "/admin/daftar/pkl",
+    icon: FaEnvelope,
+    // Hanya tampilkan jika role admin
+    restrictedTo: 'admin',
+  },
+  {
     name: "Management User",
     path: "/admin/user",
     icon: FaUser,
     // Hanya tampilkan jika role admin
     restrictedTo: 'admin',
   },
+  
 
   {
     name: "Management Kelas",

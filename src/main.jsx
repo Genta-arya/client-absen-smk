@@ -33,6 +33,7 @@ import CetakLaporanHarian from "./components/RoleView/Users/Laporan/CetakLaporan
 import CetakLaporanMingguan from "./components/RoleView/Users/Laporan/CetakLaporanMingguan.jsx";
 import CetakLaporanRekap from "./components/RoleView/Users/Laporan/CetakLaporanRekap.jsx";
 import Maintenance from "./components/Maintenance.jsx";
+import MainDaftarPkl from "./View/DaftarPKL/MainDaftarPkl.jsx";
 const route = createBrowserRouter([
   
   {
@@ -66,6 +67,10 @@ const route = createBrowserRouter([
       {
         path: "/admin/profil",
         element: <MainProfile />,
+      },
+      {
+        path: "/admin/daftar/pkl",
+        element: <MainDaftarPkl />,
       },
       {
         path: "/admin/ganti/password",

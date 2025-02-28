@@ -5,6 +5,7 @@ import {
   FaTag,
   FaComment,
   FaUser,
+  FaEnvelopeOpen,
 } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
 
@@ -16,6 +17,11 @@ export const menuItems = [
     name: "Management PKL",
     path: "/admin/management/pkl",
     icon: FaServicestack,
+  },
+  {
+    name: "Daftar PKL",
+    path: "/admin/daftar/pkl",
+    icon: FaEnvelopeOpen,
   },
   { name: "Setting", path: "/admin/setting", icon: FaGear },
 ];

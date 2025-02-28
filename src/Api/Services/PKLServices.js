@@ -10,10 +10,19 @@ export const createPKL = async (data) => {
   }
 };
 
+export const getAllPklRole = async (role) => {
+  try {
+    const response = await Axios.post("/pkl/daftar/pkl", role);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 export const addSiswaToPkl = async (data) => {
   try {
     const response = await Axios.put("/pkl/add/siswa", {
-      pkl_id:data.pkl_id,
+      pkl_id: data.pkl_id,
       shift_data: data.shift_data,
     });
     return response.data;
@@ -71,12 +80,11 @@ export const updateStatusPkl = async (data) => {
   }
 };
 
-
 export const removeSingleUser = async (data) => {
   try {
     const response = await Axios.put("/pkl/remove/siswa/" + data.id, {
-      isDelete : data.isDelete,
-      siswaId : data.siswaId
+      isDelete: data.isDelete,
+      siswaId: data.siswaId,
     });
     return response.data;
   } catch (error) {
