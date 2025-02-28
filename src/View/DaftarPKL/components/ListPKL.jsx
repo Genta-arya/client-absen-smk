@@ -216,22 +216,20 @@ const ListPKL = () => {
                                 <p className="text-gray-800 font-medium">
                                   {user.name}
                                 </p>
+                                <p className="text-gray-800 font-medium">
+                                  {user.Kelas[0]?.nama || "-"}
+                                </p>
                                 <p className="text-xs text-gray-600">
-                                  {user.shifts && user.shifts.length > 0
-                                    ? user.shifts
-                                        .map((shift) => (
-                                          <span key={shift.name}>
-                                            {shift.name} (
-                                            {formatJam(shift.jamMasuk)} -{" "}
-                                            {formatJam(shift.jamPulang)})
-                                          </span>
-                                        ))
-                                        .reduce((prev, curr) => [
-                                          prev,
-                                          ", ",
-                                          curr,
-                                        ]) // Gabungkan dengan koma
-                                    : "-"}
+                                  Shift {user.Absensi[0]?.pkl.shifts[0]?.name}
+                                </p>
+                                <p className="text-xs text-gray-600">
+                                  {formatJam(
+                                    user.Absensi[0]?.pkl.shifts[0]?.jamMasuk
+                                  )}{" "}
+                                  -  {" "}
+                                  {formatJam(
+                                    user.Absensi[0]?.pkl.shifts[0]?.jamPulang
+                                  )}
                                 </p>
                               </div>
                             </div>

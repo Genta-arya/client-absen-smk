@@ -101,7 +101,7 @@ const route = createBrowserRouter([
         element: <MainFormLaporan />,
       },
       {
-        path: "/admin/laporan/mingguan/:id",
+        path: "/admin/laporan/mingguan/:week/:id",
         element: <MainFormLaporanMingguan />,
       },
       {
