@@ -23,6 +23,7 @@ const Calendar = ({ data }) => {
   const jamMasuk = dataShift?.jamMasuk;
   const [toTop, setToTop] = useState(false);
 
+  const absensiAdmin = user?.role === "admin" ? data : [];
   const absensi = user?.Pkl?.flatMap((pkl) => pkl.absensi) || [];
 
   const scrollToTop = () => {
@@ -216,9 +217,10 @@ const Calendar = ({ data }) => {
         </p>
       </div>
 
- 
-        <AbsensiTab absensi={absensi} user={user} />
-  
+      <AbsensiTab
+        absensi={user?.role === "user" ? absensi : absensiAdmin}
+        user={user}
+      />
 
       <div className="flex justify-between mb-4">
         {/* Tombol Kustom untuk navigasi bulan */}
