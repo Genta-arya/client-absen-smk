@@ -380,9 +380,9 @@ const MainRekababsensi = () => {
                       className={`text-center ${
                         item.hadir === "selesai"
                           ? "bg-green-500 text-white"
-                          : item.hadir === null || item.hadir === undefined
-                          ? ""
-                          : "bg-red-500 text-white"
+                          : item.hadir === "tidak_hadir"
+                          ? "bg-red-500 text-white"
+                          : ""
                       }`}
                     >
                       <td className="border border-gray-300 px-4 py-2">
@@ -408,7 +408,7 @@ const MainRekababsensi = () => {
                       >
                         {item.hadir === "selesai"
                           ? "Hadir"
-                          : item.hadir
+                          : item.hadir === "tidak_hadir"
                           ? "Tidak Hadir"
                           : "-"}
                       </td>
