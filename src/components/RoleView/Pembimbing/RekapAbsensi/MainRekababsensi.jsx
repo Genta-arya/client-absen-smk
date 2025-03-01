@@ -80,7 +80,11 @@ const MainRekababsensi = () => {
       }
 
       rowData[nama][formattedDate] =
-        item.hadir === "selesai" ? "Hadir" : item.hadir ? "Tidak Hadir" : "-";
+        item.hadir === "selesai"
+          ? "Hadir"
+          : item.hadir === "tidak_hadir"
+          ? "Tidak Hadir"
+          : "-";
     });
 
     // Konversi data ke array untuk dijadikan sheet
@@ -249,7 +253,11 @@ const MainRekababsensi = () => {
         item.user.nim,
         item.user.name,
         item.user.Kelas.map((k) => k.nama).join(", ") || "-",
-        item.hadir === "selesai" ? "Hadir" : item.hadir ? "Tidak Hadir" : "-",
+        item.hadir === "selesai"
+          ? "Hadir"
+          : item.hadir === "tidak_hadir"
+          ? "Tidak Hadir"
+          : "-",
         item.tanggal ? formatTanggal(item.tanggal) : "-",
       ]),
       headStyles: {
@@ -361,7 +369,7 @@ const MainRekababsensi = () => {
               {filteredData.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="text-center py-4">
-                   <NotfoundData />
+                    <NotfoundData />
                   </td>
                 </tr>
               ) : (
