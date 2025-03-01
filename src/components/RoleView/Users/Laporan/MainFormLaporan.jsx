@@ -362,15 +362,24 @@ const MainFormLaporan = () => {
             {/* Tombol Submit */}
             {user?.role === "user" && (
               <button
-                disabled={loading || uploading}
+                disabled={loading || uploading || !user?.Pkl?.[0]?.status} // Disable jika status PKL false atau undefined
                 type="submit"
-                className="bg-blue w-full text-white px-4 py-2 text-sm rounded-md hover:opacity-85"
+                className={`w-full px-4 py-2 text-sm rounded-md flex items-center justify-center gap-2 
+      ${
+        loading || uploading || !user?.Pkl?.[0]?.status
+          ? "bg-gray-400 text-white cursor-not-allowed" // Ubah warna saat disabled
+          : "bg-blue text-white hover:opacity-85"
+      }`}
               >
-                <div className="flex items-center justify-center gap-2">
-                  <FaSave />
-                  <p>{loading ? "Menyimpan..." : "Simpan Laporan"}</p>
-                </div>
+                <FaSave />
+                <p>{loading ? "Menyimpan..." : "Simpan Laporan"}</p>
               </button>
+            )}
+
+            {user?.Pkl?.[0]?.status === false && (
+              <p className="text-red-500 text-xs text-center ">
+                Praktik Kerja Lapangan Telah Berakhir
+              </p>
             )}
           </form>
         )}
