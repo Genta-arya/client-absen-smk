@@ -8,6 +8,7 @@ import NotfoundData from "../../../NotfoundData";
 import { getAnggotaPkl } from "../../../../Api/Services/PKLServices";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 import Loading from "../../../Loading";
+import { formatJam } from "../../../../View/DaftarPKL/components/ListPKL";
 const formatJamMenit = (dateString) => {
   const date = new Date(dateString);
   const hours = date.getHours().toString().padStart(2, "0");
@@ -167,9 +168,27 @@ const MainAbsensi = () => {
                             <h2 className=" text-xs font-semibold text-blue-500">
                               {anggota.Kelas?.map((kelas) => kelas.nama)}
                             </h2>
+
+                            <div className="text-xs">
+                              <p>{anggota?.Absensi[0]?.shift?.name || "-"}</p>
+                              <div className="flex items-center gap-1">
+
+                              <p>
+                                {formatJam(
+                                  anggota?.Absensi[0]?.shift?.jamMasuk
+                                ) || "-"}
+                              </p>
+                              <p>-</p>
+                              <p>
+                                {formatJam(
+                                  anggota?.Absensi[0]?.shift?.jamPulang
+                                ) || "-"}
+                              </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      
+
                         <div className="flex justify-end mt-4">
                           <h2 className="text-xs font-semibold text-blue-500">
                             {anggota.noHp ? (

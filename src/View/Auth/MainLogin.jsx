@@ -114,7 +114,7 @@ const MainLogin = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-blue dark:bg-dark-bg">
-      <div className="bg-white p-8  rounded-lg shadow-lg w-[90%] lg:w-[30%] border-t-4 border-orange-500">
+      <div className="bg-white p-8  rounded-lg shadow-lg w-[90%] lg:w-[50%] border-t-4 border-orange-500">
         <div className="flex flex-col items-center mb-6">
           <img src={icon} alt="Logo" className="w-32 object-fill h-32 " />
           <h2 className="text-2xl mt-2 font-semibold text-center text-gray-800 ">

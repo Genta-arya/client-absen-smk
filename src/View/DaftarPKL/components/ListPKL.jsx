@@ -9,6 +9,17 @@ import { Link } from "react-router-dom";
 import NotfoundData from "../../../components/NotfoundData";
 import { useReactToPrint } from "react-to-print";
 import PrintDaftarPKL from "./PrintDaftarPKl";
+import ScrollTop from "../../../components/ScrollTop";
+
+export function formatJam(jam) {
+  // Pastikan jam adalah string dalam format ISO, contohnya "2025-02-28T00:00:00.000Z"
+  const date = new Date(jam); // Membuat objek Date dari waktu ISO
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }); // Format 24 jam
+}
 
 const ListPKL = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +29,26 @@ const ListPKL = () => {
   const [expandedPKL, setExpandedPKL] = useState(null); // 🔥 State untuk kontrol show/hide anggota
   const { user } = useAuthStore();
   const [isPrinting, setIsPrinting] = useState(false);
-
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+  const [enableToTop, setEnableToTop] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setEnableToTop(true);
+      } else {
+        setEnableToTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -36,15 +66,6 @@ const ListPKL = () => {
       fetchData();
     }
   }, []);
-  function formatJam(jam) {
-    // Pastikan jam adalah string dalam format ISO, contohnya "2025-02-28T00:00:00.000Z"
-    const date = new Date(jam); // Membuat objek Date dari waktu ISO
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }); // Format 24 jam
-  }
 
   const componentRef = useRef();
 
@@ -226,7 +247,7 @@ const ListPKL = () => {
                                   {formatJam(
                                     user.Absensi[0]?.pkl.shifts[0]?.jamMasuk
                                   )}{" "}
-                                  -  {" "}
+                                  -{" "}
                                   {formatJam(
                                     user.Absensi[0]?.pkl.shifts[0]?.jamPulang
                                   )}
@@ -258,6 +279,7 @@ const ListPKL = () => {
           )}
         </div>
       )}
+      <ScrollTop scrollToTop={scrollToTop} enable={enableToTop} />
     </div>
   );
 };

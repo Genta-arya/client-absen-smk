@@ -10,6 +10,9 @@ import {
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
+import { div, p } from "framer-motion/m";
+import ScrollTop from "../ScrollTop";
+import AbsensiTab from "./TabCalender";
 const Calendar = ({ data }) => {
   const { user } = useAuthStore();
   const mapData = user?.Pkl?.map((item) => item);
@@ -18,7 +21,27 @@ const Calendar = ({ data }) => {
   const dataShift = dataAbsen[0]?.shift;
   const jamKeluar = dataShift?.jamPulang;
   const jamMasuk = dataShift?.jamMasuk;
+  const [toTop, setToTop] = useState(false);
 
+  const absensi = user?.Pkl?.flatMap((pkl) => pkl.absensi) || [];
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setToTop(true);
+      } else {
+        setToTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const navigate = useNavigate();
   const calendarRef = useRef(null);
   const [monthName, setMonthName] = useState("");
@@ -151,7 +174,7 @@ const Calendar = ({ data }) => {
   };
 
   return (
-    <div className="mt-8 pb-8">
+    <div className="mt-4 pb-8">
       <h2 className="text-xl font-semibold mb-8">
         <div className="flex items-center gap-2">
           <FaCalendar />
@@ -192,6 +215,10 @@ const Calendar = ({ data }) => {
           </span>
         </p>
       </div>
+
+ 
+        <AbsensiTab absensi={absensi} user={user} />
+  
 
       <div className="flex justify-between mb-4">
         {/* Tombol Kustom untuk navigasi bulan */}
@@ -239,6 +266,8 @@ const Calendar = ({ data }) => {
         }}
         datesSet={handleDatesSet}
       />
+
+      <ScrollTop scrollToTop={scrollToTop} enable={toTop} />
     </div>
   );
 };

@@ -13,9 +13,9 @@ const Tools = ({ title, role }) => {
   const { user } = useAuthStore();
 
   const filteredItems = menuItems.filter((item) => {
-    if (user?.role !== "admin" && item.path === "/user" ) {
+    if (user?.role !== "admin" && item.path === "/user") {
       return false;
-    } else if (user?.role === "admin" && item.path === "/management/pkl" ) {
+    } else if (user?.role === "admin" && item.path === "/management/pkl") {
       return false;
     }
 
@@ -40,7 +40,7 @@ const Tools = ({ title, role }) => {
   };
 
   const handleCtrlK = (e) => {
-    if ((e.ctrlKey && e.key === "k") || (e.ctrlKey && e.key === "K" )) {
+    if ((e.ctrlKey && e.key === "k") || (e.ctrlKey && e.key === "K")) {
       e.preventDefault();
       inputRef.current.focus();
     }
@@ -57,7 +57,11 @@ const Tools = ({ title, role }) => {
   }, [selectedIndex, filteredItems]);
 
   return (
-    <div className={` ${role === "user" && "hidden"} mb-8 -mt-8 border-b p-4 font-bold `}>
+    <div
+      className={` ${
+        role === "user" && "hidden"
+      } mb-8 -mt-8 border-b p-4 font-bold `}
+    >
       {role !== "user" && (
         <>
           <div className="flex justify-between items-center">
@@ -74,7 +78,11 @@ const Tools = ({ title, role }) => {
                 </div>
               </div>
             </div>
-            <div className="cursor-pointer" title="Profile" onClick={() => navigate("/admin/profil")}>
+            <div
+              className="cursor-pointer"
+              title="Profile"
+              onClick={() => navigate("/admin/profil")}
+            >
               <img
                 src={user?.avatar}
                 alt="profile"
@@ -83,48 +91,50 @@ const Tools = ({ title, role }) => {
             </div>
           </div>
 
-          <div className="relative mt-4">
-            <div className="relative">
-              <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Search Menu / ( CTRL + K )"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="w-full pl-10 p-2 border placeholder:text-black text-black rounded-lg focus:outline-none"
-              />
-            </div>
+          {role !== "pembimbing" || role !== "user" && (
+            <div className="relative mt-4">
+              <div className="relative">
+                <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder="Search Menu / ( CTRL + K )"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full pl-10 p-2 border placeholder:text-black text-black rounded-lg focus:outline-none"
+                />
+              </div>
 
-            {/* Suggestions */}
-            {searchTerm && (
-              <ul className="absolute z-[5] w-full bg-white border rounded-lg shadow-lg max-h-40 overflow-y-auto mt-2">
-                {filteredItems.length > 0 ? (
-                  filteredItems.map((item, index) => (
-                    <li
-                      key={index}
-                      className={`p-2 hover:bg-gray-200 cursor-pointer ${
-                        index === selectedIndex ? "bg-blue-200" : ""
-                      }`}
-                      onClick={() => {
-                        setSearchTerm("");
-                        navigate(item.path);
-                      }}
-                    >
-                      <div className="flex items-center gap-2 text-black text-xs">
-                        <item.icon size={12} />
-                        <p className="text-xs">{item.name}</p>
-                      </div>
+              {/* Suggestions */}
+              {searchTerm && (
+                <ul className="absolute z-[5] w-full bg-white border rounded-lg shadow-lg max-h-40 overflow-y-auto mt-2">
+                  {filteredItems.length > 0 ? (
+                    filteredItems.map((item, index) => (
+                      <li
+                        key={index}
+                        className={`p-2 hover:bg-gray-200 cursor-pointer ${
+                          index === selectedIndex ? "bg-blue-200" : ""
+                        }`}
+                        onClick={() => {
+                          setSearchTerm("");
+                          navigate(item.path);
+                        }}
+                      >
+                        <div className="flex items-center gap-2 text-black text-xs">
+                          <item.icon size={12} />
+                          <p className="text-xs">{item.name}</p>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="p-2 text-gray-500 text-center">
+                      Menu Tidak Ditemukan
                     </li>
-                  ))
-                ) : (
-                  <li className="p-2 text-gray-500 text-center">
-                    Menu Tidak Ditemukan
-                  </li>
-                )}
-              </ul>
-            )}
-          </div>
+                  )}
+                </ul>
+              )}
+            </div>
+          )}
         </>
       )}
     </div>

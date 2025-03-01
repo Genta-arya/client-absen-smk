@@ -20,6 +20,7 @@ import Select from "react-select";
 import useUser from "../../../../Lib/Hook/useUser";
 import { BeatLoader } from "react-spinners";
 import ModalAddsiswa from "./ModalAddsiswa";
+import { formatJam } from "../../../../View/DaftarPKL/components/ListPKL";
 const DetailPkl = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -158,7 +159,10 @@ const DetailPkl = () => {
             <div className="mb-8">
               <div className="space-y-4">
                 <div className="flex flex-row-reverse items-center gap-2 justify-between">
-                  <Link to={`/admin/management/pkl/rekap/absensi/${data?.id}`} className="flex text-sm  hover:underline cursor-pointer hover:font-extrabold items-center gap-2">
+                  <Link
+                    to={`/admin/management/pkl/rekap/absensi/${data?.id}`}
+                    className="flex text-sm  hover:underline cursor-pointer hover:font-extrabold items-center gap-2"
+                  >
                     <FaPrint />
                     <h1 className="text-center  font-bold">Rekap Absensi</h1>
                   </Link>
@@ -291,6 +295,21 @@ const DetailPkl = () => {
                         <span className="text-gray-500 text-xs">
                           NISN: {user.nim}
                         </span>
+
+                        <div className=" text-gray-500 text-xs">
+                          <p>{user?.Absensi[0]?.shift?.name || "-"}</p>
+                          <div className="flex items-center gap-1">
+                            <p>
+                              {formatJam(user?.Absensi[0]?.shift?.jamMasuk) ||
+                                "-"}
+                            </p>
+                            <p>-</p>
+                            <p>
+                              {formatJam(user?.Absensi[0]?.shift?.jamPulang) ||
+                                "-"}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div

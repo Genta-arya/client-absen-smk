@@ -23,7 +23,7 @@ const PrintDaftarPKL = forwardRef(({ data }, ref) => {
       <button
         onClick={handlePrint}
         disabled={sortedData.length === 0}
-        className="p-1 bg-blue disabled:cursor-not-allowed disabled:bg-gray-500 w-full text-white rounded mb-4"
+        className="p-2 bg-blue disabled:cursor-not-allowed disabled:bg-gray-500 w-full text-white rounded mb-4"
       >
         Cetak Daftar PKL
       </button>
