@@ -23,7 +23,7 @@ const Calendar = ({ data }) => {
   const jamMasuk = dataShift?.jamMasuk;
   const [toTop, setToTop] = useState(false);
 
-  const absensiAdmin = user?.role === "admin" || user?.role === "pembimbing" ? data : [];
+  const absensiAdmin = user?.role !==== "user" ? data : [];
   const absensi = user?.Pkl?.flatMap((pkl) => pkl.absensi) || [];
 
   const scrollToTop = () => {
