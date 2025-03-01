@@ -181,17 +181,8 @@ const InfoAbsensi = () => {
                               Masuk
                             </span>
                             <div className="mt-4 flex-col flex items-center">
-                              <span className="text-gray-900">
+                              <span className="text-white bg-green-400 px-3 w-28 text-center  rounded ">
                                 {formatWaktu24Jam(data.datang)}
-                              </span>
-                              <span
-                                className={` text-xs px-2 py-1 rounded ${
-                                  validateDatang(data.datang) === "Hadir"
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-yellow-100 text-yellow-700"
-                                }`}
-                              >
-                                {validateDatang(data.datang)}
                               </span>
                             </div>
                           </div>
@@ -201,19 +192,10 @@ const InfoAbsensi = () => {
                               Keluar
                             </span>
                             <div className="mt-4 flex-col flex items-center">
-                              <span className="text-gray-900 ">
+                              <span className="text-white bg-red-400 px-3 w-28 text-center  rounded ">
                                 {data.pulang
                                   ? formatWaktu24Jam(data.pulang)
                                   : "-"}
-                              </span>
-                              <span
-                                className={`text-xs px-2 py-1 rounded ${
-                                  validatePulang(data.pulang) === "Tepat Waktu"
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-red-100 text-red-700"
-                                }`}
-                              >
-                                {validatePulang(data.pulang)}
                               </span>
                             </div>
                           </div>
@@ -268,7 +250,7 @@ const InfoAbsensi = () => {
                           <iframe
                             src={`https://www.google.com/maps?q=${data.gps}&output=embed&style=feature:all|element:geometry|color:0x212121&style=feature:all|element:labels.icon|visibility:off&style=feature:landscape|element:all|color:0x121212&style=feature:poi|element:all|color:0x121212&style=feature:road|element:geometry|color:0x2f2f2f&style=feature:road|element:labels|visibility:off&style=feature:transit|element:geometry|color:0x2f2f2f&style=feature:water|element:all|color:0x121212`}
                             title="Google Maps Preview"
-                            className="w-full h-full border"
+                            className="w-full h-screen border"
                             allowFullScreen
                           ></iframe>
                         </div>
