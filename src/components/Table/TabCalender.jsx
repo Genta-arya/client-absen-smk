@@ -3,15 +3,13 @@ import { useState } from "react";
 export default function AbsensiTab({ absensi, user }) {
   const [activeTab, setActiveTab] = useState("hadir");
 
- 
-
-  const totalHadir = absensi.filter((absen) => absen.hadir === "selesai").length;
-
-  const TidakHadir = absensi.filter(
-    (absen) => absen.hadir === "tidak_hadir" 
+  const totalHadir = absensi.filter(
+    (absen) => absen.hadir === "selesai"
   ).length;
 
-  const totalTidakHadir = TidakHadir - totalHadir;
+  const TidakHadir = absensi.filter(
+    (absen) => absen.hadir === "tidak_hadir"
+  ).length;
 
   return (
     <div className="mb-12">
@@ -49,9 +47,7 @@ export default function AbsensiTab({ absensi, user }) {
           </div>
         ) : (
           <div>
-            <p className="text-xl font-bold text-red-600">
-              {totalTidakHadir} Hari
-            </p>
+            <p className="text-xl font-bold text-red-600">{TidakHadir} Hari</p>
           </div>
         )}
       </div>
