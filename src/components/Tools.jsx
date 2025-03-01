@@ -91,7 +91,7 @@ const Tools = ({ title, role }) => {
             </div>
           </div>
 
-          {role !== "pembimbing" && (
+          {user?.role === "admin" && (
             <div className="relative mt-4">
               <div className="relative">
                 <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
