@@ -4,7 +4,7 @@ import { getAllPklRole } from "../../../Api/Services/PKLServices";
 import useAuthStore from "../../../Lib/Zustand/AuthStore";
 import { DateTime } from "luxon";
 import Loading from "../../../components/Loading";
-import { FaPrint, FaTag } from "react-icons/fa";
+import { FaPrint, FaTag, FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import NotfoundData from "../../../components/NotfoundData";
 import { useReactToPrint } from "react-to-print";
@@ -197,7 +197,13 @@ const ListPKL = () => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline"
                     >
-                      WhatsApp Group
+                      <div className="flex gap-2 items-center">
+                        <FaWhatsapp className="text-green-500 text-xl" />
+                        <p>
+                          <b>Grup WhatsApp</b>
+                        </p>
+                      </div>
+                   
                     </a>
                   </p>
                 )}
