@@ -156,7 +156,7 @@ const MainFormLaporanMingguan = () => {
       <div className="">
         <div className="flex items-center gap-2 mb-8">
           <FaTag className="text-blue text-xl" />
-          <h1 className="text-2xl font-bold text-blue ">Laporan Mingguan</h1>
+          <h1 className="text-2xl font-bold text-blue ">Jurnal Mingguan</h1>
         </div>
         {!laporan.pembimbingId ? (
           <NotfoundData />
@@ -297,7 +297,7 @@ const MainFormLaporanMingguan = () => {
                   {/* Jika tidak ada foto sama sekali */}
                   {laporan.fotos.length === 0 && selectedFiles.length === 0 && (
                     <p className="col-span-3 text-center text-gray-500">
-                      Belum ada foto Laporan
+                      Belum ada foto yang diunggah
                     </p>
                   )}
                 </div>
@@ -317,7 +317,7 @@ const MainFormLaporanMingguan = () => {
                   }`}
               >
                 <FaSave />
-                <p>{loading ? "Menyimpan..." : "Simpan Laporan"}</p>
+                <p>{loading ? "Menyimpan..." : "Simpan Jurnal"}</p>
               </button>
             )}
 
@@ -335,7 +335,7 @@ const MainFormLaporanMingguan = () => {
           >
             <FaPrint className="text-blue text-xl" />
             <h1 className="text-xs font-bold text-blue ">
-              Cetak Laporan Mingguan
+              Cetak Jurnal Mingguan
             </h1>
           </Link>
         )}

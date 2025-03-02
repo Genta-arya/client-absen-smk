@@ -203,7 +203,6 @@ const ListPKL = () => {
                           <b>Grup WhatsApp</b>
                         </p>
                       </div>
-                   
                     </a>
                   </p>
                 )}

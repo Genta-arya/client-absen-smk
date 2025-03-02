@@ -22,7 +22,7 @@ const AppMenu = () => {
       link: "/app/daftar/pkl",
     },
     {
-      title: "Laporan",
+      title: "Jurnal",
       icon: (
         <FaRegClipboard className="text-blue text-3xl dark:text-white " />
       ),

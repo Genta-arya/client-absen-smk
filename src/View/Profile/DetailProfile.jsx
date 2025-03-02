@@ -69,7 +69,7 @@ const DetailProfile = () => {
             label="Nama"
             disabled={true}
           />
-          <Input value={data.nim} label="Nim" disabled={true} />
+          <Input value={data.nim} label={data?.role === "user" ? "NISN" : "Kode Guru"}disabled={true} />
           <Input
             value={data.email}
             label="Email"
@@ -125,7 +125,7 @@ const DetailProfile = () => {
           <h2 className="text-xl font-semibold mb-8">
             <div className="flex items-center gap-2">
               <FaFolderOpen />
-              <p>Laporan Kegiatan</p>
+              <p>Jurnal Kegiatan</p>
             </div>
           </h2>
           <MainLaporan />

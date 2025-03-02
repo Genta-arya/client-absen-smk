@@ -28,7 +28,7 @@ const MainLaporan = () => {
           )}
         </div>
       ) : (
-        <ContainerGlobal title={"Laporan"}>
+        <ContainerGlobal title={"Jurnal"}>
           <div className="flex flex-col gap-10">
             <Tabs
               tabsState={tabsState}

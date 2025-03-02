@@ -63,7 +63,7 @@ const ListPKL = ({ searchTerm }) => {
                 <div className="py-1">
                   <h1 className="text-center font-bold text-base">Periode</h1>
                   <h1 className="text-center font-bold text-sm">
-                    Praktek Kerja Lapangan
+                    Praktik Kerja Lapangan
                   </h1>
                 </div>
                 <div className="flex gap-2 items-center justify-center">

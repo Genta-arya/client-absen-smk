@@ -171,7 +171,7 @@ const MainProfile = () => {
             <FaPencilAlt className="text-sm" />
           </button>
         </div>
-        <Input value={user?.nim} label={"NIP / NISN"} disabled />
+        <Input value={user?.nim} label={user?.role === "user" ? "NISN" : "Kode Guru"} disabled />
         <Input
           value={user?.name}
           label={"Nama"}
@@ -181,7 +181,7 @@ const MainProfile = () => {
         {user?.role === "user" && (
           <Input
             value={user?.Kelas[0]?.nama}
-            label={"Kelas / Jurusan"}
+            label={"Konsentrasi Keahlian"} 
             placeholder={"Belum ada kelas"}
             disabled
           />

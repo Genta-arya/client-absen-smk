@@ -129,7 +129,7 @@ const DetailPkl = () => {
     const formatTime = (time) => {
       const date = new Date(time);
 
-      console.log(date);
+      
       return (
         date.getHours().toString().padStart(2, "0") +
         ":" +

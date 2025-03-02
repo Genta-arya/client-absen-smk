@@ -99,7 +99,7 @@ const Pembimbing = ({
           <tr>
             <Th text={"No"} />
             <Th text={"Foto"} />
-            <Th text={"NIP"} />
+            <Th text={"Kode Guru"} />
             <Th text={"Nama"} />
             <Th text={"Aksi"} />
           </tr>

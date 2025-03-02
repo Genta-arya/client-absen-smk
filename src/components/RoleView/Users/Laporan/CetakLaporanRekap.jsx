@@ -31,7 +31,7 @@ const CetakLaporanRekap = () => {
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    documentTitle: "Laporan PKL Mingguan",
+    documentTitle: "Jurnal PKL Mingguan",
     removeAfterPrint: true,
     pageStyle: `
           @media print {
@@ -55,7 +55,7 @@ const CetakLaporanRekap = () => {
         onClick={handlePrint}
         className="mb-4 px-4 py-2 w-full print:hidden bg-blue text-white rounded-lg"
       >
-        Cetak Laporan
+        Cetak Jurnal
       </button>
 
       <div ref={componentRef} className="border print:border-none p-6 bg-white">

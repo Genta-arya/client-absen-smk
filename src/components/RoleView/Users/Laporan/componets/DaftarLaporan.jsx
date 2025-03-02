@@ -137,7 +137,7 @@ const DaftarLaporan = () => {
           </div>
           <div className="mb-6">
             <p className="text-sm font-semibold text-gray-700 mb-2">
-              Progres Laporan: {progress.toFixed(1)}%
+              Progres Jurnal: {progress.toFixed(1)}%
             </p>
             <div className="w-full bg-gray-200 rounded-full h-4 relative">
               <div
