@@ -2,13 +2,14 @@ import { useState } from "react";
 
 export default function AbsensiTab({ absensi, user }) {
   const [activeTab, setActiveTab] = useState("hadir");
+  console.log(absensi);
 
   const totalHadir = absensi.filter(
     (absen) => absen.hadir === "selesai"
   ).length;
 
   const TidakHadir = absensi.filter(
-    (absen) => absen.hadir === "tidak_hadir"
+    (absen) => absen.hadir === "tidak_hadir" 
   ).length;
 
   return (

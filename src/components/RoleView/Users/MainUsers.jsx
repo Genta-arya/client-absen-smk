@@ -285,6 +285,10 @@ const MainUsers = () => {
     currentDate.setSeconds(seconds);
 
     const isoString = currentDate.toISOString();
+
+    if (absenToday.hadir !== "hadir") {
+      return toast.info("Anda belum absen masuk");
+    }
     try {
       await handlePulangs({
         id: id,
