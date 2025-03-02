@@ -15,12 +15,7 @@ const UseCheckLogin = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const apikeys = [
-    "155de109609643f9a1b432e22774f675",
-    "1de3b41c01ef4a50a5a37b954081b6b4",
-    "8c45cf1167774a22913483caa6b3d3c1",
-    "2c316c1b439147b2b42e794724c4edb5",
-  ];
+  const apikeys = ["dc454f6bd4674457a064545e9e6960c0"];
 
   const getRandomApiKey = () => {
     return apikeys[Math.floor(Math.random() * apikeys.length)];
@@ -33,39 +28,41 @@ const UseCheckLogin = () => {
 
         setLocation({ latitude, longitude });
 
-        const apiKey = getRandomApiKey();
-
         try {
           const response = await axios.get(
-            `https://api.opencagedata.com/geocode/v1/json`,
+            `https://nominatim.openstreetmap.org/reverse`,
             {
               params: {
-                q: `${latitude}+${longitude}`,
-                key: apiKey,
+                lat: latitude,
+                lon: longitude,
+                format: "json",
               },
             }
           );
 
           const data = response.data;
-          if (data.results && data.results[0]) {
-            const result = data.results[0];
-            const address = result.formatted || "Alamat tidak ditemukan";
-            const components = result.components || {};
-            const additionalInfo = {
-              village: components.village || "Tidak diketahui",
-              county: components.county || "Tidak diketahui",
-              state: components.state || "Tidak diketahui",
-              country: components.country || "Tidak diketahui",
-            };
+          const address = data.display_name || "Alamat tidak ditemukan";
+          const details = data.address || {};
 
-            // Perbarui lokasi
-            setLocation({
-              address,
-              additionalInfo,
-            });
-          }
+          const additionalInfo = {
+            village:
+              details.village ||
+              details.hamlet ||
+              details.suburb ||
+              "Tidak diketahui",
+            county: details.county || "Tidak diketahui",
+            state: details.state || "Tidak diketahui",
+            country: details.country || "Tidak diketahui",
+          };
+
+          // Perbarui lokasi
+          setLocation({
+            address,
+            additionalInfo,
+          });
         } catch (error) {
           ResponseHandler(error.response);
+          console.error("Gagal mengambil alamat lokasi:", error);
 
           setLocationError("Gagal mengambil alamat lokasi.");
         } finally {
@@ -114,7 +111,6 @@ const UseCheckLogin = () => {
     }
   };
 
-
   useEffect(() => {
     fetchIpAddress();
   }, []);
@@ -126,14 +122,13 @@ const UseCheckLogin = () => {
     // Set interval untuk refetch setiap 20 detik
     const interval = setInterval(() => {
       fetchLocation();
-    }, 20000);
+    }, 60000);
 
     // Membersihkan interval saat komponen di-unmount
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-  
     fetch();
   }, []);
 
