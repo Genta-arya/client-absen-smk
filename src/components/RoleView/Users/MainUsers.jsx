@@ -271,6 +271,9 @@ const MainUsers = () => {
   };
 
   const handlePulang = async (id) => {
+    if (absenToday.hadir !== "hadir") {
+      return toast.info("Anda belum absen masuk");
+    }
     setLoading(true);
     const currentDate = new Date(user?.DateIndonesia); // Tanggal yang diberikan
 
@@ -286,9 +289,6 @@ const MainUsers = () => {
 
     const isoString = currentDate.toISOString();
 
-    if (absenToday.hadir !== "hadir") {
-      return toast.info("Anda belum absen masuk");
-    }
     try {
       await handlePulangs({
         id: id,
