@@ -246,15 +246,15 @@ const ListPKL = () => {
                                   {user.Kelas[0]?.nama || "-"}
                                 </p>
                                 <p className="text-xs text-gray-600">
-                                  Shift {user.Absensi[0]?.pkl.shifts[0]?.name}
+                                  Shift {user.Absensi[0]?.shift[0]?.name}
                                 </p>
                                 <p className="text-xs text-gray-600">
                                   {formatJam(
-                                    user.Absensi[0]?.pkl.shifts[0]?.jamMasuk
+                                    user.Absensi[0]?.shift?.jamMasuk
                                   )}{" "}
                                   -{" "}
                                   {formatJam(
-                                    user.Absensi[0]?.pkl.shifts[0]?.jamPulang
+                                    user.Absensi[0]?.shift?.jamPulang
                                   )}
                                 </p>
                               </div>
