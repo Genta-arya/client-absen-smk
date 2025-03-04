@@ -117,9 +117,10 @@ const CetakLaporanMingguan = () => {
                   <td className="border border-black p-2">
                     {laporan?.nama_pekerjaan || "-"}
                   </td>
-                  <td className="border border-black p-2">
-                    {laporan?.catatan || "-"}
-                  </td>
+                  <td
+                    className="border text-start border-black p-2"
+                    dangerouslySetInnerHTML={{ __html: laporan.catatan || "-" }}
+                  ></td>
                   <td className="border border-black p-2 text-center">-</td>
                 </tr>
               </tbody>

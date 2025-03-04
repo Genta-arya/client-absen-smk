@@ -44,7 +44,6 @@ const InfoAbsensi = () => {
   const today = DateTime.fromISO(user?.DateIndonesia).startOf("day");
   const targetDate = DateTime.fromISO(data?.tanggal).startOf("day");
 
-
   const isPastDate = targetDate > today;
 
   const fetchData = async () => {
@@ -172,13 +171,13 @@ const InfoAbsensi = () => {
       {statusAbsensi === "izin" && (
         <div className="mt-24 flex flex-col gap-4">
           <p className="text-center">
-            Pada tanggal {formatTanggal(data.tanggal)}
+            {formatTanggal(data.tanggal)}
           </p>
           {/* emot bingung */}
           <FaHeartbeat size={100} className="mx-auto text-blue" />
 
           <p className="text-center text-2xl font-bold text-blue">
-            Sedang Izin Kegiatan
+           Izin Praktik Kerja Lapangan
           </p>
 
           {!openModal && (
@@ -200,10 +199,11 @@ const InfoAbsensi = () => {
           )}
         </div>
       )}
+
       {statusAbsensi === "libur" && (
         <div className="mt-24 flex flex-col gap-4">
           <p className="text-center">
-            Pada tanggal {formatTanggal(data.tanggal)}
+           {formatTanggal(data.tanggal)}
           </p>
           {/* emot bingung */}
           <FaUmbrellaBeach size={100} className="mx-auto text-green-500" />
@@ -230,10 +230,12 @@ const InfoAbsensi = () => {
           )}
         </div>
       )}
+
+
       {statusAbsensi === null && (
         <div className="mt-24 flex flex-col gap-4">
           <p className="text-center">
-            Pada tanggal {formatTanggal(data.tanggal)}
+            {formatTanggal(data.tanggal)}
           </p>
           {/* emot bingung */}
           <FaMehRollingEyes size={100} className="mx-auto text-blue" />
@@ -259,6 +261,8 @@ const InfoAbsensi = () => {
           )}
         </div>
       )}
+
+
       {statusAbsensi === "tidak_hadir" && (
         <div className="  ">
           <>
@@ -292,8 +296,8 @@ const InfoAbsensi = () => {
           </>
         </div>
       )}
-      {statusAbsensi === "hadir" ||
-        (statusAbsensi === "selesai" && (
+      {(statusAbsensi === "hadir" || statusAbsensi === "selesai")   && (
+
           <>
             <h1 className="text-xl font-bold text-gray-800 mb-4 text-center border-b pb-2">
               <div className="flex items-center gap-2">
@@ -414,7 +418,10 @@ const InfoAbsensi = () => {
               </div>
             </div>
           </>
-        ))}
+      )}
+        
+       
+
       {openModal && (
         <ActModal
           isModalOpen={openModal}

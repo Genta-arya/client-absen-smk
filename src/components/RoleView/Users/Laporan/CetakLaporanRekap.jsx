@@ -105,7 +105,7 @@ const CetakLaporanRekap = () => {
             </thead>
             <tbody className="text-center">
               {laporanKeys.map((key, index) => {
-                const data = laporan[key]; 
+                const data = laporan[key];
                 return (
                   <tr key={data.id}>
                     <td className="border border-black p-2 text-center">
@@ -117,9 +117,10 @@ const CetakLaporanRekap = () => {
                     <td className="border border-black p-2">
                       {data.nama_pekerjaan || "-"}
                     </td>
-                    <td className="border border-black p-2">
-                      {data.catatan || "-"}
-                    </td>
+                    <td
+                      className="border border-black p-2 text-start"
+                      dangerouslySetInnerHTML={{ __html: data.catatan || "-" }}
+                    ></td>
                     <td className="border border-black p-2 text-center">-</td>
                   </tr>
                 );

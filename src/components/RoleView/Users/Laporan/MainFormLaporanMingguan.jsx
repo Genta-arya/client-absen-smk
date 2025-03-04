@@ -14,6 +14,7 @@ import { FaPrint, FaSave, FaTag } from "react-icons/fa";
 import { ScaleLoader } from "react-spinners";
 import { toast } from "sonner";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
+import Editors from "../../../Editor";
 
 const MainFormLaporanMingguan = () => {
   const { id, week } = useParams();
@@ -219,15 +220,21 @@ const MainFormLaporanMingguan = () => {
               <label className="block text-sm font-medium">
                 Catatan Instruktur
               </label>
-              <textarea
-                className="w-full border rounded p-2"
-                value={laporan.catatan}
-                onChange={(e) =>
-                  setLaporan({ ...laporan, catatan: e.target.value })
-                }
-                required
-                disabled={user?.role !== "user"}
-              />
+
+              {user?.role === "user" ? (
+                <Editors
+                  value={laporan.catatan}
+                  onChange={(e) => setLaporan({ ...laporan, catatan: e })}
+                />
+              ) : (
+                <div className="w-full border rounded p-2">
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: laporan.catatan,
+                    }}
+                  ></p>
+                </div>
+              )}
             </div>
 
             <div>
@@ -252,55 +259,64 @@ const MainFormLaporanMingguan = () => {
                   <ScaleLoader className="text-blue text-2xl" />
                 </div>
               ) : (
-                <div className="grid md:grid-cols-3 lg:grid-cols-3 grid-cols-2  gap-4 mt-4">
-                  {laporan.fotos.map((foto, index) => (
-                    <div key={`uploaded-${index}`} className="relative">
-                      <img
-                        src={foto.foto_url}
-                        alt="Uploaded"
-                        loading="lazy"
-                        onClick={() => window.open(foto.foto_url, "_blank")}
-                        className="w-full cursor-pointer h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
-                      />
-                      {user?.role === "user" && (
-                        <button
-                          type="button"
-                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                          onClick={() => handleDeleteFoto(foto.id)}
-                        >
-                          Hapus
-                        </button>
-                      )}
-                    </div>
-                  ))}
-
-                  {selectedFiles.map((file, index) => (
-                    <div key={`selected-${index}`} className="relative">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt="Preview"
-                        loading="lazy"
-                        className="w-full h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
-                      />
-                      {user?.role === "user" && (
-                        <button
-                          type="button"
-                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                          onClick={() => handleRemovePreviewImage(index)}
-                        >
-                          Hapus
-                        </button>
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Jika tidak ada foto sama sekali */}
-                  {laporan.fotos.length === 0 && selectedFiles.length === 0 && (
-                    <p className="col-span-3 text-center text-gray-500">
-                      Belum ada foto yang diunggah
+                <>
+                  {user?.role !== "user" && (
+                    <p className="block text-sm font-bold text-center">
+                      Gambar Kegiatan
                     </p>
                   )}
-                </div>
+
+                  <div className="grid md:grid-cols-3 lg:grid-cols-3 grid-cols-2  gap-4 mt-4">
+                    {laporan.fotos.map((foto, index) => (
+                      <div key={`uploaded-${index}`} className="relative">
+                        <img
+                          src={foto.foto_url}
+                          alt="Uploaded"
+                          loading="lazy"
+                          onClick={() => window.open(foto.foto_url, "_blank")}
+                          className="w-full cursor-pointer h-52 lg:h-[100%] md:h-[100%] object-cover rounded border"
+                        />
+                        {user?.role === "user" && (
+                          <button
+                            type="button"
+                            className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                            onClick={() => handleDeleteFoto(foto.id)}
+                          >
+                            Hapus
+                          </button>
+                        )}
+                      </div>
+                    ))}
+
+                    {selectedFiles.map((file, index) => (
+                      <div key={`selected-${index}`} className="relative">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt="Preview"
+                          loading="lazy"
+                          className="w-full h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
+                        />
+                        {user?.role === "user" && (
+                          <button
+                            type="button"
+                            className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                            onClick={() => handleRemovePreviewImage(index)}
+                          >
+                            Hapus
+                          </button>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Jika tidak ada foto sama sekali */}
+                    {laporan.fotos.length === 0 &&
+                      selectedFiles.length === 0 && (
+                        <p className="col-span-3 text-center text-gray-500">
+                          Belum ada foto yang diunggah
+                        </p>
+                      )}
+                  </div>
+                </>
               )}
             </div>
 

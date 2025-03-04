@@ -14,9 +14,9 @@ export const createBerita = async (data) => {
 };
 
 
-export const getBerita = async () => {
+export const getBerita = async (role) => {
   try {
-    const response = await Axios.get("/berita/list");
+    const response = await Axios.get("/berita/list/" + role);
     return response.data;
   } catch (error) {
     handleError(error);
@@ -37,7 +37,18 @@ export const EditBerita = async (data) => {
 
 export const EditStatusBerita = async (data) => {
   try {
-    const response = await Axios.patch("/berita/status/" + data.id);
+    const response = await Axios.put("/berita/update/status/" + data.id , {
+      status: data.status
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const hapusBerita = async (id) => {
+  try {
+    const response = await Axios.delete("/berita/delete/" + id);
     return response.data;
   } catch (error) {
     handleError(error);

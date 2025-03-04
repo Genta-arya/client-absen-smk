@@ -9,6 +9,13 @@ import { ResponseHandler } from "../../../../Utils/ResponseHandler";
 import NotfoundData from "../../../NotfoundData";
 
 // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
+import DOMPurify from "dompurify";
+
+// Fungsi untuk membersihkan teks sebelum ditampilkan
+export const sanitizeHTML = (html) => {
+  return { __html: DOMPurify.sanitize(html) };
+};
+
 export const getDayName = (dateString) => {
   const options = { weekday: "long" };
   return new Date(dateString).toLocaleDateString("id-ID", options);
@@ -125,9 +132,10 @@ const CetakLaporanHarian = () => {
             ].map((item, index) => (
               <div className="mt-5" key={index}>
                 <h2 className="font-bold text-sm">{item.title}</h2>
-                <p className="mt-2 border border-gray-400 p-2 rounded-md text-xs">
-                  {item.value}
-                </p>
+                <p
+                  dangerouslySetInnerHTML={sanitizeHTML(item.value)}
+                  className="mt-2 border border-gray-400 p-2 rounded-md text-xs"
+                ></p>
               </div>
             ))}
 
@@ -154,9 +162,12 @@ const CetakLaporanHarian = () => {
 
             <div className="mt-3">
               <h2 className="font-bold text-sm">E. Catatan Instruktur</h2>
-              <p className="mt-2 border border-gray-400 p-2 rounded-md text-xs ">
-                {laporan?.catatan_instruktur || "-"}
-              </p>
+              <p
+                dangerouslySetInnerHTML={sanitizeHTML(
+                  laporan?.catatan_instruktur
+                )}
+                className="mt-2 border border-gray-400 p-2 rounded-md text-xs "
+              ></p>
             </div>
 
             <div className="flex justify-end mt-12 mr-10">

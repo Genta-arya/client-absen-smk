@@ -92,8 +92,22 @@ const Calendar = ({ data }) => {
           textColorDatang = "white";
         }
       } else {
-        timeFormattedDatang = "...";
-        bgColorDatang = absen.hadir === null ? "gray" : "red";
+        timeFormattedDatang = `${
+          absen.hadir === "izin"
+            ? "Izin"
+            : absen.hadir === "libur"
+            ? "Libur"
+            : absen.hadir === null 
+            ? "..."
+            : "..."
+        }`;
+        bgColorDatang =
+          absen.hadir === "izin" || absen.hadir === "libur"
+            ? "orange"
+            : absen.hadir !== "tidak_hadir"
+            ? "gray"
+            : "red";
+
         textColorDatang = "white";
       }
 
@@ -111,7 +125,7 @@ const Calendar = ({ data }) => {
         }).plus({ hours: 1 });
 
         if (timeFormattedDatang > batasJamPlus1) {
-          timeFormattedPulang = ` ${timeFormattedPulang}`;
+          timeFormattedPulang = `${timeFormattedPulang}`;
           bgColorPulang = "orange";
           textColorPulang = "white";
         } else {
@@ -125,27 +139,12 @@ const Calendar = ({ data }) => {
             ? "Izin"
             : absen.hadir === "libur"
             ? "Libur"
-            : absen.hadir === null
+            : absen.pulang === null
             ? "..."
-            : "T"
+            : "..."
         }`;
-        timeFormattedDatang = `${
-          absen.hadir === "izin"
-            ? "Izin"
-            : absen.hadir === "libur"
-            ? "Libur"
-            : absen.hadir === null
-            ? "..."
-            : "T"
-        }`;
-        bgColorPulang =
-          absen.hadir === "izin" || absen.hadir === "libur"
-            ? "orange"
-            : absen.hadir !== "tidak_hadir"
-            ? "gray"
-            : "red";
 
-        bgColorDatang =
+        bgColorPulang =
           absen.hadir === "izin" || absen.hadir === "libur"
             ? "orange"
             : absen.hadir !== "tidak_hadir"
@@ -230,7 +229,7 @@ const Calendar = ({ data }) => {
             Hijau menandakan Kehadiran
           </span>
         </p>
-      
+
         <p className="text-sm mt-2">
           <span className="flex items-center gap-2">
             <FaCircle className="text-sky-500" />

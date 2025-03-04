@@ -72,7 +72,7 @@ const ModalAbsens = ({ tanggal, id }) => {
           frameRate: { max: 30 },
           displaySurface: "monitor",
           aspectRatio: { min: 1, max: 1 },
-          backgroundBlur : true
+          backgroundBlur: true,
         },
       });
 
@@ -202,6 +202,49 @@ const ModalAbsens = ({ tanggal, id }) => {
     return apikeys[randomIndex];
   };
 
+  // const fetchLocation = () => {
+  //   setLoading(true);
+
+  //   navigator.geolocation.getCurrentPosition(
+  //     async (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       setLocation((prev) => ({ ...prev, latitude, longitude }));
+
+  //       const apiKey = getRandomApiKey();
+
+  //       try {
+  //         const response = await fetch(
+  //           `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`
+  //         );
+  //         const data = await response.json();
+  //         if (data.results && data.results[0]) {
+  //           setLocation((prev) => ({
+  //             ...prev,
+  //             address: data.results[0].formatted || "Alamat tidak ditemukan",
+  //           }));
+  //         }
+  //       } catch (error) {
+  //         console.error("Error fetching address:", error);
+  //       }
+  //       setLoading(false);
+  //       setLocationPermission(true);
+  //       setLocationError(null);
+  //     },
+  //     (error) => {
+  //       console.error("Error getting location:", error);
+  //       setLocationError(
+  //         "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
+  //       ),
+  //         setLoading(false);
+  //       setLocationPermission(false);
+  //     },
+  //     {
+  //       enableHighAccuracy: true,
+  //       timeout: 10000,
+  //       maximumAge: 0,
+  //     }
+  //   );
+  // };
   const fetchLocation = () => {
     setLoading(true);
 
@@ -210,22 +253,22 @@ const ModalAbsens = ({ tanggal, id }) => {
         const { latitude, longitude } = position.coords;
         setLocation((prev) => ({ ...prev, latitude, longitude }));
 
-        const apiKey = getRandomApiKey();
-
         try {
           const response = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
           );
           const data = await response.json();
-          if (data.results && data.results[0]) {
+
+          if (data && data.display_name) {
             setLocation((prev) => ({
               ...prev,
-              address: data.results[0].formatted || "Alamat tidak ditemukan",
+              address: data.display_name || "Alamat tidak ditemukan",
             }));
           }
         } catch (error) {
           console.error("Error fetching address:", error);
         }
+
         setLoading(false);
         setLocationPermission(true);
         setLocationError(null);
@@ -234,8 +277,8 @@ const ModalAbsens = ({ tanggal, id }) => {
         console.error("Error getting location:", error);
         setLocationError(
           "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
-        ),
-          setLoading(false);
+        );
+        setLoading(false);
         setLocationPermission(false);
       },
       {
@@ -250,7 +293,6 @@ const ModalAbsens = ({ tanggal, id }) => {
     fetchLocation();
     startCamera();
   }, []);
-
 
   const takePhoto = () => {
     const video = videoRef.current;

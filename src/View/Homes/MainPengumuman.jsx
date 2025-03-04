@@ -1,15 +1,24 @@
 import React, { useState } from "react";
 import ContainerLayout from "../../components/ContainerLayout";
-import { FaPlus, FaSave, FaTag } from "react-icons/fa";
+import {
+  FaExclamationCircle,
+  FaExclamationTriangle,
+  FaPlus,
+  FaSave,
+  FaTag,
+} from "react-icons/fa";
 import useAuthStore from "../../Lib/Zustand/AuthStore";
 import ActModal from "../../components/Modal/ActModal";
 import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "sonner";
-import { s } from "framer-motion/m";
-import { createBerita } from "../../Api/Services/BeritaServices";
+
+import { createBerita, getBerita } from "../../Api/Services/BeritaServices";
 import LoadingButton from "../../components/LoadingButton";
 import { ResponseHandler } from "../../Utils/ResponseHandler";
 import ListBerita from "./ListBerita";
+
+import { BeatLoader } from "react-spinners";
+import Editors from "../../components/Editor";
 
 const MainPengumuman = () => {
   const { user } = useAuthStore();
@@ -17,6 +26,20 @@ const MainPengumuman = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [berita, setBerita] = useState([]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await getBerita(user?.role);
+
+      setBerita(response.data);
+    } catch (error) {
+      ResponseHandler(error.response);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,9 +49,9 @@ const MainPengumuman = () => {
     if (title.length <= 5) {
       toast.info("Judul berita minimal 5 karakter.");
     }
+    setLoading(true);
     try {
-      setLoading(true);
-       await createBerita({
+      await createBerita({
         title: title,
         content: content,
       });
@@ -38,93 +61,162 @@ const MainPengumuman = () => {
       setContent("");
       setTitle("");
     } catch (error) {
-        ResponseHandler(error.response);
+      ResponseHandler(error.response);
     } finally {
       setLoading(false);
     }
-
-    // Tambahkan logika untuk mengirim data ke backend di sini
-
-    // Tutup modal setelah submit
   };
 
   return (
-    <ContainerLayout>
-      <div className="flex justify-between">
-        <div className="flex  text-xl items-center gap-2 font-bold text-blue">
-          <FaTag />
-          <p>Berita</p>
-        </div>
-        {user?.role === "admin" && (
-          <div className="flex items-center gap-2">
-            <button onClick={() => setModalOpen(true)}>
-              <div className="flex items-center gap-2 border px-2 py-1 rounded-md border-gray-500">
-                <FaPlus />
-                <p>Tulis Berita</p>
+    <>
+      {user?.role !== "user" ? (
+        <ContainerLayout>
+          <div className="bg-white shadow-lg rounded-md mt-4 px-4 py-4 pt-4">
+            <div className="flex justify-between ">
+              <div className="flex  text-xl items-center gap-2 font-bold text-blue">
+                <FaExclamationCircle className="text-2xl" />
+                <p className="text-black text-base font-bold">
+                  Pengumuman ({berita.length})
+                </p>
               </div>
-            </button>
+              {user?.role === "admin" && (
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setModalOpen(true)}>
+                    <div className="flex items-center gap-2 border px-2 py-1 rounded-md border-gray-500">
+                      <FaPlus />
+                      <p>Tulis Pengumuman</p>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <ListBerita
+              berita={berita}
+              user={user}
+              fetchData={fetchData}
+              setBerita={setBerita}
+              loading={loading}
+              setLoading={setLoading}
+            />
+
+            {modalOpen && (
+              <ActModal
+                height={"h-[65%] lg:h-[95%]"}
+                isModalOpen={modalOpen}
+                setIsModalOpen={setModalOpen}
+                title={"Tulis Pengumuman"}
+              >
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {/* Input untuk Judul Berita */}
+                  <input
+                    type="text"
+                    placeholder="Masukkan Judul"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="border p-2 rounded-md w-full"
+                    required
+                  />
+
+                  {/* Editor untuk Konten Berita */}
+
+                  <Editors value={content} onChange={(e) => setContent(e)} />
+
+                  {/* Tombol Submit */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-blue text-white p-2 rounded-md hover:bg-blue-700"
+                  >
+                    <LoadingButton
+                      icon={<FaSave />}
+                      text={"Simpan"}
+                      loading={loading}
+                    />
+                  </button>
+                  <p className="text-center font-bold  text-red-500 text-xs">
+                    "Maksimal hanya 5 Pengumuman"
+                  </p>
+                </form>
+              </ActModal>
+            )}
           </div>
-        )}
-      </div>
+        </ContainerLayout>
+      ) : (
+        <>
+          <div className="bg-white shadow-lg rounded-md mt-4 px-4 py-4 pt-4">
+            <div className="flex justify-between ">
+              <div className="flex  text-xl items-center gap-2 font-bold text-blue">
+                <FaExclamationCircle className="text-2xl" />
+                <p className="text-black text-base font-bold">
+                  Pengumuman ({berita.length})
+                </p>
+              </div>
+              {user?.role === "admin" && (
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setModalOpen(true)}>
+                    <div className="flex items-center gap-2 border px-2 py-1 rounded-md border-gray-500">
+                      <FaPlus />
+                      <p>Tulis Pengumuman</p>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
 
-
-      <ListBerita />
-
-      {modalOpen && (
-        <ActModal
-          height={"h-[65%] lg:h-[95%]"}
-          isModalOpen={modalOpen}
-          setIsModalOpen={setModalOpen}
-          title={"Tulis Berita"}
-        >
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Input untuk Judul Berita */}
-            <input
-              type="text"
-              placeholder="Masukkan Judul Berita"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="border p-2 rounded-md w-full"
-              required
+            <ListBerita
+              berita={berita}
+              user={user}
+              fetchData={fetchData}
+              setBerita={setBerita}
+              loading={loading}
+              setLoading={setLoading}
             />
 
-            {/* Editor untuk Konten Berita */}
-            <Editor
-              apiKey="gne0tu6k3iyh6uv3gc01ui2l980ve69xi0h7iwelw6sf2uvg"
-              init={{
-                height: 300,
-                menubar: true,
-                plugins: [
-                  "advlist autolink lists link image charmap print preview anchor",
-                  "searchreplace visualblocks code fullscreen",
-                  "insertdatetime media table paste code help wordcount",
-                  "image",
-                ],
-                toolbar:
-                  "undo redo | formatselect | bold italic backcolor | \
-                  alignleft aligncenter alignright alignjustify | \
-                  bullist numlist outdent indent | removeformat | help | image",
-              }}
-              value={content}
-              onEditorChange={(newContent) => setContent(newContent)}
-            />
+            {modalOpen && (
+              <ActModal
+                height={"h-[65%] lg:h-[95%]"}
+                isModalOpen={modalOpen}
+                setIsModalOpen={setModalOpen}
+                title={"Tulis Pengumuman"}
+              >
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {/* Input untuk Judul Berita */}
+                  <input
+                    type="text"
+                    placeholder="Masukkan Judul"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="border p-2 rounded-md w-full"
+                    required
+                  />
 
-            {/* Tombol Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue text-white p-2 rounded-md hover:bg-blue-700"
-            >
-              <LoadingButton
-                icon={<FaSave />}
-                text={"Simpan Berita"}
-                loading={loading}
-              />
-            </button>
-          </form>
-        </ActModal>
+                  {/* Editor untuk Konten Berita */}
+
+                  <Editors value={content} onChange={(e) => setContent(e)} />
+
+                  {/* Tombol Submit */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-blue text-white p-2 rounded-md hover:bg-blue-700"
+                  >
+                    <LoadingButton
+                      icon={<FaSave />}
+                      text={"Simpan"}
+                      loading={loading}
+                    />
+                  </button>
+                  <p className="text-center font-bold  text-red-500 text-xs">
+                    "Maksimal hanya 5 Pengumuman"
+                  </p>
+                </form>
+              </ActModal>
+            )}
+          </div>
+        </>
       )}
-    </ContainerLayout>
+    </>
   );
 };
 

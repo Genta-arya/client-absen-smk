@@ -37,6 +37,7 @@ import { handlePulangs } from "../../../Api/Services/AbsensiServices";
 import { DateTime } from "luxon";
 import Lottie from "lottie-react";
 import animation from "../../../assets/succes.json";
+import MainPengumuman from "../../../View/Homes/MainPengumuman";
 const MainUsers = () => {
   const { user } = useAuthStore();
   const mapData = user?.Pkl?.map((item) => item);
@@ -481,33 +482,31 @@ const MainUsers = () => {
                                   </>
                                 ) : (
                                   <>
-                                    {absenToday.hadir === "izin" || absenToday.hadir === "libur" ? (
+                                    {absenToday.hadir === "izin" ||
+                                    absenToday.hadir === "libur" ? (
                                       <>
-                                      {absenToday.hadir !== "libur" ? (
-
-                                        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mt-4">
-                                          <p className="font-semibold flex items-center text-center">
-                                            <FaInfoCircle className=" text-lg w-5 h-5 mr-2" />
-                                            <p className="text-xs">
-                                              Anda sedang izin hari ini. Hubungi
-                                              pembimbing jika ada pertanyaan
+                                        {absenToday.hadir !== "libur" ? (
+                                          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mt-4">
+                                            <p className="font-semibold flex items-center text-center justify-center">
+                                              <FaInfoCircle className=" text-lg w-5 h-5 mr-2" />
+                                              <p className="text-xs flex justify-center">
+                                                Anda sedang izin hari ini.
+                                                Hubungi pembimbing jika ada
+                                                pertanyaan.
+                                              </p>
                                             </p>
-                                          </p>
-                                        </div>
-                                      ) : (
-                                        <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md mt-4">
-                                        <p className="font-semibold flex items-center text-center">
-                                          <FaInfoCircle className=" text-lg w-5 h-5 mr-2" />
-                                          <p className="text-xs">
-                                            Hari Libur
-                                          </p>
-                                        </p>
-                                      </div>
-                                      )}
+                                          </div>
+                                        ) : (
+                                          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md mt-4">
+                                            <p className="font-semibold flex items-center text-center justify-center">
+                                              <FaInfoCircle className=" text-lg w-5 h-5 mr-2" />
+                                              <p className="text-xs">
+                                                Hari Libur
+                                              </p>
+                                            </p>
+                                          </div>
+                                        )}
                                       </>
-
-
-
                                     ) : (
                                       <div className="flex justify-center gap-4 mt-4">
                                         <div className="flex flex-col gap-2">
@@ -521,7 +520,7 @@ const MainUsers = () => {
                                             className={`${
                                               absenToday.hadir !== "hadir" &&
                                               absenToday.hadir !== "selesai"
-                                                ? "b g-blue disabled:bg-gray-500"
+                                                ? "bg-blue disabled:bg-gray-500"
                                                 : "bg-green-600"
                                             } disabled:hover:opacity-100 disabled:cursor-not-allowed  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
                                           >
@@ -771,6 +770,9 @@ const MainUsers = () => {
                   Silahkan pilih menu yang digunakan
                 </p>
                 <ContentUser />
+
+                <h1 className="text-base font-bold mt-4">Informasi</h1>
+                <MainPengumuman />
               </div>
             </div>
           )}

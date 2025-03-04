@@ -14,7 +14,9 @@ import { ScaleLoader } from "react-spinners";
 import { FaPrint, FaSave, FaTag } from "react-icons/fa";
 import useAuthStore from "../../../../Lib/Zustand/AuthStore";
 import { ResponseHandler } from "../../../../Utils/ResponseHandler";
-
+import Editors from "../../../Editor";
+import DOMPurify from "dompurify";
+import { h1 } from "framer-motion/m";
 const MainFormLaporan = () => {
   const { id } = useParams();
   const { user } = useAuthStore();
@@ -233,40 +235,52 @@ const MainFormLaporan = () => {
 
             {/* Perencanaan Kegiatan */}
             <div>
-              <label className="block text-sm font-medium">
+              <label className="block text-sm mb-2 font-medium">
                 Perencanaan Kegiatan
               </label>
-              <textarea
-                className="w-full border rounded p-2"
-                value={laporan.perencanaan_kegiatan}
-                onChange={(e) =>
-                  setLaporan({
-                    ...laporan,
-                    perencanaan_kegiatan: e.target.value,
-                  })
-                }
-                required
-                disabled={user?.role !== "user"}
-              />
+
+              {user?.role === "user" ? (
+                <Editors
+                  value={laporan.perencanaan_kegiatan}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, perencanaan_kegiatan: e })
+                  }
+                />
+              ) : (
+                <div className="w-full border rounded p-2">
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: laporan.perencanaan_kegiatan,
+                    }}
+                  ></p>
+                </div>
+              )}
             </div>
 
             {/* Pelaksanaan Kegiatan */}
             <div>
-              <label className="block text-sm font-medium">
+              <label className="block text-sm mb-3 font-medium">
                 Pelaksanaan Kegiatan
               </label>
-              <textarea
-                className="w-full border rounded p-2"
-                value={laporan.pelaksanaan_kegiatan}
-                onChange={(e) =>
-                  setLaporan({
-                    ...laporan,
-                    pelaksanaan_kegiatan: e.target.value,
-                  })
-                }
-                required
-                disabled={user?.role !== "user"}
-              />
+
+              {user?.role === "user" ? (
+                <Editors
+                  disabled
+                  value={laporan.pelaksanaan_kegiatan}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, pelaksanaan_kegiatan: e })
+                  }
+                />
+              ) : (
+                <div className="w-full border rounded p-2">
+                  {/* dom */}
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: laporan.pelaksanaan_kegiatan,
+                    }}
+                  ></p>
+                </div>
+              )}
             </div>
 
             {/* Catatan Instruktur */}
@@ -274,15 +288,25 @@ const MainFormLaporan = () => {
               <label className="block text-sm font-medium">
                 Catatan Instruktur
               </label>
-              <textarea
-                className="w-full border rounded p-2"
-                value={laporan.catatan_instruktur}
-                onChange={(e) =>
-                  setLaporan({ ...laporan, catatan_instruktur: e.target.value })
-                }
-                required
-                disabled={user?.role !== "user"}
-              />
+
+              {user?.role === "user" ? (
+                <Editors
+                  disabled
+                  value={laporan.catatan_instruktur}
+                  onChange={(e) =>
+                    setLaporan({ ...laporan, catatan_instruktur: e })
+                  }
+                />
+              ) : (
+                <div className="w-full border rounded p-2">
+                  {/* dom */}
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: laporan.catatan_instruktur,
+                    }}
+                  ></p>
+                </div>
+              )}
             </div>
 
             <div>
@@ -307,55 +331,63 @@ const MainFormLaporan = () => {
                   <ScaleLoader className="text-blue text-2xl" />
                 </div>
               ) : (
-                <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2  gap-4 mt-4">
-                  {laporan.fotos.map((foto, index) => (
-                    <div key={`uploaded-${index}`} className="relative">
-                      <img
-                        src={foto.foto_url}
-                        alt="Uploaded"
-                        loading="lazy"
-                        onClick={() => window.open(foto.foto_url, "_blank")}
-                        className="w-full cursor-pointer h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
-                      />
-                      {user?.role === "user" && (
-                        <button
-                          type="button"
-                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                          onClick={() => handleDeleteFoto(foto.id)}
-                        >
-                          Hapus
-                        </button>
-                      )}
-                    </div>
-                  ))}
-
-                  {selectedFiles.map((file, index) => (
-                    <div key={`selected-${index}`} className="relative">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt="Preview"
-                        loading="lazy"
-                        className="w-full h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
-                      />
-                      {user?.role === "user" && (
-                        <button
-                          type="button"
-                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
-                          onClick={() => handleRemovePreviewImage(index)}
-                        >
-                          Hapus
-                        </button>
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Jika tidak ada foto sama sekali */}
-                  {laporan.fotos.length === 0 && selectedFiles.length === 0 && (
-                    <p className="col-span-3 text-center text-gray-500">
-                      Belum ada foto yang diunggah
+                <>
+                  {user?.role !== "user" && (
+                    <p className="block text-sm font-bold text-center">
+                      Gambar Kegiatan
                     </p>
                   )}
-                </div>
+                  <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-2  gap-4 mt-4">
+                    {laporan.fotos.map((foto, index) => (
+                      <div key={`uploaded-${index}`} className="relative">
+                        <img
+                          src={foto.foto_url}
+                          alt="Uploaded"
+                          loading="lazy"
+                          onClick={() => window.open(foto.foto_url, "_blank")}
+                          className="w-full cursor-pointer h-52 lg:h-[100%] md:h-[100%] object-cover rounded border"
+                        />
+                        {user?.role === "user" && (
+                          <button
+                            type="button"
+                            className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                            onClick={() => handleDeleteFoto(foto.id)}
+                          >
+                            Hapus
+                          </button>
+                        )}
+                      </div>
+                    ))}
+
+                    {selectedFiles.map((file, index) => (
+                      <div key={`selected-${index}`} className="relative">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt="Preview"
+                          loading="lazy"
+                          className="w-full h-52 lg:h-[80%] md:h-[80%] object-cover rounded border"
+                        />
+                        {user?.role === "user" && (
+                          <button
+                            type="button"
+                            className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 text-xs rounded"
+                            onClick={() => handleRemovePreviewImage(index)}
+                          >
+                            Hapus
+                          </button>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Jika tidak ada foto sama sekali */}
+                    {laporan.fotos.length === 0 &&
+                      selectedFiles.length === 0 && (
+                        <p className="col-span-3 text-center text-gray-500">
+                          Belum ada foto yang diunggah
+                        </p>
+                      )}
+                  </div>
+                </>
               )}
             </div>
 
