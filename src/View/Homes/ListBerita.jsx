@@ -175,7 +175,7 @@ const ListBerita = ({
                 {formatDate(item.createdAt)}
               </p>
 
-              <h3 className="text-lg mb-4 text-blue pb-2 font-semibold border-dashed border-b border-gray-400">
+              <h3 className="text-base md:text-lg lg:text-lg mb-4 text-blue pb-2 font-semibold border-dashed border-b border-gray-400">
                 {item.title}
               </h3>
               <div
