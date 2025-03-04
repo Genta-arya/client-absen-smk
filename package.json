@@ -12,6 +12,7 @@
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
+    "@tinymce/tinymce-react": "^6.0.0",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
     "apexcharts": "^4.3.0",
@@ -19,6 +20,7 @@
     "chart.js": "^4.4.7",
     "cropperjs": "^1.6.2",
     "dayjs": "^1.11.13",
+    "dompurify": "^3.2.4",
     "firebase": "^11.2.0",
     "framer-motion": "^11.15.0",
     "i": "^0.3.7",
@@ -45,6 +47,7 @@
     "react-to-print": "^2.15.1",
     "socket.io-client": "^4.8.1",
     "sonner": "^1.7.1",
+    "swiper": "^11.2.5",
     "xlsx": "^0.18.5",
     "zustand": "^5.0.3"
   },

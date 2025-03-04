@@ -13,6 +13,7 @@ body {
 }
 
 
+
 .camera_feed_flip {
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
@@ -20,4 +21,25 @@ body {
   -moz-transform: rotateY(180deg);
   /* Firefox */
   transform: scale(1.0);
+}
+
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px; /* Jarak pagination dengan card */
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  margin: 0 2px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background-color: #007bff;
 }

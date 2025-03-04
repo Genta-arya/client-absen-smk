@@ -23,6 +23,7 @@ const MainCalendar = () => {
       )}
       {modal && (
         <ActModal
+        height={""}
           isModalOpen={modal}
           setIsModalOpen={setModal}
           title={"Informasi"}
