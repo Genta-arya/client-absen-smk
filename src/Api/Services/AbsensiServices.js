@@ -35,10 +35,20 @@ export const getSingleAbsen = async (id) => {
   }
 };
 
-
 export const rekababsensi = async (id) => {
   try {
     const response = await Axios.get("/absensi/rekap/absen/" + id);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateStatus = async (id, status) => {
+  try {
+    const response = await Axios.put("/absensi/update/status/" + id, {
+      status: status,
+    });
     return response.data;
   } catch (error) {
     handleError(error);

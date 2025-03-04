@@ -2,15 +2,11 @@ import { useState } from "react";
 
 export default function AbsensiTab({ absensi, user }) {
   const [activeTab, setActiveTab] = useState("hadir");
-  console.log(absensi);
 
-  const totalHadir = absensi.filter(
-    (absen) => absen.hadir === "selesai"
-  ).length;
-
-  const TidakHadir = absensi.filter(
-    (absen) => absen.hadir === "tidak_hadir" 
-  ).length;
+  // Hitung jumlah berdasarkan status absensi
+  const totalHadir = absensi.filter((absen) => absen.hadir === "selesai").length;
+  const totalTidakHadir = absensi.filter((absen) => absen.hadir === "tidak_hadir").length;
+  const totalIzin = absensi.filter((absen) => absen.hadir === "izin").length;
 
   return (
     <div className="mb-12">
@@ -28,28 +24,36 @@ export default function AbsensiTab({ absensi, user }) {
         </button>
         <button
           className={`py-2 w-full px-4 text-center ${
-            activeTab === "tidakHadir"
-              ? "border-b-2 border-blue  font-bold text-blue"
+            activeTab === "tidak_hadir"
+              ? "border-b-2 border-blue font-bold text-blue"
               : "text-gray-500 border-gray-300 border-b-2"
           }`}
-          onClick={() => setActiveTab("tidakHadir")}
+          onClick={() => setActiveTab("tidak_hadir")}
         >
           Tidak Hadir
+        </button>
+        <button
+          className={`py-2 w-full px-4 text-center ${
+            activeTab === "izin"
+              ? "border-b-2 border-blue font-bold text-blue"
+              : "text-gray-500 border-gray-300 border-b-2"
+          }`}
+          onClick={() => setActiveTab("izin")}
+        >
+          Izin
         </button>
       </div>
 
       {/* Content */}
       <div className="mt-6 text-center">
-        {activeTab === "hadir" ? (
-          <div>
-            <p className="text-xl font-bold text-green-600">
-              {totalHadir} Hari
-            </p>
-          </div>
-        ) : (
-          <div>
-            <p className="text-xl font-bold text-red-600">{TidakHadir} Hari</p>
-          </div>
+        {activeTab === "hadir" && (
+          <p className="text-xl font-bold text-green-600">{totalHadir} Hari</p>
+        )}
+        {activeTab === "tidak_hadir" && (
+          <p className="text-xl font-bold text-red-600">{totalTidakHadir} Hari</p>
+        )}
+        {activeTab === "izin" && (
+          <p className="text-xl font-bold text-yellow-600">{totalIzin} Hari</p>
         )}
       </div>
     </div>

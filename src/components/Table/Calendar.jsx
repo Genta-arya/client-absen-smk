@@ -98,7 +98,10 @@ const Calendar = ({ data }) => {
       }
 
       // Menambahkan waktu pulang menggunakan Luxon
-      if (absen.pulang) {
+      if (
+        (absen.pulang && absen.hadir === "hadir") ||
+        absen.hadir === "selesai"
+      ) {
         const pulangDate = DateTime.fromISO(absen.pulang); // Menggunakan Luxon
 
         timeFormattedPulang = pulangDate.toFormat("HH:mm"); // Format waktu pulang menggunakan Luxon
@@ -117,8 +120,38 @@ const Calendar = ({ data }) => {
           textColorPulang = "white";
         }
       } else {
-        timeFormattedPulang = "...";
-        bgColorPulang = absen.hadir !== "tidak_hadir" ? "gray" : "red";
+        timeFormattedPulang = `${
+          absen.hadir === "izin"
+            ? "Izin"
+            : absen.hadir === "libur"
+            ? "Libur"
+            : absen.hadir === null
+            ? "..."
+            : "T"
+        }`;
+        timeFormattedDatang = `${
+          absen.hadir === "izin"
+            ? "Izin"
+            : absen.hadir === "libur"
+            ? "Libur"
+            : absen.hadir === null
+            ? "..."
+            : "T"
+        }`;
+        bgColorPulang =
+          absen.hadir === "izin" || absen.hadir === "libur"
+            ? "orange"
+            : absen.hadir !== "tidak_hadir"
+            ? "gray"
+            : "red";
+
+        bgColorDatang =
+          absen.hadir === "izin" || absen.hadir === "libur"
+            ? "orange"
+            : absen.hadir !== "tidak_hadir"
+            ? "gray"
+            : "red";
+
         textColorPulang = "white";
       }
 
@@ -197,12 +230,7 @@ const Calendar = ({ data }) => {
             Hijau menandakan Kehadiran
           </span>
         </p>
-        <p className="text-sm mt-2">
-          <span className="flex items-center gap-2">
-            <FaCircle className="text-purple-600" />
-            Ungu menandakan Terlambat Masuk
-          </span>
-        </p>
+      
         <p className="text-sm mt-2">
           <span className="flex items-center gap-2">
             <FaCircle className="text-sky-500" />
@@ -212,7 +240,7 @@ const Calendar = ({ data }) => {
         <p className="text-sm mt-2">
           <span className="flex items-center gap-2">
             <FaCircle className="text-orange-500" />
-            Oren menandakan Pulang cepat
+            Oren menandakan Libur / Izin
           </span>
         </p>
       </div>

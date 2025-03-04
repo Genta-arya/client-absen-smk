@@ -318,7 +318,7 @@ const MainRekababsensi = () => {
     <ContainerGlobal title="Rekap Absensi">
       <div className="">
         <div className="flex  gap-4 mb-4 w-full">
-          <button
+          {/* <button
             onClick={exportExcel}
             disabled={filteredData.length === 0}
             className="bg-green-500 disabled:bg-gray-500 text-white px-4 py-2 text-xs rounded hover:bg-green-600"
@@ -327,11 +327,11 @@ const MainRekababsensi = () => {
               <FaFileExcel />
               <p>Export Excel</p>
             </div>
-          </button>
+          </button> */}
           <button
             onClick={exportPDF}
             disabled={filteredData.length === 0}
-            className="bg-red-500 disabled:bg-gray-500 text-xs text-white px-4  rounded hover:bg-red-600"
+            className="bg-red-500 py-2 disabled:bg-gray-500 text-xs text-white px-4  rounded hover:bg-red-600"
           >
             <div className="flex items-center gap-2">
               <FaFilePdf />
@@ -381,7 +381,7 @@ const MainRekababsensi = () => {
                         item.hadir === "selesai"
                           ? "bg-green-500 text-white"
                           : item.hadir === "tidak_hadir"
-                          ? "bg-red-500 text-white"
+                          ? "bg-red-500 text-white" : item.hadir === "libur" ? "bg-yellow-500 text-white" : item.hadir === "izin" ? "bg-orange-500 text-white"
                           : ""
                       }`}
                     >
@@ -410,6 +410,10 @@ const MainRekababsensi = () => {
                           ? "Hadir"
                           : item.hadir === "tidak_hadir"
                           ? "Tidak Hadir"
+                          : item.hadir === "izin"
+                          ? "Izin"
+                          : item.hadir === "libur"
+                          ? "Libur"
                           : "-"}
                       </td>
 

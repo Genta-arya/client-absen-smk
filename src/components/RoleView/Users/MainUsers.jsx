@@ -12,6 +12,7 @@ import {
   FaCheck,
   FaCheckCircle,
   FaClock,
+  FaInfoCircle,
   FaMapMarkerAlt,
   FaRegCalendar,
   FaSave,
@@ -479,140 +480,171 @@ const MainUsers = () => {
                                     </div>
                                   </>
                                 ) : (
-                                  <div className="flex justify-center gap-4 mt-4">
-                                    <div className="flex flex-col gap-2">
-                                      <button
-                                        onClick={() => setModal1(true)}
-                                        disabled={
-                                          isMasukDisabled() ||
-                                          absenToday.hadir === "hadir" ||
-                                          absenToday.hadir === "selesai"
-                                        }
-                                        className={`${
-                                          absenToday.hadir !== "hadir" &&
-                                          absenToday.hadir !== "selesai"
-                                            ? "b g-blue disabled:bg-gray-500"
-                                            : "bg-green-600"
-                                        } disabled:hover:opacity-100 disabled:cursor-not-allowed  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
-                                      >
-                                        {absenToday.hadir === "hadir" ||
-                                        absenToday.hadir === "selesai" ? (
-                                          <div className="flex items-center justify-center gap-2 text-sm">
-                                            <FaCheck />
-                                            <p>Sudah Absen</p>
-                                          </div>
-                                        ) : (
-                                          <div className="flex items-center justify-center gap-2 text-sm">
-                                            <FaSignInAlt />
-                                            <p>Masuk</p>
-                                          </div>
-                                        )}
-                                      </button>
-                                      <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
-                                        <FaClock />
+                                  <>
+                                    {absenToday.hadir === "izin" || absenToday.hadir === "libur" ? (
+                                      <>
+                                      {absenToday.hadir !== "libur" ? (
 
-                                        <h1>
-                                          <div className="flex items-center">
-                                            <div className="flex">
-                                              <p>
-                                                {jamMasukHours
-                                                  .toString()
-                                                  .padStart(2, "0")}
-                                                :
-                                                {jamMasukMinutes
-                                                  .toString()
-                                                  .padStart(2, "0")}{" "}
-                                                -
-                                              </p>
-                                            </div>
-                                            <div className="flex ml-1">
-                                              <p>
-                                                {DateTime.fromISO(jamMasuk)
-                                                  .plus({ minutes: 15 })
-                                                  .hour.toString()
-                                                  .padStart(2, "0")}
-                                                :
-                                              </p>
-                                              <p>
-                                                {DateTime.fromISO(jamMasuk)
-                                                  .plus({ minutes: 15 })
-                                                  .minute.toString()
-                                                  .padStart(2, "0")}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        </h1>
-                                      </div>
-                                    </div>
-
-                                    <div className="flex flex-col gap-2">
-                                      <button
-                                        disabled={
-                                          isPulangDisabled() ||
-                                          absenToday.pulang !== null ||
-                                          loading
-                                        }
-                                        onClick={() =>
-                                          handlePulang(absenToday.id)
-                                        }
-                                        className="border disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all md:w-64 lg:w-64 w-36 text-black  py-3  rounded-md"
-                                      >
-                                        <div className="flex items-center justify-center gap-2">
-                                          {absenToday.pulang !== null ? (
-                                            <>
-                                              <div className="flex    items-center justify-center gap-2 text-sm">
-                                                <FaCheck />
-                                                <p>Sudah Pulang</p>
-                                              </div>
-                                            </>
-                                          ) : (
-                                            <LoadingButton
-                                              loading={loading}
-                                              icon={<FaSignOutAlt />}
-                                              text={"Pulang"}
-                                            />
-                                          )}
+                                        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mt-4">
+                                          <p className="font-semibold flex items-center text-center">
+                                            <FaInfoCircle className=" text-lg w-5 h-5 mr-2" />
+                                            <p className="text-xs">
+                                              Anda sedang izin hari ini. Hubungi
+                                              pembimbing jika ada pertanyaan
+                                            </p>
+                                          </p>
                                         </div>
-                                      </button>
-                                      <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
-                                        <FaClock />
-
-                                        <h1>
-                                          <div className="flex items-center">
-                                            <div className="flex">
-                                              <p>
-                                                {new Date(jamKeluar)
-                                                  .getHours()
-                                                  .toString()
-                                                  .padStart(2, "0")}
-                                                :
-                                              </p>
-                                              <p>
-                                                {new Date(jamKeluar)
-                                                  .getMinutes()
-                                                  .toString()
-                                                  .padStart(2, "0")}{" "}
-                                                -{" "}
-                                              </p>
-                                            </div>
-                                            <div className="flex ml-1">
-                                              <p>
-                                                {new Date(
-                                                  jamKeluar
-                                                ).getHours() + 1}
-                                                :
-                                              </p>
-                                              <p>
-                                                {new Date(
-                                                  jamKeluar
-                                                ).getMinutes()}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        </h1>
+                                      ) : (
+                                        <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md mt-4">
+                                        <p className="font-semibold flex items-center text-center">
+                                          <FaInfoCircle className=" text-lg w-5 h-5 mr-2" />
+                                          <p className="text-xs">
+                                            Hari Libur
+                                          </p>
+                                        </p>
                                       </div>
-                                    </div>
-                                  </div>
+                                      )}
+                                      </>
+
+
+
+                                    ) : (
+                                      <div className="flex justify-center gap-4 mt-4">
+                                        <div className="flex flex-col gap-2">
+                                          <button
+                                            onClick={() => setModal1(true)}
+                                            disabled={
+                                              isMasukDisabled() ||
+                                              absenToday.hadir === "hadir" ||
+                                              absenToday.hadir === "selesai"
+                                            }
+                                            className={`${
+                                              absenToday.hadir !== "hadir" &&
+                                              absenToday.hadir !== "selesai"
+                                                ? "b g-blue disabled:bg-gray-500"
+                                                : "bg-green-600"
+                                            } disabled:hover:opacity-100 disabled:cursor-not-allowed  hover:opacity-85 transition-all  text-white md:w-64 lg:w-64 w-36 py-3  rounded-md`}
+                                          >
+                                            {absenToday.hadir === "hadir" ||
+                                            absenToday.hadir === "selesai" ? (
+                                              <div className="flex items-center justify-center gap-2 text-sm">
+                                                <FaCheck />
+                                                <p>Sudah Absen</p>
+                                              </div>
+                                            ) : (
+                                              <div className="flex items-center justify-center gap-2 text-sm">
+                                                <FaSignInAlt />
+                                                <p>Masuk</p>
+                                              </div>
+                                            )}
+                                          </button>
+                                          <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
+                                            <FaClock />
+
+                                            <h1>
+                                              <div className="flex items-center">
+                                                <div className="flex">
+                                                  <p>
+                                                    {jamMasukHours
+                                                      .toString()
+                                                      .padStart(2, "0")}
+                                                    :
+                                                    {jamMasukMinutes
+                                                      .toString()
+                                                      .padStart(2, "0")}{" "}
+                                                    -
+                                                  </p>
+                                                </div>
+                                                <div className="flex ml-1">
+                                                  <p>
+                                                    {DateTime.fromISO(jamMasuk)
+                                                      .plus({ minutes: 15 })
+                                                      .hour.toString()
+                                                      .padStart(2, "0")}
+                                                    :
+                                                  </p>
+                                                  <p>
+                                                    {DateTime.fromISO(jamMasuk)
+                                                      .plus({ minutes: 15 })
+                                                      .minute.toString()
+                                                      .padStart(2, "0")}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </h1>
+                                          </div>
+                                        </div>
+
+                                        <div className="flex flex-col gap-2">
+                                          <button
+                                            disabled={
+                                              isPulangDisabled() ||
+                                              absenToday.pulang !== null ||
+                                              loading
+                                            }
+                                            onClick={() =>
+                                              handlePulang(absenToday.id)
+                                            }
+                                            className="border disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-white text-sm disabled:hover:opacity-100 hover:opacity-85 transition-all md:w-64 lg:w-64 w-36 text-black  py-3  rounded-md"
+                                          >
+                                            <div className="flex items-center justify-center gap-2">
+                                              {absenToday.pulang !== null ? (
+                                                <>
+                                                  <div className="flex    items-center justify-center gap-2 text-sm">
+                                                    <FaCheck />
+                                                    <p>Sudah Pulang</p>
+                                                  </div>
+                                                </>
+                                              ) : (
+                                                <LoadingButton
+                                                  loading={loading}
+                                                  icon={<FaSignOutAlt />}
+                                                  text={"Pulang"}
+                                                />
+                                              )}
+                                            </div>
+                                          </button>
+                                          <div className="flex gap-1 items-center justify-center text-xs text-red-500 font-bold">
+                                            <FaClock />
+
+                                            <h1>
+                                              <div className="flex items-center">
+                                                <div className="flex">
+                                                  <p>
+                                                    {new Date(jamKeluar)
+                                                      .getHours()
+                                                      .toString()
+                                                      .padStart(2, "0")}
+                                                    :
+                                                  </p>
+                                                  <p>
+                                                    {new Date(jamKeluar)
+                                                      .getMinutes()
+                                                      .toString()
+                                                      .padStart(2, "0")}{" "}
+                                                    -{" "}
+                                                  </p>
+                                                </div>
+                                                <div className="flex ml-1">
+                                                  <p>
+                                                    {new Date(
+                                                      jamKeluar
+                                                    ).getHours() + 1}
+                                                    :
+                                                  </p>
+                                                  <p>
+                                                    {new Date(
+                                                      jamKeluar
+                                                    ).getMinutes()}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </h1>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
                                 )}
                               </>
                             ) : (
