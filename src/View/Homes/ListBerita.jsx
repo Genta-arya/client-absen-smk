@@ -113,6 +113,10 @@ const ListBerita = ({
   
   return (
     <div className="mt-4 bg-gray-100 p-3 rounded-md">
+      {berita.length === 0  ? (
+        <p className="text-center text-xs text-gray-500">Belum ada pengumuman</p>
+      ) : (
+
       <Swiper
         modules={[Autoplay]}
         spaceBetween={20}
@@ -201,6 +205,7 @@ const ListBerita = ({
           </SwiperSlide>
         ))}
       </Swiper>
+      )}
 
       {modalEdit && (
         <ActModal
