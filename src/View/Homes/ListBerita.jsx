@@ -179,7 +179,7 @@ const ListBerita = ({
                 {item.title}
               </h3>
               <div
-                className="mt-2 text-gray-700"
+                className="mt-2 text-xs lg:text-sm md:text-sm text-gray-700"
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(item.content),
                 }}
