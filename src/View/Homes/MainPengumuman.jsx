@@ -84,7 +84,7 @@ const MainPengumuman = () => {
                   <button onClick={() => setModalOpen(true)}>
                     <div className="flex items-center gap-2 border px-2 py-1 rounded-md border-gray-500">
                       <FaPlus />
-                      <p>Tulis Pengumuman</p>
+                      <p>Tulis</p>
                     </div>
                   </button>
                 </div>
