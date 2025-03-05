@@ -783,6 +783,7 @@ const MainUsers = () => {
 
         {modalMaps && (
           <ActModal
+            height={"h-[65%] lg:h-[95%]"}
             isModalOpen={modalMaps}
             title={"Lokasi Saya"}
             setIsModalOpen={setModalMaps}
@@ -799,7 +800,11 @@ const MainUsers = () => {
           </ActModal>
         )}
         {modal && (
-          <ActModal isModalOpen={modal} title={"Notification"}>
+          <ActModal
+            height={"h-[65%] lg:h-[95%]"}
+            isModalOpen={modal}
+            title={"Notification"}
+          >
             {next ? (
               <>
                 <form onSubmit={updateData}>
@@ -874,6 +879,7 @@ const MainUsers = () => {
         )}
         {modal1 && (
           <ActModal
+            height={"h-[65%] lg:h-[95%]"}
             isModalOpen={modal1}
             setIsModalOpen={setModal1}
             title="Absen Masuk"
