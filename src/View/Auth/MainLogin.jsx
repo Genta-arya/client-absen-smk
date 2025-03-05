@@ -99,6 +99,8 @@ const MainLogin = () => {
         navigate("/admin");
       }
     } catch (error) {
+
+
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
       }
@@ -108,9 +110,6 @@ const MainLogin = () => {
     }
   };
 
-  const handleRecaptchaChange = (value) => {
-    setRecaptchaToken(value);
-  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-blue dark:bg-dark-bg">

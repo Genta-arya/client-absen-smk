@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-export const ResponseHandler = (response, navigate = null) => {
+export const ResponseHandler = (response) => {
   switch (response.status) {
     case 400:
       toast.error(response.data.message);
