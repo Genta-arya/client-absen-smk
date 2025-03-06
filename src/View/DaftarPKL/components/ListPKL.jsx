@@ -69,17 +69,20 @@ const ListPKL = () => {
 
   const componentRef = useRef();
 
-  const filteredData = data.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.creator?.name.toLowerCase().includes(searchTerm.toLowerCase());
+  console.log(data);
 
+  const filteredData = (data || []).filter((item) => {
+    const matchesSearch =
+      item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.creator?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+  
     const matchesStatus =
       statusFilter === "all" ||
       (statusFilter === "active" ? item.status : !item.status);
-
+  
     return matchesSearch && matchesStatus;
   });
+  
 
   if (loading) {
     return <Loading />;
