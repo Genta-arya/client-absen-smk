@@ -208,6 +208,67 @@ const UseCheckLogin = () => {
     } catch (error) {
       console.error("Gagal mendapatkan alamat dari OpenCage:", error);
       setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
+      fallbackToLocationIQ(latitude, longitude);
+    }
+  };
+
+  const fallbackToLocationIQ = async (latitude, longitude) => {
+    try {
+      const locationIqKeys = [
+        "6c97ecb1bedf2cf8f827b83287008dc1",
+        "8a09eae4722b0e8dc39e14d412df69e7",
+      ];
+
+      const getRandomLocationIqKey = () => {
+        return locationIqKeys[
+          Math.floor(Math.random() * locationIqKeys.length)
+        ];
+      };
+
+      const apiKey = getRandomLocationIqKey();
+
+      const response = await axios.get(
+        `https://us1.locationiq.com/v1/reverse.php`,
+        {
+          params: {
+            key: apiKey,
+            lat: latitude,
+            lon: longitude,
+            format: "json",
+          },
+        }
+      );
+
+      if (response.data && response.status === 200) {
+        const data = response.data;
+
+        const address = data.display_name || "Alamat tidak ditemukan";
+        const details = data.address || {};
+
+        const additionalInfo = {
+          house_number: details.house_number || "Tidak diketahui",
+          road: details.road || "Tidak diketahui",
+          quarter: details.quarter || "Tidak diketahui",
+          suburb: details.suburb || "Tidak diketahui",
+          city: details.city || "Tidak diketahui",
+          state: details.state || "Tidak diketahui",
+          country: details.country || "Tidak diketahui",
+          postcode: details.postcode || "Tidak diketahui",
+        };
+
+        setLocation({
+          address,
+          additionalInfo,
+          latitude: data.lat,
+          longitude: data.lon,
+        });
+        setLocationError(null); // Hapus error jika LocationIQ berhasil
+      } else {
+        throw new Error("LocationIQ tidak bisa menemukan alamat.");
+      }
+    } catch (error) {
+      console.error("Gagal mendapatkan alamat dari LocationIQ:", error);
+      setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
     }
   };
 
