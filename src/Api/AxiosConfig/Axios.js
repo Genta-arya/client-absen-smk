@@ -41,7 +41,7 @@ instances.forEach((instance) => {
     (error) => {
       if (error.response && (error.response.status === 403 || error.response.status === 401)) {
         localStorage.removeItem("token"); // Hapus token dari localStorage
-        window.location.href = "/login"; // Redirect ke halaman login
+        window.location.href = "/"; // Redirect ke halaman login
       }
       return Promise.reject(error);
     }
