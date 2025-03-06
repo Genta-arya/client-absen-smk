@@ -43,7 +43,7 @@ export const formatDate = (dateString) => {
 };
 
 export let API_URL;
-const type = "productions";
+const type = "production";
 
 if (type === "production") API_URL = "https://digital.apiservices.my.id/api";
 // if (type === "production") API_URL = "https://pkl.apiservices.my.id/api";
