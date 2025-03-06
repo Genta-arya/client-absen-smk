@@ -22,13 +22,7 @@ const menuItems = [
   //   icon: FaClipboardList,
   //   submenu: [{ name: "Permohonan PKL", path: "/admin/permohonan/list" }],
   // },
-  {
-    name: "Management PKL",
-    path: "/admin/management/pkl",
-    icon: FaFolderOpen,
-    // Hanya tampilkan jika role bukan admin
-    restrictedTo: 'non-admin',
-  },
+
   {
     name: "Daftar PKL",
     path: "/admin/daftar/pkl",

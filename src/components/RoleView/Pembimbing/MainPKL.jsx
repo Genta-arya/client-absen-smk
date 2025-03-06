@@ -12,8 +12,8 @@ const MainPKL = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   return (
-    <Container>
-      <Tools title={"Management PKL"} />
+    <>
+   
       <div className=" px-4 ">
         <div className="flex justify-between items-center gap-2">
           <Button
@@ -31,7 +31,7 @@ const MainPKL = () => {
         </div>
         <ListPKL searchTerm={searchTerm} />
       </div>
-    </Container>
+    </>
   );
 };
 

@@ -65,21 +65,27 @@ const Tools = ({ title, role }) => {
       {role !== "user" && (
         <>
           <div className="flex justify-between items-center">
-            <div
-              onClick={() => navigate("/admin")}
-              className="cursor-pointer hover:underline w-fit"
-            >
-              <div className="flex items-center gap-3">
-                <FaHome className="hover:underline" />
-                <div className="flex items-center gap-4">
-                  <p>Home</p>
-                  <FaChevronRight />
-                  <p>{title}</p>
+            {user?.role === "admin" && (
+              <div
+                onClick={() => navigate("/admin")}
+                className="cursor-pointer hover:underline w-fit"
+              >
+                <div className="flex items-center gap-3">
+                  <FaHome className="hover:underline" />
+                  <div className="flex items-center gap-4">
+                    <p>Home</p>
+                    {title.length > 0 && (
+                      <>
+                        <FaChevronRight />
+                        <p>{title}</p>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             <div
-              className="cursor-pointer"
+              className="cursor-pointer flex flex-row items-center gap-4"
               title="Profile"
               onClick={() => navigate("/admin/profil")}
             >
@@ -88,6 +94,13 @@ const Tools = ({ title, role }) => {
                 alt="profile"
                 className="w-10 h-10 rounded-full"
               />
+              {user?.role === "pembimbing" && (
+                <div>
+                  <p className="text-base">{user?.name}</p>
+                  <p className="text-xs">{user?.nim || "-"}</p>
+                  <p className="text-xs">{user?.email || "-"}</p>
+                </div>
+              )}
             </div>
           </div>
 

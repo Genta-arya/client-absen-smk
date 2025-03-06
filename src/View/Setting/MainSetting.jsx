@@ -12,13 +12,11 @@ const MainSetting = () => {
   return (
     <div>
       {user?.role !== "user" ? (
-        <Container>
-          <Tools title={"Setting"} />
+        <ContainerGlobal title={"Setting"}>
           <MenuSetting />
-        </Container>
+        </ContainerGlobal>
       ) : (
         <>
-       
           <ContainerGlobal title={"Setting"}>
             <MenuSetting />
           </ContainerGlobal>
