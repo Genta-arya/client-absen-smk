@@ -26,6 +26,7 @@ import {
 } from "react-icons/fa6";
 import { DateTime } from "luxon";
 import ActModal from "../../../Modal/ActModal";
+import LokasiTabs from "./LokasiTabs";
 const InfoAbsensi = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -170,14 +171,12 @@ const InfoAbsensi = () => {
     <ContainerGlobal>
       {statusAbsensi === "izin" && (
         <div className="mt-24 flex flex-col gap-4">
-          <p className="text-center">
-            {formatTanggal(data.tanggal)}
-          </p>
+          <p className="text-center">{formatTanggal(data.tanggal)}</p>
           {/* emot bingung */}
           <FaHeartbeat size={100} className="mx-auto text-blue" />
 
           <p className="text-center text-2xl font-bold text-blue">
-           Izin Praktik Kerja Lapangan
+            Izin Praktik Kerja Lapangan
           </p>
 
           {!openModal && (
@@ -202,9 +201,7 @@ const InfoAbsensi = () => {
 
       {statusAbsensi === "libur" && (
         <div className="mt-24 flex flex-col gap-4">
-          <p className="text-center">
-           {formatTanggal(data.tanggal)}
-          </p>
+          <p className="text-center">{formatTanggal(data.tanggal)}</p>
           {/* emot bingung */}
           <FaUmbrellaBeach size={100} className="mx-auto text-green-500" />
           <p className="text-center text-2xl font-bold text-green-500">
@@ -231,12 +228,9 @@ const InfoAbsensi = () => {
         </div>
       )}
 
-
       {statusAbsensi === null && (
         <div className="mt-24 flex flex-col gap-4">
-          <p className="text-center">
-            {formatTanggal(data.tanggal)}
-          </p>
+          <p className="text-center">{formatTanggal(data.tanggal)}</p>
           {/* emot bingung */}
           <FaMehRollingEyes size={100} className="mx-auto text-blue" />
           <h1 className="text-xl font-bold text-gray-800 mb-4 text-center ">
@@ -261,7 +255,6 @@ const InfoAbsensi = () => {
           )}
         </div>
       )}
-
 
       {statusAbsensi === "tidak_hadir" && (
         <div className="  ">
@@ -296,96 +289,95 @@ const InfoAbsensi = () => {
           </>
         </div>
       )}
-      {(statusAbsensi === "hadir" || statusAbsensi === "selesai")   && (
+      {(statusAbsensi === "hadir" || statusAbsensi === "selesai") && (
+        <>
+          <h1 className="text-xl font-bold text-gray-800 mb-4 text-center border-b pb-2">
+            <div className="flex items-center gap-2">
+              <FaTag />
+              <p>Informasi Absensi</p>
+            </div>
+          </h1>
 
-          <>
-            <h1 className="text-xl font-bold text-gray-800 mb-4 text-center border-b pb-2">
-              <div className="flex items-center gap-2">
-                <FaTag />
-                <p>Informasi Absensi</p>
-              </div>
-            </h1>
+          <div className="space-y-4">
+            <div className="flex items-center">
+              <span className="text-gray-900">
+                {formatTanggal(data.tanggal)}
+              </span>
+            </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <span className="text-gray-900">
-                  {formatTanggal(data.tanggal)}
-                </span>
-              </div>
-
-              {!openModal && (
-                <>
-                  {user?.role !== "user" && (
-                    <div className="flex text-xs justify-center">
-                      <div
-                        onClick={() => setOpenModal(true)}
-                        className=" hover:opacity-75  cursor-pointer border-gray-400 flex justify-center gap-2 items-center border w-fit px-3 py-1 rounded-md"
-                      >
-                        <FaPencil />
-                        <button>
-                          <p>Edit Status Absensi</p>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-
-              <div className="flex w-full flex-col items-center gap-4  p-2 pb-4 rounded-md ">
-                <div className="font-bold border-b w-full text-center pb-2 pt-4 ">
-                  <div className="flex items-center justify-center gap-2">
-                    <FaClock className="text-blue" />
-                    <p>Jam Kehadiran</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex lg:text-base md:text-base text-sm items-center justify-between w-full gap-8">
-                    <div className="flex flex-col">
-                      <span className="font-medium text-center  text-gray-700 w-full">
-                        Masuk
-                      </span>
-                      <div className="mt-4 flex-col flex items-center">
-                        <span className="text-white bg-green-400 px-3 w-28 text-center  rounded ">
-                          {formatWaktu24Jam(data.datang)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center flex-col ">
-                      <span className="font-medium text-gray-700 ">Keluar</span>
-                      <div className="mt-4 flex-col flex items-center">
-                        <span className="text-white bg-red-400 px-3 w-28 text-center  rounded ">
-                          {data.pulang ? formatWaktu24Jam(data.pulang) : "-"}
-                        </span>
-                      </div>
+            {!openModal && (
+              <>
+                {user?.role !== "user" && (
+                  <div className="flex text-xs justify-center">
+                    <div
+                      onClick={() => setOpenModal(true)}
+                      className=" hover:opacity-75  cursor-pointer border-gray-400 flex justify-center gap-2 items-center border w-fit px-3 py-1 rounded-md"
+                    >
+                      <FaPencil />
+                      <button>
+                        <p>Edit Status Absensi</p>
+                      </button>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="flex items-center flex-col">
-                <span className="font-bold text-gray-700 ">
-                  <div className="flex items-center gap-2">
-                    <FaImage />
-                    <p>Bukti Kehadiran</p>
-                  </div>
-                </span>
-
-                {!data.foto ? (
-                  <>
-                    <span className="font-medium text-gray-700 ">-</span>
-                  </>
-                ) : (
-                  <img
-                    src={data.foto}
-                    onClick={() => window.open(data.foto, "_blank")}
-                    alt="Absen"
-                    className="w-full lg:w-[50%] md:w-[50%] object-cover rounded cursor-pointer"
-                  />
                 )}
-              </div>
+              </>
+            )}
 
-              <div className="flex flex-col gap-4 ">
+            <div className="flex w-full flex-col items-center gap-4  p-2 pb-4 rounded-md ">
+              <div className="font-bold border-b w-full text-center pb-2 pt-4 ">
+                <div className="flex items-center justify-center gap-2">
+                  <FaClock className="text-blue" />
+                  <p>Jam Kehadiran</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex lg:text-base md:text-base text-sm items-center justify-between w-full gap-8">
+                  <div className="flex flex-col">
+                    <span className="font-medium text-center  text-gray-700 w-full">
+                      Masuk
+                    </span>
+                    <div className="mt-4 flex-col flex items-center">
+                      <span className="text-white bg-green-400 px-3 w-28 text-center  rounded ">
+                        {formatWaktu24Jam(data.datang)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center flex-col ">
+                    <span className="font-medium text-gray-700 ">Keluar</span>
+                    <div className="mt-4 flex-col flex items-center">
+                      <span className="text-white bg-red-400 px-3 w-28 text-center  rounded ">
+                        {data.pulang ? formatWaktu24Jam(data.pulang) : "-"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center flex-col">
+              <span className="font-bold text-gray-700 ">
+                <div className="flex items-center gap-2">
+                  <FaImage />
+                  <p>Bukti Kehadiran</p>
+                </div>
+              </span>
+
+              {!data.foto ? (
+                <>
+                  <span className="font-medium text-gray-700 ">-</span>
+                </>
+              ) : (
+                <img
+                  src={data.foto}
+                  onClick={() => window.open(data.foto, "_blank")}
+                  alt="Absen"
+                  className="w-full lg:w-[50%] md:w-[50%] object-cover rounded cursor-pointer"
+                />
+              )}
+            </div>
+
+            {/* <div className="flex flex-col gap-4 ">
                 <div className="flex    flex-col items-center">
                   <span className=" text-gray-700 border-b w-full text-center font-bold mt-8">
                     <div className="flex items-center justify-center gap-2">
@@ -415,12 +407,15 @@ const InfoAbsensi = () => {
                     ></iframe>
                   </div>
                 </div>
-              </div>
-            </div>
-          </>
+              </div> */}
+            <LokasiTabs
+              lokasiMasuk={data?.gps}
+              lokasiPulang={data?.gps_pulang}
+              data={data}
+            />
+          </div>
+        </>
       )}
-        
-       
 
       {openModal && (
         <ActModal

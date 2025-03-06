@@ -19,6 +19,7 @@ export const handlePulangs = async (data) => {
   try {
     const response = await Axios.post("/absensi/pulang/" + data.id, {
       jam_pulang: data.jam_pulang,
+      gps_pulang: data.gps_pulang,
     });
     return response.data;
   } catch (error) {

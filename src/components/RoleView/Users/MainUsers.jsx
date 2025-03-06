@@ -60,10 +60,15 @@ const MainUsers = () => {
     email: user?.email,
     kelas: user?.kelas,
   });
+
+  const [locationPermission, setLocationPermission] = useState(false);
+
   const currentDate = user?.DateIndonesia
     ? new Date(user?.DateIndonesia)
     : null;
+ 
 
+  
   const dataShift = dataAbsen[0]?.shift;
   const nameShift = dataShift?.name;
   const jamKeluar = dataShift?.jamPulang;
@@ -170,7 +175,7 @@ const MainUsers = () => {
     const jamTutup = jamMasuks.plus({ minutes: 15 }); // Hanya aktif selama 15 menit setelah jamMasuk
 
     const serverTime = serverDate.toMillis(); // Waktu server dalam milidetik
- 
+
     const masukTime = jamMasuks.toMillis(); // Waktu masuk dalam milidetik
     const tutupTime = jamTutup.toMillis(); // Waktu tutup dalam milidetik
 
@@ -296,6 +301,7 @@ const MainUsers = () => {
       await handlePulangs({
         id: id,
         jam_pulang: isoString,
+        gps_pulang: `${location.latitude},${location.longitude}`,
       });
       toast.success("Berhasil absen pulang", {
         duration: 1500,
