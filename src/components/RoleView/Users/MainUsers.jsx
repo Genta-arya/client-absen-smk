@@ -66,9 +66,7 @@ const MainUsers = () => {
   const currentDate = user?.DateIndonesia
     ? new Date(user?.DateIndonesia)
     : null;
- 
 
-  
   const dataShift = dataAbsen[0]?.shift;
   const nameShift = dataShift?.name;
   const jamKeluar = dataShift?.jamPulang;
@@ -167,38 +165,59 @@ const MainUsers = () => {
   const serverDate = DateTime.fromISO(user?.DateIndonesia);
 
   const isMasukDisabled = () => {
-    if (!dataShift || !jamKeluar || !jamMasuk) {
-      return true; // Nonaktifkan jika data shift tidak tersedia
+    if (!dataShift || !jamKeluar || !jamMasuk || !serverDate) {
+      return true; // Nonaktifkan jika data tidak tersedia
     }
 
-    const jamMasuks = DateTime.fromISO(jamMasuk); // Menggunakan Luxon untuk jamMasuk
-    const jamTutup = jamMasuks.plus({ minutes: 15 }); // Hanya aktif selama 15 menit setelah jamMasuk
+    const serverNow = DateTime.fromISO(serverDate).startOf("day"); // Ambil tanggal dari serverDate, reset ke 00:00
+    const jamMasuks = DateTime.fromISO(jamMasuk).set({
+      year: serverNow.year,
+      month: serverNow.month,
+      day: serverNow.day,
+    });
 
-    const serverTime = serverDate.toMillis(); // Waktu server dalam milidetik
+    const jamTutup = jamMasuks.plus({ minutes: 15 }); // Aktif hanya 15 menit setelah jamMasuk
+    const serverTime = DateTime.fromISO(serverDate)
+      .set({
+        year: serverNow.year,
+        month: serverNow.month,
+        day: serverNow.day,
+      })
+      .toMillis(); // Waktu server dalam milidetik
 
-    const masukTime = jamMasuks.toMillis(); // Waktu masuk dalam milidetik
-    const tutupTime = jamTutup.toMillis(); // Waktu tutup dalam milidetik
+    const masukTime = jamMasuks.toMillis();
+    const tutupTime = jamTutup.toMillis();
+
+    console.log(serverTime, masukTime, tutupTime);
 
     return !(serverTime >= masukTime && serverTime <= tutupTime);
   };
 
   const isPulangDisabled = () => {
-    if (!dataShift || !jamKeluar || !jamMasuk) {
-      return true; // Nonaktifkan jika data shift tidak tersedia
+    if (!dataShift || !jamKeluar || !jamMasuk || !serverDate) {
+      return true; // Nonaktifkan jika data tidak tersedia
     }
 
-    const serverTimeMillis = serverDate.toMillis(); // Waktu server dalam milidetik
+    const serverNow = DateTime.fromISO(serverDate).startOf("day"); // Ambil tanggal dari serverDate, reset ke 00:00
+    const serverTimeMillis = DateTime.fromISO(serverDate).toMillis(); // Waktu server dalam milidetik
 
     // Pastikan jamKeluars memiliki tanggal yang sama dengan serverDate
-    const jamKeluars = serverDate.set({
-      hour: new Date(jamKeluar).getHours(),
-      minute: new Date(jamKeluar).getMinutes(),
+    const jamKeluars = DateTime.fromISO(jamKeluar).set({
+      year: serverNow.year,
+      month: serverNow.month,
+      day: serverNow.day,
       second: 0,
       millisecond: 0,
     });
 
     const jamKeluarsStart = jamKeluars;
     const jamKeluarsEnd = jamKeluars.plus({ hours: 1 }); // Ditambah 1 jam
+
+    console.log(
+      serverTimeMillis,
+      jamKeluarsStart.toMillis(),
+      jamKeluarsEnd.toMillis()
+    );
 
     const isWithinPulangTime =
       serverTimeMillis >= jamKeluarsStart.toMillis() &&
