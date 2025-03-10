@@ -212,7 +212,39 @@ const InfoAbsensi = () => {
           <p className="text-center text-2xl font-bold text-blue">Izin</p>
           <p className="flex justify-center flex-col border-dashed items-center border py-4 rounded-md">
             <span className="font-bold text-blacks">Keterangan:</span>
-            <p className="text-center font-bold text-xl text-orange-500">{keteranganIzin}</p>
+            <p className="text-center font-bold text-xl text-orange-500">
+              {keteranganIzin}
+            </p>
+          </p>
+
+          {!openModal && (
+            <>
+              {user?.role !== "user" && (
+                <div className="flex text-xs justify-center">
+                  <div
+                    onClick={() => setOpenModal(true)}
+                    className=" hover:opacity-75  cursor-pointer border-gray-400 flex justify-center gap-2 items-center border w-fit px-3 py-1 rounded-md"
+                  >
+                    <FaPencil />
+                    <button>
+                      <p>Edit Status Absensi</p>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {statusAbsensi === "sakit" && (
+        <div className="mt-24 flex flex-col gap-4">
+          <p className="text-center">{formatTanggal(data.tanggal)}</p>
+          {/* emot bingung */}
+          <FaHeartbeat size={100} className="mx-auto text-blue" />
+
+          <p className="text-center text-2xl font-bold text-blue">
+            Sedang Sakit
           </p>
 
           {!openModal && (
@@ -447,6 +479,7 @@ const InfoAbsensi = () => {
 
               <option value="izin">Izin</option>
               <option value="libur">Libur</option>
+              <option value="sakit">Sakit</option>
             </select>
 
             <div className="flex justify-end space-x-2">
