@@ -44,13 +44,18 @@ const InfoAbsensi = () => {
   const [tempStatus, setTempStatus] = useState(statusAbsensi);
   const today = DateTime.fromISO(user?.DateIndonesia).startOf("day");
   const targetDate = DateTime.fromISO(data?.tanggal).startOf("day");
-
+  const [keteranganIzin, setKeteranganIzin] = useState("");
+  const [showIzinModal, setShowIzinModal] = useState(false);
+  const [initialKeteranganIzin, setInitialKeteranganIzin] = useState("");
   const isPastDate = targetDate > today;
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await getSingleAbsen(id);
+      if (response.data.keterangan !== null) {
+        setKeteranganIzin(response.data.keterangan);
+      }
       if (response.data.hadir === null) {
         setStatus(true);
       }
@@ -68,6 +73,12 @@ const InfoAbsensi = () => {
       setStatusAbsensi(data.hadir);
     }
   }, [data]);
+
+  const openIzinModal = () => {
+    setInitialKeteranganIzin(keteranganIzin); // Simpan keterangan awal
+
+    setShowIzinModal(true);
+  };
 
   useEffect(() => {
     fetchData();
@@ -147,13 +158,36 @@ const InfoAbsensi = () => {
     }
   };
 
+  // const handleSaveStatus = async () => {
+  //   if (tempStatus.length === 0) {
+  //     return toast.info("Pilih status terlebih dahulu.");
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     await updateStatus(id, tempStatus);
+
+  //     toast.success("Status absensi berhasil diperbarui.");
+  //     window.location.reload();
+  //     setOpenModal(false);
+  //   } catch (error) {
+  //     ResponseHandler(error.response);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSaveStatus = async () => {
     if (tempStatus.length === 0) {
       return toast.info("Pilih status terlebih dahulu.");
     }
+
+    if (tempStatus === "izin" && keteranganIzin.trim() === "") {
+      return toast.info("Harap isi keterangan izin.");
+    }
+
     setLoading(true);
     try {
-      await updateStatus(id, tempStatus);
+      await updateStatus(id, tempStatus, keteranganIzin);
 
       toast.success("Status absensi berhasil diperbarui.");
       window.location.reload();
@@ -175,8 +209,10 @@ const InfoAbsensi = () => {
           {/* emot bingung */}
           <FaHeartbeat size={100} className="mx-auto text-blue" />
 
-          <p className="text-center text-2xl font-bold text-blue">
-            Izin Praktik Kerja Lapangan
+          <p className="text-center text-2xl font-bold text-blue">Izin</p>
+          <p className="flex justify-center flex-col border-dashed items-center border py-4 rounded-md">
+            <span className="font-bold text-blacks">Keterangan:</span>
+            <p className="text-center font-bold text-xl text-orange-500">{keteranganIzin}</p>
           </p>
 
           {!openModal && (
@@ -377,37 +413,6 @@ const InfoAbsensi = () => {
               )}
             </div>
 
-            {/* <div className="flex flex-col gap-4 ">
-                <div className="flex    flex-col items-center">
-                  <span className=" text-gray-700 border-b w-full text-center font-bold mt-8">
-                    <div className="flex items-center justify-center gap-2">
-                      <FaLocationPinLock className="text-red-500" />
-                      <p>Lokasi</p>
-                    </div>
-                  </span>
-                  <a
-                    href={`https://www.google.com/maps?q=${data.gps}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline mt-4"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-gray-900">{data.posisi}</span>
-                      <span className="text-gray-500">{data.gps}</span>
-                    </div>
-                  </a>
-                </div>
-                <div className="flex flex-col items-center ">
-                  <div className="w-screen h-screen  mt-2">
-                    <iframe
-                      src={`https://www.google.com/maps?q=${data.gps}&output=embed&style=feature:all|element:geometry|color:0x212121&style=feature:all|element:labels.icon|visibility:off&style=feature:landscape|element:all|color:0x121212&style=feature:poi|element:all|color:0x121212&style=feature:road|element:geometry|color:0x2f2f2f&style=feature:road|element:labels|visibility:off&style=feature:transit|element:geometry|color:0x2f2f2f&style=feature:water|element:all|color:0x121212`}
-                      title="Google Maps Preview"
-                      className="w-full h-screen border"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                </div>
-              </div> */}
             <LokasiTabs
               lokasiMasuk={data?.gps}
               lokasiPulang={data?.gps_pulang}
@@ -427,7 +432,15 @@ const InfoAbsensi = () => {
             <select
               className="border rounded-lg p-2 focus:ring focus:ring-blue-300"
               value={tempStatus} // Gunakan state sementara
-              onChange={(e) => setTempStatus(e.target.value)}
+              onChange={(e) => {
+                setTempStatus(e.target.value);
+                if (e.target.value === "izin") {
+                  openIzinModal();
+                } else {
+                  handleCancel();
+                  setKeteranganIzin(""); // Reset keterangan jika bukan izin
+                }
+              }}
             >
               {!isPastDate && <option value="selesai">Hadir</option>}
               {!isPastDate && <option value="tidak_hadir">Tidak Hadir</option>}
@@ -440,6 +453,41 @@ const InfoAbsensi = () => {
               <button
                 className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-400 transition"
                 onClick={() => setOpenModal(false)}
+              >
+                Batal
+              </button>
+              <button
+                disabled={loading}
+                onClick={handleSaveStatus}
+                className="bg-blue text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+              >
+                Simpan
+              </button>
+            </div>
+          </div>
+        </ActModal>
+      )}
+
+      {showIzinModal && (
+        <ActModal
+          isModalOpen={showIzinModal}
+          setIsModalOpen={setShowIzinModal}
+          title=" Keterangan Izin"
+        >
+          <div className="text-xs flex flex-col space-y-4">
+            <input
+              type="text"
+              className="border rounded-lg p-2 focus:ring focus:ring-blue-300"
+              placeholder="Keterangan Izin"
+              value={keteranganIzin}
+              onChange={(e) => setKeteranganIzin(e.target.value)}
+            />
+            <div className="flex justify-end space-x-2">
+              <button
+                className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+                onClick={() => {
+                  setShowIzinModal(false), setTempStatus(statusAbsensi);
+                }}
               >
                 Batal
               </button>

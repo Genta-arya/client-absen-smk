@@ -301,6 +301,10 @@ const MainUsers = () => {
     if (absenToday.hadir !== "hadir") {
       return toast.info("Anda belum absen masuk");
     }
+
+     if (!location.latitude || !location.longitude) {
+      return toast.info("Lokasi belum terdeteksi");
+     }
     setLoading(true);
     const currentDate = new Date(user?.DateIndonesia); // Tanggal yang diberikan
 
