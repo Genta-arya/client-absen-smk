@@ -97,12 +97,16 @@ const Calendar = ({ data }) => {
             ? "Izin"
             : absen.hadir === "libur"
             ? "Libur"
-            : absen.hadir === null 
+            : absen.hadir === "sakit"
+            ? "Sakit"
+            : absen.pulang === null
             ? "..."
             : "..."
         }`;
         bgColorDatang =
-          absen.hadir === "izin" || absen.hadir === "libur"
+          absen.hadir === "izin" ||
+          absen.hadir === "libur" ||
+          absen.hadir === "sakit"
             ? "orange"
             : absen.hadir !== "tidak_hadir"
             ? "gray"
@@ -139,13 +143,17 @@ const Calendar = ({ data }) => {
             ? "Izin"
             : absen.hadir === "libur"
             ? "Libur"
+            : absen.hadir === "sakit"
+            ? "Sakit"
             : absen.pulang === null
             ? "..."
             : "..."
         }`;
 
         bgColorPulang =
-          absen.hadir === "izin" || absen.hadir === "libur"
+          absen.hadir === "izin" ||
+          absen.hadir === "libur" ||
+          absen.hadir === "sakit"
             ? "orange"
             : absen.hadir !== "tidak_hadir"
             ? "gray"

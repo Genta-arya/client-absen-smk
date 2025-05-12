@@ -4,9 +4,15 @@ export default function AbsensiTab({ absensi, user }) {
   const [activeTab, setActiveTab] = useState("hadir");
 
   // Hitung jumlah berdasarkan status absensi
-  const totalHadir = absensi.filter((absen) => absen.hadir === "selesai").length;
-  const totalTidakHadir = absensi.filter((absen) => absen.hadir === "tidak_hadir").length;
-  const totalIzin = absensi.filter((absen) => absen.hadir === "izin").length;
+  const totalHadir = absensi.filter(
+    (absen) => absen.hadir === "selesai"
+  ).length;
+  const totalTidakHadir = absensi.filter(
+    (absen) => absen.hadir === "tidak_hadir"
+  ).length;
+  const totalIzin = absensi.filter(
+    (absen) => absen.hadir === "izin" || absen.hadir === "sakit"
+  ).length;
 
   return (
     <div className="mb-12">
@@ -50,7 +56,9 @@ export default function AbsensiTab({ absensi, user }) {
           <p className="text-xl font-bold text-green-600">{totalHadir} Hari</p>
         )}
         {activeTab === "tidak_hadir" && (
-          <p className="text-xl font-bold text-red-600">{totalTidakHadir} Hari</p>
+          <p className="text-xl font-bold text-red-600">
+            {totalTidakHadir} Hari
+          </p>
         )}
         {activeTab === "izin" && (
           <p className="text-xl font-bold text-yellow-600">{totalIzin} Hari</p>

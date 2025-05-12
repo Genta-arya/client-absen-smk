@@ -45,10 +45,11 @@ export const rekababsensi = async (id) => {
   }
 };
 
-export const updateStatus = async (id, status) => {
+export const updateStatus = async (id, status , keterangan) => {
   try {
     const response = await Axios.put("/absensi/update/status/" + id, {
       status: status,
+      keterangan: keterangan,
     });
     return response.data;
   } catch (error) {
