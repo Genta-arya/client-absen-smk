@@ -254,10 +254,14 @@ const MainRekababsensi = () => {
         item.user.name,
         item.user.Kelas.map((k) => k.nama).join(", ") || "-",
         item.hadir === "selesai"
-          ? "Hadir"
-          : item.hadir === "tidak_hadir"
-          ? "Tidak Hadir"
-          : "-",
+        ? "Hadir"
+        : item.hadir === "tidak_hadir"
+        ? "Tidak Hadir"
+        : item.hadir === "libur"
+        ? "Libur" : item.hadir === "sakit" 
+        ? "Sakit" : item.hadir === "izin" 
+        ? "Izin"
+        : "-",      
         item.tanggal ? formatTanggal(item.tanggal) : "-",
       ]),
       headStyles: {
@@ -272,29 +276,29 @@ const MainRekababsensi = () => {
     });
 
     // === Tambahkan form tanda tangan ===
-    const yPos = doc.autoTable.previous.finalY + 20; // Ambil posisi terakhir dari tabel
-    const pageWidth = doc.internal.pageSize.getWidth();
+    // const yPos = doc.autoTable.previous.finalY + 20; // Ambil posisi terakhir dari tabel
+    // const pageWidth = doc.internal.pageSize.getWidth();
 
-    doc.setFontSize(10);
-    doc.text("Mengetahui,", marginLeft, yPos);
-    doc.text(
-      "Ketapang, " + DateTime.now().toFormat("dd LLLL yyyy"),
-      pageWidth - 60,
-      yPos
-    ); // Tanggal di sisi kanan
+    // doc.setFontSize(10);
+    // doc.text("Mengetahui,", marginLeft, yPos);
+    // doc.text(
+    //   "Ketapang, " + DateTime.now().toFormat("dd LLLL yyyy"),
+    //   pageWidth - 60,
+    //   yPos
+    // ); // Tanggal di sisi kanan
 
-    const tandaTanganY = yPos + 25; // Posisi garis tanda tangan
+    // const tandaTanganY = yPos + 25; // Posisi garis tanda tangan
 
-    // Garis untuk tanda tangan
-    doc.line(marginLeft, tandaTanganY, marginLeft + 50, tandaTanganY); // Pembimbing
-    doc.line(pageWidth - 80, tandaTanganY, pageWidth - 30, tandaTanganY); // Kepala Sekolah
+    // // Garis untuk tanda tangan
+    // doc.line(marginLeft, tandaTanganY, marginLeft + 50, tandaTanganY); // Pembimbing
+    // doc.line(pageWidth - 80, tandaTanganY, pageWidth - 30, tandaTanganY); // Kepala Sekolah
 
-    // Nama di bawah tanda tangan
-    doc.text("Pembimbing PKL", marginLeft, tandaTanganY + 5);
-    doc.text(namaPembimbing, marginLeft, tandaTanganY + 10);
+    // // Nama di bawah tanda tangan
+    // doc.text("Pembimbing PKL", marginLeft, tandaTanganY + 5);
+    // doc.text(namaPembimbing, marginLeft, tandaTanganY + 10);
 
-    doc.text("Kepala Sekolah", pageWidth - 80, tandaTanganY + 5);
-    doc.text("Trisno, ST", pageWidth - 80, tandaTanganY + 10); // Ganti dengan nama kepala sekolah
+    // doc.text("Kepala Sekolah", pageWidth - 80, tandaTanganY + 5);
+    // doc.text("Trisno, ST", pageWidth - 80, tandaTanganY + 10); // Ganti dengan nama kepala sekolah
 
     doc.save("Rekap_Absensi.pdf");
   };
