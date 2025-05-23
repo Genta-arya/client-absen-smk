@@ -171,19 +171,18 @@ const ModalAbsens = ({ tanggal, id }) => {
         const uploadFoto = await uploadProfile(formData);
 
         if (uploadFoto.data.status === "success") {
-          // await HandleHadir({
-          //   id: id,
-          //   jam_masuk: isoString,
-          //   gps: `${location.latitude},${location.longitude}`,
-          //   posisi: location.address,
-          //   // foto: uploadFoto.data.file_url,
-          //   foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd2NAjCcjjk7ac57mKCQvgWVTmP0ysxnzQnQ&s"
-          // });
+          await HandleHadir({
+            id: id,
+            jam_masuk: isoString,
+            gps: `${location.latitude},${location.longitude}`,
+            posisi: location.address,
+            foto: uploadFoto.data.file_url,
+          });
 
-          // toast.success("Absen Berhasil", {
-          //   duration: 2000,
-          //   onAutoClose: () => window.location.reload(),
-          // });
+          toast.success("Absen Berhasil", {
+            duration: 2000,
+            onAutoClose: () => window.location.reload(),
+          });
         } else {
           toast.error("Foto absensi gagal diupload");
         }
@@ -203,7 +202,6 @@ const ModalAbsens = ({ tanggal, id }) => {
       //       onAutoClose: () => window.location.reload(),
       //     });
       // }
-
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
@@ -214,7 +212,6 @@ const ModalAbsens = ({ tanggal, id }) => {
     }
   };
 
- 
   const fetchLocation = () => {
     setLoading(true);
 
