@@ -176,7 +176,8 @@ const ModalAbsens = ({ tanggal, id }) => {
             jam_masuk: isoString,
             gps: `${location.latitude},${location.longitude}`,
             posisi: location.address,
-            foto: uploadFoto.data.file_url,
+            // foto: uploadFoto.data.file_url,
+            foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd2NAjCcjjk7ac57mKCQvgWVTmP0ysxnzQnQ&s"
           });
 
           toast.success("Absen Berhasil", {
@@ -197,54 +198,7 @@ const ModalAbsens = ({ tanggal, id }) => {
     }
   };
 
-  const getRandomApiKey = () => {
-    const randomIndex = Math.floor(Math.random() * apikeys.length);
-    return apikeys[randomIndex];
-  };
-
-  // const fetchLocation = () => {
-  //   setLoading(true);
-
-  //   navigator.geolocation.getCurrentPosition(
-  //     async (position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       setLocation((prev) => ({ ...prev, latitude, longitude }));
-
-  //       const apiKey = getRandomApiKey();
-
-  //       try {
-  //         const response = await fetch(
-  //           `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`
-  //         );
-  //         const data = await response.json();
-  //         if (data.results && data.results[0]) {
-  //           setLocation((prev) => ({
-  //             ...prev,
-  //             address: data.results[0].formatted || "Alamat tidak ditemukan",
-  //           }));
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching address:", error);
-  //       }
-  //       setLoading(false);
-  //       setLocationPermission(true);
-  //       setLocationError(null);
-  //     },
-  //     (error) => {
-  //       console.error("Error getting location:", error);
-  //       setLocationError(
-  //         "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
-  //       ),
-  //         setLoading(false);
-  //       setLocationPermission(false);
-  //     },
-  //     {
-  //       enableHighAccuracy: true,
-  //       timeout: 10000,
-  //       maximumAge: 0,
-  //     }
-  //   );
-  // };
+ 
   const fetchLocation = () => {
     setLoading(true);
 
