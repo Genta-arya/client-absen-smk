@@ -43,7 +43,7 @@ export const formatDate = (dateString) => {
 };
 
 export let API_URL;
-const type = "productions";
+const type = "production";
 
 if (type === "production") API_URL = "https://digital.apiservices.my.id/api";
 // if (type === "production") API_URL = "https://pkl.apiservices.my.id/api";
@@ -53,7 +53,7 @@ else API_URL = "http://localhost:8081/api";
 export const SOCKET = "https://pkl.apiservices.my.id";
 
 export const API_URL_IMAGE = "https://pkl.apiservices.my.id/uploads/";
-export const UPLOAD_URL = "https://cloud.mystorages.my.id/uploads.php";
+export const UPLOAD_URL = "https://cloud.mystorages.my.id/uploads";
 
 export const formatTanggal = (dateString) => {
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];

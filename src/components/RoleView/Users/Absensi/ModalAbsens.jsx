@@ -163,15 +163,33 @@ const ModalAbsens = ({ tanggal, id }) => {
 
       const isoString = currentDate.toISOString();
 
-      if (cropData) {
-        const timestamp = Date.now();
-        const uniqueFileName = `photo_${timestamp}.png`;
-        const formData = new FormData();
-        formData.append("file", cropData, uniqueFileName);
-        const uploadFoto = await uploadProfile(formData);
+      // if (cropData) {
+      //   const timestamp = Date.now();
+      //   const uniqueFileName = `photo_${timestamp}.png`;
+      //   const formData = new FormData();
+      //   formData.append("file", cropData, uniqueFileName);
+      //   const uploadFoto = await uploadProfile(formData);
 
-        if (uploadFoto.data.status === "success") {
-          await HandleHadir({
+      //   if (uploadFoto.data.status === "success") {
+      //     // await HandleHadir({
+      //     //   id: id,
+      //     //   jam_masuk: isoString,
+      //     //   gps: `${location.latitude},${location.longitude}`,
+      //     //   posisi: location.address,
+      //     //   // foto: uploadFoto.data.file_url,
+      //     //   foto: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd2NAjCcjjk7ac57mKCQvgWVTmP0ysxnzQnQ&s"
+      //     // });
+
+      //     // toast.success("Absen Berhasil", {
+      //     //   duration: 2000,
+      //     //   onAutoClose: () => window.location.reload(),
+      //     // });
+      //   } else {
+      //     toast.error("Foto absensi gagal diupload");
+      //   }
+      // }
+      if (cropData) {
+           await HandleHadir({
             id: id,
             jam_masuk: isoString,
             gps: `${location.latitude},${location.longitude}`,
@@ -184,10 +202,8 @@ const ModalAbsens = ({ tanggal, id }) => {
             duration: 2000,
             onAutoClose: () => window.location.reload(),
           });
-        } else {
-          toast.error("Foto absensi gagal diupload");
-        }
       }
+
     } catch (error) {
       if (error.code === "ERR_NETWORK") {
         toast.error("Tidak dapat terhubung ke server.");
