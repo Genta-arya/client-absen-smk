@@ -13,6 +13,7 @@ import { HandleHadir } from "../../../../Api/Services/AbsensiServices";
 import LoadingButton from "../../../LoadingButton";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import axios from "axios";
 const ModalAbsens = ({ tanggal, id }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -31,13 +32,13 @@ const ModalAbsens = ({ tanggal, id }) => {
   const [cropData, setCropData] = useState(null);
   const [cropper, setCropper] = useState(null);
   const [locationPermission, setLocationPermission] = useState(false);
-  const [apikeys, setApikeys] = useState([
-    "155de109609643f9a1b432e22774f675",
-    "1de3b41c01ef4a50a5a37b954081b6b4",
-    "8c45cf1167774a22913483caa6b3d3c1",
-    "2c316c1b439147b2b42e794724c4edb5",
-  ]);
-
+  const apikeys = [
+    "a18b1d0c7865431c9d6456b675c290d6",
+    "da54aa09d48544dbb3b6bad576e1a119",
+  ];
+  const getRandomApiKey = () => {
+    return apikeys[Math.floor(Math.random() * apikeys.length)];
+  };
   // const startCamera = async () => {
   //   try {
   //     // Meminta izin kamera
@@ -175,7 +176,7 @@ const ModalAbsens = ({ tanggal, id }) => {
             id: id,
             jam_masuk: isoString,
             gps: `${location.latitude},${location.longitude}`,
-            posisi: location.address,
+            posisi: location.address || "Alamat tidak ditemukan",
             foto: uploadFoto.data.file_url,
           });
 
@@ -213,48 +214,231 @@ const ModalAbsens = ({ tanggal, id }) => {
   };
 
   const fetchLocation = () => {
-    setLoading(true);
-
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        setLocation((prev) => ({ ...prev, latitude, longitude }));
+        setLocation({ latitude, longitude });
+        setLoading(true);
 
         try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          const response = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse`,
+            {
+              params: {
+                lat: latitude,
+                lon: longitude,
+                format: "json",
+              },
+            }
           );
-          const data = await response.json();
 
-          if (data && data.display_name) {
-            setLocation((prev) => ({
-              ...prev,
-              address: data.display_name || "Alamat tidak ditemukan",
-            }));
+          if (!response.data || response.status !== 200) {
+            throw new Error("Data dari Nominatim tidak valid.");
           }
-        } catch (error) {
-          console.error("Error fetching address:", error);
-        }
 
-        setLoading(false);
-        setLocationPermission(true);
-        setLocationError(null);
+          const data = response.data;
+          const address = data.display_name || "Alamat tidak ditemukan";
+          const details = data.address || {};
+
+          const additionalInfo = {
+            village:
+              details.village ||
+              details.hamlet ||
+              details.suburb ||
+              "Tidak diketahui",
+            county: details.county || "Tidak diketahui",
+            state: details.state || "Tidak diketahui",
+            country: details.country || "Tidak diketahui",
+          };
+
+          setLocation({
+            address,
+            additionalInfo,
+          });
+        } catch (error) {
+          console.error("Gagal mengambil alamat lokasi:", error);
+
+          if (error.code === "ECONNABORTED") {
+            setLocationError(
+              "Permintaan lokasi gagal didapatkan. tunggu sebentar"
+            );
+          } else if (error.response && error.response.status === 429) {
+            setLocationError("Terlalu banyak permintaan. Coba lagi nanti.");
+          } else {
+            setLocationError("Gagal mengambil alamat lokasi. Coba lagi nanti.");
+          }
+
+          // **Fallback ke Google Maps atau lokasi default**
+          fallbackToOpenCage(latitude, longitude);
+        } finally {
+          setLocationPermission(true);
+          setLoading(false);
+        }
       },
       (error) => {
-        console.error("Error getting location:", error);
         setLocationError(
           "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
         );
-        setLoading(false);
         setLocationPermission(false);
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
       }
     );
   };
+
+  const fallbackToOpenCage = async (latitude, longitude) => {
+    try {
+      const apiKey = getRandomApiKey(); // Ambil API key secara acak
+
+      const response = await axios.get(
+        "https://api.opencagedata.com/geocode/v1/json",
+        {
+          params: {
+            q: `${latitude},${longitude}`,
+            key: apiKey,
+            language: "id",
+          },
+        }
+      );
+
+      if (response.data.results.length > 0) {
+        const address = response.data.results[0].formatted;
+        const details = response.data.results[0].components || {};
+
+        const additionalInfo = {
+          village:
+            details.village ||
+            details.hamlet ||
+            details.suburb ||
+            "Tidak diketahui",
+          county: details.county || "Tidak diketahui",
+          state: details.state || "Tidak diketahui",
+          country: details.country || "Tidak diketahui",
+        };
+
+        setLocation({
+          latitude,
+          longitude,
+          address,
+          additionalInfo,
+        });
+
+        // Jika berhasil mendapatkan alamat dari OpenCage, set error menjadi null
+        setLocationError(null);
+      } else {
+        throw new Error("OpenCage tidak bisa menemukan alamat.");
+      }
+    } catch (error) {
+      console.error("Gagal mendapatkan alamat dari OpenCage:", error);
+      setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
+      fallbackToLocationIQ(latitude, longitude);
+    }
+  };
+
+  const fallbackToLocationIQ = async (latitude, longitude) => {
+    try {
+      const locationIqKeys = [
+        "6c97ecb1bedf2cf8f827b83287008dc1",
+        "8a09eae4722b0e8dc39e14d412df69e7",
+      ];
+
+      const getRandomLocationIqKey = () => {
+        return locationIqKeys[
+          Math.floor(Math.random() * locationIqKeys.length)
+        ];
+      };
+
+      const apiKey = getRandomLocationIqKey();
+
+      const response = await axios.get(
+        `https://us1.locationiq.com/v1/reverse.php`,
+        {
+          params: {
+            key: apiKey,
+            lat: latitude,
+            lon: longitude,
+            format: "json",
+          },
+        }
+      );
+
+      if (response.data && response.status === 200) {
+        const data = response.data;
+
+        const address = data.display_name || "Alamat tidak ditemukan";
+        const details = data.address || {};
+
+        const additionalInfo = {
+          house_number: details.house_number || "Tidak diketahui",
+          road: details.road || "Tidak diketahui",
+          quarter: details.quarter || "Tidak diketahui",
+          suburb: details.suburb || "Tidak diketahui",
+          city: details.city || "Tidak diketahui",
+          state: details.state || "Tidak diketahui",
+          country: details.country || "Tidak diketahui",
+          postcode: details.postcode || "Tidak diketahui",
+        };
+
+        setLocation({
+          address,
+          additionalInfo,
+          latitude: data.lat,
+          longitude: data.lon,
+        });
+        setLocationError(null); // Hapus error jika LocationIQ berhasil
+      } else {
+        throw new Error("LocationIQ tidak bisa menemukan alamat.");
+      }
+    } catch (error) {
+      console.error("Gagal mendapatkan alamat dari LocationIQ:", error);
+      setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
+    }
+  };
+
+  // const fetchLocation = () => {
+  //   setLoading(true);
+
+  //   navigator.geolocation.getCurrentPosition(
+  //     async (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       setLocation((prev) => ({ ...prev, latitude, longitude }));
+
+  //       try {
+  //         const response = await fetch(
+  //           `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+  //         );
+  //         const data = await response.json();
+
+  //         if (data && data.display_name) {
+  //           setLocation((prev) => ({
+  //             ...prev,
+  //             address: data.display_name || "Alamat tidak ditemukan",
+  //           }));
+  //         }
+  //       } catch (error) {
+  //         console.error("Error fetching address:", error);
+  //       }
+
+  //       setLoading(false);
+  //       setLocationPermission(true);
+  //       setLocationError(null);
+  //     },
+  //     (error) => {
+  //       console.error("Error getting location:", error);
+  //       setLocationError(
+  //         "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
+  //       );
+  //       setLoading(false);
+  //       setLocationPermission(false);
+  //     },
+  //     {
+  //       enableHighAccuracy: true,
+  //       timeout: 10000,
+  //       maximumAge: 0,
+  //     }
+  //   );
+  // };
 
   useEffect(() => {
     fetchLocation();
