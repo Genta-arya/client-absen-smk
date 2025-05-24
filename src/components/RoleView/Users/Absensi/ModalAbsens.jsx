@@ -23,6 +23,7 @@ const ModalAbsens = ({ tanggal, id }) => {
     latitude: null,
     longitude: null,
     address: null,
+    additionalInfo: null,
   });
   const [loadings, setLoadings] = useState(false);
   const [crop, setCrop] = useState(false);
@@ -214,97 +215,35 @@ const ModalAbsens = ({ tanggal, id }) => {
   };
 
   const fetchLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocation({ latitude, longitude });
-        setLoading(true);
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude } = position.coords;
+      setLocation((prev) => ({
+        ...prev,
+        latitude,
+        longitude,
+      }));
+      setLoading(true);
 
-        try {
-          const response = await axios.get(
-            `https://nominatim.openstreetmap.org/reverse`,
-            {
-              params: {
-                lat: latitude,
-                lon: longitude,
-                format: "json",
-              },
-            }
-          );
-
-          if (!response.data || response.status !== 200) {
-            throw new Error("Data dari Nominatim tidak valid.");
+      try {
+        const response = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse`,
+          {
+            params: {
+              lat: latitude,
+              lon: longitude,
+              format: "json",
+            },
           }
-
-          const data = response.data;
-          const address = data.display_name || "Alamat tidak ditemukan";
-          const details = data.address || {};
-
-          const additionalInfo = {
-            village:
-              details.village ||
-              details.hamlet ||
-              details.suburb ||
-              "Tidak diketahui",
-            county: details.county || "Tidak diketahui",
-            state: details.state || "Tidak diketahui",
-            country: details.country || "Tidak diketahui",
-          };
-
-          setLocation({
-            address,
-            additionalInfo,
-          });
-        } catch (error) {
-          console.error("Gagal mengambil alamat lokasi:", error);
-
-          if (error.code === "ECONNABORTED") {
-            setLocationError(
-              "Permintaan lokasi gagal didapatkan. tunggu sebentar"
-            );
-          } else if (error.response && error.response.status === 429) {
-            setLocationError("Terlalu banyak permintaan. Coba lagi nanti.");
-          } else {
-            setLocationError("Gagal mengambil alamat lokasi. Coba lagi nanti.");
-          }
-
-          // **Fallback ke Google Maps atau lokasi default**
-          fallbackToOpenCage(latitude, longitude);
-        } finally {
-          setLocationPermission(true);
-          setLoading(false);
-        }
-      },
-      (error) => {
-        setLocationError(
-          "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
         );
-        setLocationPermission(false);
-      },
-      {
-        enableHighAccuracy: true,
-      }
-    );
-  };
 
-  const fallbackToOpenCage = async (latitude, longitude) => {
-    try {
-      const apiKey = getRandomApiKey(); // Ambil API key secara acak
-
-      const response = await axios.get(
-        "https://api.opencagedata.com/geocode/v1/json",
-        {
-          params: {
-            q: `${latitude},${longitude}`,
-            key: apiKey,
-            language: "id",
-          },
+        if (!response.data || response.status !== 200) {
+          throw new Error("Data dari Nominatim tidak valid.");
         }
-      );
 
-      if (response.data.results.length > 0) {
-        const address = response.data.results[0].formatted;
-        const details = response.data.results[0].components || {};
+        const data = response.data;
+        const address = data.display_name || "Alamat tidak ditemukan";
+        const details = data.address || {};
 
         const additionalInfo = {
           village:
@@ -317,84 +256,148 @@ const ModalAbsens = ({ tanggal, id }) => {
           country: details.country || "Tidak diketahui",
         };
 
-        setLocation({
-          latitude,
-          longitude,
+        setLocation((prev) => ({
+          ...prev,
           address,
           additionalInfo,
-        });
+        }));
+      } catch (error) {
+        console.error("Gagal mengambil alamat lokasi:", error);
 
-        // Jika berhasil mendapatkan alamat dari OpenCage, set error menjadi null
-        setLocationError(null);
-      } else {
-        throw new Error("OpenCage tidak bisa menemukan alamat.");
+        if (error.code === "ECONNABORTED") {
+          setLocationError("Permintaan lokasi gagal didapatkan. tunggu sebentar");
+        } else if (error.response && error.response.status === 429) {
+          setLocationError("Terlalu banyak permintaan. Coba lagi nanti.");
+        } else {
+          setLocationError("Gagal mengambil alamat lokasi. Coba lagi nanti.");
+        }
+
+        fallbackToOpenCage(latitude, longitude);
+      } finally {
+        setLocationPermission(true);
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Gagal mendapatkan alamat dari OpenCage:", error);
-      setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
-      fallbackToLocationIQ(latitude, longitude);
+    },
+    (error) => {
+      setLocationError(
+        "Lokasi tidak diizinkan atau tidak tersedia. Periksa izin lokasi dari browser."
+      );
+      setLocationPermission(false);
+    },
+    {
+      enableHighAccuracy: true,
     }
-  };
+  );
+};
 
-  const fallbackToLocationIQ = async (latitude, longitude) => {
-    try {
-      const locationIqKeys = [
-        "6c97ecb1bedf2cf8f827b83287008dc1",
-        "8a09eae4722b0e8dc39e14d412df69e7",
-      ];
+const fallbackToOpenCage = async (latitude, longitude) => {
+  try {
+    const apiKey = getRandomApiKey(); // Ambil API key secara acak
 
-      const getRandomLocationIqKey = () => {
-        return locationIqKeys[
-          Math.floor(Math.random() * locationIqKeys.length)
-        ];
+    const response = await axios.get(
+      "https://api.opencagedata.com/geocode/v1/json",
+      {
+        params: {
+          q: `${latitude},${longitude}`,
+          key: apiKey,
+          language: "id",
+        },
+      }
+    );
+
+    if (response.data.results.length > 0) {
+      const address = response.data.results[0].formatted;
+      const details = response.data.results[0].components || {};
+
+      const additionalInfo = {
+        village:
+          details.village ||
+          details.hamlet ||
+          details.suburb ||
+          "Tidak diketahui",
+        county: details.county || "Tidak diketahui",
+        state: details.state || "Tidak diketahui",
+        country: details.country || "Tidak diketahui",
       };
 
-      const apiKey = getRandomLocationIqKey();
+      setLocation((prev) => ({
+        ...prev,
+        latitude,
+        longitude,
+        address,
+        additionalInfo,
+      }));
 
-      const response = await axios.get(
-        `https://us1.locationiq.com/v1/reverse.php`,
-        {
-          params: {
-            key: apiKey,
-            lat: latitude,
-            lon: longitude,
-            format: "json",
-          },
-        }
-      );
-
-      if (response.data && response.status === 200) {
-        const data = response.data;
-
-        const address = data.display_name || "Alamat tidak ditemukan";
-        const details = data.address || {};
-
-        const additionalInfo = {
-          house_number: details.house_number || "Tidak diketahui",
-          road: details.road || "Tidak diketahui",
-          quarter: details.quarter || "Tidak diketahui",
-          suburb: details.suburb || "Tidak diketahui",
-          city: details.city || "Tidak diketahui",
-          state: details.state || "Tidak diketahui",
-          country: details.country || "Tidak diketahui",
-          postcode: details.postcode || "Tidak diketahui",
-        };
-
-        setLocation({
-          address,
-          additionalInfo,
-          latitude: data.lat,
-          longitude: data.lon,
-        });
-        setLocationError(null); // Hapus error jika LocationIQ berhasil
-      } else {
-        throw new Error("LocationIQ tidak bisa menemukan alamat.");
-      }
-    } catch (error) {
-      console.error("Gagal mendapatkan alamat dari LocationIQ:", error);
-      setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
+      setLocationError(null); // reset error
+    } else {
+      throw new Error("OpenCage tidak bisa menemukan alamat.");
     }
-  };
+  } catch (error) {
+    console.error("Gagal mendapatkan alamat dari OpenCage:", error);
+    setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
+    fallbackToLocationIQ(latitude, longitude);
+  }
+};
+
+const fallbackToLocationIQ = async (latitude, longitude) => {
+  try {
+    const locationIqKeys = [
+      "6c97ecb1bedf2cf8f827b83287008dc1",
+      "8a09eae4722b0e8dc39e14d412df69e7",
+    ];
+
+    const getRandomLocationIqKey = () => {
+      return locationIqKeys[Math.floor(Math.random() * locationIqKeys.length)];
+    };
+
+    const apiKey = getRandomLocationIqKey();
+
+    const response = await axios.get(
+      `https://us1.locationiq.com/v1/reverse.php`,
+      {
+        params: {
+          key: apiKey,
+          lat: latitude,
+          lon: longitude,
+          format: "json",
+        },
+      }
+    );
+
+    if (response.data && response.status === 200) {
+      const data = response.data;
+
+      const address = data.display_name || "Alamat tidak ditemukan";
+      const details = data.address || {};
+
+      const additionalInfo = {
+        house_number: details.house_number || "Tidak diketahui",
+        road: details.road || "Tidak diketahui",
+        quarter: details.quarter || "Tidak diketahui",
+        suburb: details.suburb || "Tidak diketahui",
+        city: details.city || "Tidak diketahui",
+        state: details.state || "Tidak diketahui",
+        country: details.country || "Tidak diketahui",
+        postcode: details.postcode || "Tidak diketahui",
+      };
+
+      setLocation((prev) => ({
+        ...prev,
+        latitude: data.lat,
+        longitude: data.lon,
+        address,
+        additionalInfo,
+      }));
+
+      setLocationError(null);
+    } else {
+      throw new Error("LocationIQ tidak bisa menemukan alamat.");
+    }
+  } catch (error) {
+    console.error("Gagal mendapatkan alamat dari LocationIQ:", error);
+    setLocationError("Gagal mendapatkan alamat, coba lagi nanti.");
+  }
+};
 
   // const fetchLocation = () => {
   //   setLoading(true);
@@ -465,6 +468,8 @@ const ModalAbsens = ({ tanggal, id }) => {
     }
   };
 
+  console.log("location", location.latitude, location.longitude);
+
   return (
     <div className="">
       {cameraError && (
@@ -490,6 +495,8 @@ const ModalAbsens = ({ tanggal, id }) => {
       </div>
 
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
+
+
 
       {photo && !cropData && (
         <div className=" mb-4">
